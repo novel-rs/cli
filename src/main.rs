@@ -7,7 +7,7 @@ use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
 use tracing::{debug, info, subscriber};
 use tracing_log::LogTracer;
-use tracing_subscriber::{fmt::time::LocalTime, EnvFilter};
+use tracing_subscriber::EnvFilter;
 
 use novel_cli::{
     cmd::{
@@ -79,7 +79,7 @@ fn init_log(config: &Config) -> Result<()> {
     env::set_var("RUST_LOG", rust_log);
 
     let subscriber = tracing_subscriber::fmt()
-        .with_timer(LocalTime::rfc_3339())
+        .without_time()
         .with_env_filter(EnvFilter::from_default_env())
         .finish();
 

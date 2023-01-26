@@ -1,10 +1,5 @@
 [build]
-rustflags = ["-Dwarnings", "--cfg", "unsound_local_offset"]
+rustflags = ["-Dwarnings"]
 
 [target.x86_64-pc-windows-msvc]
-rustflags = [
-  "-Dwarnings",
-  "--cfg",
-  "unsound_local_offset",
-  "-Ctarget-feature=+crt-static",
-]
+rustflags = ["-Dwarnings", "-Ctarget-feature=+crt-static"]
