@@ -1,0 +1,58 @@
+name: Coverage
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - "**"
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+
+permissions:
+  contents: read
+
+env:
+  RUSTFLAGS: -Dwarnings -Cinstrument-coverage
+
+jobs:
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # https://github.com/Swatinem/rust-cache
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+
+      # https://github.com/dtolnay/rust-toolchain
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: llvm-tools-preview
+
+      - name: Run cargo test
+        run: cargo test --workspace --all-targets
+
+      # https://github.com/mozilla/grcov
+      - name: Generate lcov
+        run: |
+          curl -fsSL https://github.com/mozilla/grcov/releases/latest/download/grcov-x86_64-unknown-linux-gnu.tar.bz2 | tar jxf -
+          ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+
+      # https://github.com/codecov/codecov-action
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: lcov.info
+          fail_ci_if_error: false

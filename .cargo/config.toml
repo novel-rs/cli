@@ -1,0 +1,16 @@
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = 'abort'
+
+[build]
+rustflags = ["-Dwarnings", "--cfg", "unsound_local_offset"]
+
+[target.x86_64-pc-windows-msvc]
+rustflags = [
+  "-Dwarnings",
+  "--cfg",
+  "unsound_local_offset",
+  "-Ctarget-feature=+crt-static",
+]

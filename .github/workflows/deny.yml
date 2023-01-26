@@ -1,0 +1,51 @@
+name: Deny
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - "**"
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+  schedule:
+    # every day
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  deny:
+    name: Deny
+    runs-on: ubuntu-latest
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # https://github.com/Swatinem/rust-cache
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+
+      # https://github.com/dtolnay/rust-toolchain
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      # https://github.com/taiki-e/install-action
+      - name: Install cargo-deny
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny
+
+      # https://github.com/EmbarkStudios/cargo-deny
+      - name: Run cargo-deny
+        run: cargo deny --workspace check

@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - "**"
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # https://github.com/Swatinem/rust-cache
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+
+      # https://github.com/dtolnay/rust-toolchain
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      # https://github.com/ilammy/setup-nasm
+      - name: Install NASM
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: ilammy/setup-nasm@v1
+
+      - name: Run cargo test
+        run: cargo test --workspace --all-targets

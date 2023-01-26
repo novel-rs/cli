@@ -1,0 +1,30 @@
+name: Commitlint
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - "**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  commitlint:
+    name: Commitlint
+    runs-on: ubuntu-latest
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # https://github.com/wagoid/commitlint-github-action
+      - name: Run commitlint
+        uses: wagoid/commitlint-github-action@v5

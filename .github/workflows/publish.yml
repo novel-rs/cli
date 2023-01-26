@@ -1,0 +1,67 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: novel-cli
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: novel-cli.exe
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact_name: novel-cli
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: novel-cli
+
+    name: Publish for ${{ matrix.os }}-${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # https://github.com/Swatinem/rust-cache
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+
+      # https://github.com/dtolnay/rust-toolchain
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }}
+
+      - name: Publish
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      # https://github.com/ilammy/setup-nasm
+      - name: Install NASM
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: ilammy/setup-nasm@v1
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+      # https://github.com/svenstaro/upload-release-action
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+          asset_name: novel-cli-${{ matrix.target }}
+          overwrite: true
