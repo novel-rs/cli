@@ -68,7 +68,7 @@ pub fn execute(config: Transform) -> Result<()> {
         fs::rename(&config.markdown_path, backup_file)?;
     }
 
-    fs::write(format!("{}.md", new_novel_name), buf)?;
+    fs::write(format!("{new_novel_name}.md"), buf)?;
 
     Ok(())
 }

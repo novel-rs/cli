@@ -163,7 +163,7 @@ where
                 handles.push(tokio::spawn(async move {
                     let mut chapter_writer = Writer::new(chapter_path).await?;
 
-                    chapter_writer.writeln(format!("# {}", title)).await?;
+                    chapter_writer.writeln(format!("# {title}")).await?;
                     chapter_writer.ln().await?;
 
                     for content in contents.read().await.iter() {

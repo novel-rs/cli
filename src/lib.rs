@@ -20,7 +20,7 @@ pub static LANG_ID: Lazy<LanguageIdentifier> = Lazy::new(|| {
     match locale.parse::<LanguageIdentifier>() {
         Ok(lang_id) => lang_id,
         Err(error) => {
-            eprintln!("Failed to parse LanguageIdentifier: {}, use `en-US`", error);
+            eprintln!("Failed to parse LanguageIdentifier: {error}, use `en-US`");
             String::from("en-US").parse::<LanguageIdentifier>().unwrap()
         }
     }

@@ -47,9 +47,9 @@ where
 
 pub(crate) fn num_to_str(num: u16) -> String {
     if num < 10 {
-        format!("00{}", num)
+        format!("00{num}")
     } else if num < 100 {
-        format!("0{}", num)
+        format!("0{num}")
     } else {
         num.to_string()
     }
