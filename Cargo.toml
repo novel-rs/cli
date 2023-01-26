@@ -149,3 +149,9 @@ self_update = { version = "0.34.0", default-features = false, features = [
 pretty_assertions = "1.3.0"
 # https://github.com/assert-rs/assert_cmd
 assert_cmd = "2.0.8"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = 'abort'

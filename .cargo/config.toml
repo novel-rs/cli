@@ -1,9 +1,3 @@
-[profile.release]
-strip = true
-lto = true
-codegen-units = 1
-panic = 'abort'
-
 [build]
 rustflags = ["-Dwarnings", "--cfg", "unsound_local_offset"]
 
