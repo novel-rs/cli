@@ -63,14 +63,12 @@ fn init_log(config: &Config) -> Result<()> {
     let rust_log = if config.quiet {
         "none"
     } else if config.verbose == 1 {
-        "none,novel_api=warn,novel_cli=warn"
-    } else if config.verbose == 2 {
         "none,novel_api=info,novel_cli=info"
-    } else if config.verbose == 3 {
+    } else if config.verbose == 2 {
         "none,novel_api=debug,novel_cli=debug"
-    } else if config.verbose == 4 {
+    } else if config.verbose == 3 {
         "none,novel_api=trace,novel_cli=trace"
-    } else if config.verbose == 5 {
+    } else if config.verbose == 4 {
         "trace"
     } else {
         "none,novel_api=warn,novel_cli=warn"

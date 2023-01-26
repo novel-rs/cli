@@ -17,7 +17,7 @@ pub struct Config {
     pub command: Commands,
 
     #[arg(long, short, action = ArgAction::Count, global = true, default_value_t = 0,
-        value_parser = value_parser!(u8).range(0..=5),
+        value_parser = value_parser!(u8).range(0..=4),
         help = LOCALES.lookup(&LANG_ID, "verbose").expect("`verbose` does not exists"))]
     pub verbose: u8,
 
