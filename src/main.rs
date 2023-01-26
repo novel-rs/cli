@@ -5,7 +5,7 @@ use bytesize::ByteSize;
 use clap::Parser;
 use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
-use tracing::{debug, info, subscriber};
+use tracing::{debug, info, subscriber, warn};
 use tracing_log::LogTracer;
 use tracing_subscriber::EnvFilter;
 
@@ -28,6 +28,8 @@ async fn main() -> Result<()> {
     init_log(&config)?;
 
     debug!("{:#?}", config);
+
+    debug!("{:#?}", sys_locale::get_locale());
     debug!("{:#?}", LANG_ID);
 
     match config.command {
@@ -45,13 +47,15 @@ async fn main() -> Result<()> {
         Commands::Completions(config) => completions::execute(config)?,
     }
 
-    if let Some(usage) = memory_stats() {
-        info!(
-            "Current physical memory usage: {}",
-            ByteSize(usage.physical_mem as u64)
-        );
-    } else {
-        info!("Couldn't get the current memory usage");
+    if config.verbose >= 1 {
+        if let Some(usage) = memory_stats() {
+            info!(
+                "Current physical memory usage: {}",
+                ByteSize(usage.physical_mem as u64)
+            );
+        } else {
+            warn!("Couldn't get the current memory usage");
+        }
     }
 
     Ok(())
