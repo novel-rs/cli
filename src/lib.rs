@@ -17,7 +17,11 @@ static_loader! {
 pub static LANG_ID: Lazy<LanguageIdentifier> = Lazy::new(|| {
     let locale = sys_locale::get_locale().unwrap_or_else(|| String::from("en-US"));
 
-    locale
-        .parse::<LanguageIdentifier>()
-        .expect("Failed to parse LanguageIdentifier")
+    match locale.parse::<LanguageIdentifier>() {
+        Ok(lang_id) => lang_id,
+        Err(error) => {
+            eprintln!("Failed to parse LanguageIdentifier: {}, use `en-US`", error);
+            String::from("en-US").parse::<LanguageIdentifier>().unwrap()
+        }
+    }
 });
