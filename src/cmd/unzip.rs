@@ -1,15 +1,14 @@
 use std::{
-    fmt::Write,
-    fs::File,
+    fs::{self, File},
+    io,
     path::{Path, PathBuf},
 };
 
 use anyhow::{ensure, Result};
 use clap::Args;
 use fluent_templates::Loader;
-use indicatif::{ProgressBar, ProgressState, ProgressStyle};
-use ripunzip::{UnzipEngine, UnzipOptions, UnzipProgressReporter};
 use tracing::warn;
+use zip::ZipArchive;
 
 use crate::{utils, LANG_ID, LOCALES};
 
@@ -28,21 +27,7 @@ pub struct Unzip {
 pub fn execute(config: Unzip) -> Result<()> {
     ensure_epub(&config.epub_path)?;
 
-    let file = File::open(&config.epub_path)?;
-    let output_directory = utils::file_stem(&config.epub_path)?;
-
-    if output_directory.exists() {
-        warn!("The output directory already exists and will be deleted");
-        utils::remove_file_or_dir(&output_directory)?;
-    }
-
-    let options = UnzipOptions {
-        output_directory: Some(output_directory),
-        single_threaded: false,
-    };
-
-    let engine = UnzipEngine::for_file(file, options, ProgressDisplayer::new())?;
-    engine.unzip()?;
+    unzip(&config.epub_path)?;
 
     if config.delete {
         utils::remove_file_or_dir(&config.epub_path)?;
@@ -68,32 +53,51 @@ where
     Ok(())
 }
 
-struct ProgressDisplayer {
-    pb: ProgressBar,
-}
+fn unzip<T>(path: T) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    let path = path.as_ref();
 
-impl ProgressDisplayer {
-    fn new() -> Self {
-        Self {
-            pb: ProgressBar::new(0),
+    let output_directory = utils::file_stem(path)?;
+    if output_directory.exists() {
+        warn!("The output directory already exists and will be deleted");
+        utils::remove_file_or_dir(&output_directory)?;
+    }
+
+    let file = File::open(path)?;
+    let mut archive = ZipArchive::new(file)?;
+
+    for i in 0..archive.len() {
+        let mut file = archive.by_index(i)?;
+        let outpath = match file.enclosed_name() {
+            Some(path) => path.to_owned(),
+            None => continue,
+        };
+        let outpath = output_directory.join(outpath);
+
+        if (*file.name()).ends_with('/') {
+            fs::create_dir_all(&outpath)?;
+        } else {
+            if let Some(p) = outpath.parent() {
+                if !p.exists() {
+                    fs::create_dir_all(p)?;
+                }
+            }
+            let mut outfile = fs::File::create(&outpath)?;
+            io::copy(&mut file, &mut outfile)?;
+        }
+
+        #[cfg(unix)]
+        {
+            use std::fs::Permissions;
+            use std::os::unix::fs::PermissionsExt;
+
+            if let Some(mode) = file.unix_mode() {
+                fs::set_permissions(&outpath, Permissions::from_mode(mode))?;
+            }
         }
     }
-}
 
-impl UnzipProgressReporter for ProgressDisplayer {
-    fn extraction_starting(&self, display_name: &str) {
-        self.pb.set_message(format!("Extracting {}", display_name))
-    }
-
-    fn total_bytes_expected(&self, expected: u64) {
-        self.pb.set_length(expected);
-        self.pb.set_style(ProgressStyle::with_template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})\n{msg}")
-        .unwrap()
-        .with_key("eta", |state: &ProgressState, w: &mut dyn Write| write!(w, "{:.1}s", state.eta().as_secs_f64()).unwrap())
-        .progress_chars("#-"));
-    }
-
-    fn bytes_extracted(&self, count: u64) {
-        self.pb.inc(count)
-    }
+    Ok(())
 }
