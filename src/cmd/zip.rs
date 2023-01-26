@@ -26,7 +26,7 @@ pub struct Zip {
 
     #[arg(long, default_value_t = 6,
         value_parser = value_parser!(i32).range(0..=9),
-        help = LOCALES.lookup(&LANG_ID, "novel_id").expect("`novel_id` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "level").expect("`level` does not exists"))]
     pub level: i32,
 }
 
