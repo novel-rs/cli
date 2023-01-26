@@ -52,10 +52,18 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
+      # https://github.com/TheDoctor0/zip-release
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.0
+        with:
+          type: zip
+          filename: release.zip
+          path: target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+
       # https://github.com/svenstaro/upload-release-action
-      - name: Upload binaries to release
+      - name: Upload binary to release
         uses: svenstaro/upload-release-action@v2
         with:
-          file: target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
-          asset_name: novel-cli-${{ matrix.target }}
+          file: release.zip
+          asset_name: novel-cli-${{ matrix.target }}.zip
           overwrite: true
