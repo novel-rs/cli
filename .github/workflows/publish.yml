@@ -5,9 +5,6 @@ on:
     tags:
       - "*"
 
-permissions:
-  contents: read
-
 jobs:
   publish:
     strategy:
@@ -22,9 +19,6 @@ jobs:
             artifact_name: novel-cli.exe
           - os: macos-latest
             target: x86_64-apple-darwin
-            artifact_name: novel-cli
-          - os: macos-latest
-            target: aarch64-apple-darwin
             artifact_name: novel-cli
 
     name: Publish for ${{ matrix.os }}-${{ matrix.target }}
