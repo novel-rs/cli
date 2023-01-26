@@ -62,12 +62,13 @@ jobs:
         with:
           type: zip
           filename: release.zip
-          path: target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}
+          directory: target/${{ matrix.target }}/release
 
       # https://github.com/svenstaro/upload-release-action
       - name: Upload binary to release
         uses: svenstaro/upload-release-action@v2
         with:
-          file: release.zip
+          file: target/${{ matrix.target }}/release/release.zip
           asset_name: novel-cli-${{ matrix.target }}.zip
           overwrite: true
