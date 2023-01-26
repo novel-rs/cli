@@ -35,15 +35,15 @@ pub struct Search {
       help = LOCALES.lookup(&LANG_ID, "limit").expect("`limit` does not exists"))]
     pub limit: u8,
 
-    #[arg(long, value_enum, value_delimiter = ',',
+    #[arg(short, long, value_enum, value_delimiter = ',',
         help = LOCALES.lookup(&LANG_ID, "converts").expect("`converts` does not exists"))]
     pub converts: Vec<Convert>,
 
-    #[arg(short, long, default_value_t = false,
+    #[arg(long, default_value_t = false,
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").expect("`ignore_keyring` does not exists"))]
     pub ignore_keyring: bool,
 
-    #[arg(short, long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
+    #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
         help = LOCALES.lookup(&LANG_ID, "proxy").expect("`proxy` does not exists"))]
     pub proxy: Option<Url>,
 

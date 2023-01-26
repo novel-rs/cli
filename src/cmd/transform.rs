@@ -15,7 +15,7 @@ pub struct Transform {
     #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path").expect("`markdown_path` does not exists"))]
     pub markdown_path: PathBuf,
 
-    #[arg(long, value_enum, value_delimiter = ',',
+    #[arg(short, long, value_enum, value_delimiter = ',',
         help = LOCALES.lookup(&LANG_ID, "converts").expect("`converts` does not exists"))]
     pub converts: Vec<Convert>,
 
