@@ -1,7 +1,7 @@
 use ahash::AHashMap;
 use once_cell::sync::Lazy;
 
-pub static CONVERT_MAP: Lazy<AHashMap<char, char>> = Lazy::new(|| {
+pub(crate) static CONVERT_MAP: Lazy<AHashMap<char, char>> = Lazy::new(|| {
     AHashMap::from([
         ('＂', '"'),
         ('＃', '#'),
@@ -102,16 +102,10 @@ pub static CONVERT_MAP: Lazy<AHashMap<char, char>> = Lazy::new(|| {
     ])
 });
 
-#[must_use]
-#[inline]
-const fn range(c: char, min: char, max: char) -> bool {
-    c >= min && c <= max
-}
-
 // https://zh.wikipedia.org/wiki/%E4%B8%AD%E6%97%A5%E9%9F%93%E7%B5%B1%E4%B8%80%E8%A1%A8%E6%84%8F%E6%96%87%E5%AD%97
 #[must_use]
 #[inline]
-pub const fn is_cjk(c: char) -> bool {
+pub(crate) const fn is_cjk(c: char) -> bool {
     c == '\u{3007}'
         || range(c, '\u{3400}', '\u{4DBF}')
         || range(c, '\u{4E00}', '\u{9FFF}')
@@ -130,10 +124,16 @@ pub const fn is_cjk(c: char) -> bool {
         || range(c, '\u{030000}', '\u{03134A}')
 }
 
+#[must_use]
+#[inline]
+const fn range(c: char, min: char, max: char) -> bool {
+    c >= min && c <= max
+}
+
 // https://zh.wikipedia.org/wiki/%E6%A0%87%E7%82%B9%E7%AC%A6%E5%8F%B7
 #[must_use]
 #[inline]
-pub const fn is_chinese_punctuation(c: char) -> bool {
+pub(crate) const fn is_chinese_punctuation(c: char) -> bool {
     c =='。' || c =='？' || c =='！' ||
      c =='，' || c =='、' || c =='；' ||
      c =='：' || c =='“' || c =='”' ||
@@ -157,7 +157,7 @@ pub const fn is_chinese_punctuation(c: char) -> bool {
 // https://zh.wikipedia.org/wiki/%E6%A0%87%E7%82%B9%E7%AC%A6%E5%8F%B7
 #[must_use]
 #[inline]
-pub const fn is_english_punctuation(c: char) -> bool {
+pub(crate) const fn is_english_punctuation(c: char) -> bool {
     c == '.'
         || c == '?'
         || c == '!'
@@ -179,7 +179,9 @@ pub const fn is_english_punctuation(c: char) -> bool {
         || c == '/'
 }
 
-pub const fn is_punctuation(c: char) -> bool {
+#[must_use]
+#[inline]
+pub(crate) const fn is_punctuation(c: char) -> bool {
     is_chinese_punctuation(c) || is_english_punctuation(c)
 }
 

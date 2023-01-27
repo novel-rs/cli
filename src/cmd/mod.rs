@@ -18,18 +18,21 @@ use novel_api::Client;
 use strum::AsRefStr;
 use url::Url;
 
+#[must_use]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, AsRefStr)]
 pub enum Source {
     Sfacg,
     Ciweimao,
 }
 
+#[must_use]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Format {
     Pandoc,
     Mdbook,
 }
 
+#[must_use]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Convert {
     S2T,
@@ -38,6 +41,7 @@ pub enum Convert {
     CUSTOM,
 }
 
+#[must_use]
 fn default_cert_path() -> String {
     let mut home_path = novel_api::home_dir_path().unwrap();
     home_path.push(".mitmproxy");

@@ -25,6 +25,7 @@ use crate::{
     LANG_ID, LOCALES,
 };
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(about = LOCALES.lookup(&LANG_ID, "real_cugan_command").expect("`real_cugan_command` does not exists"))]
 pub struct RealCugan {
@@ -141,7 +142,9 @@ where
 // 4k: 3840*2160=   8294400
 // 2k: 2560*1440=   3686400
 // 1080p: 1920×1080=2073600
-fn calc_scale(width: u32, height: u32) -> u8 {
+#[must_use]
+#[inline]
+const fn calc_scale(width: u32, height: u32) -> u8 {
     let pixel = width * height;
     let n = (5120 * 2880 / pixel) as u8;
 

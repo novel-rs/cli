@@ -1,12 +1,16 @@
 use std::io::{self, Write};
 
 use anyhow::Result;
-use novel_api::{Client, Keyring};
+use novel_api::{Client, Keyring, UserInfo};
 use tracing::info;
 
 use crate::cmd::Source;
 
-pub(crate) async fn login<T>(client: &T, source: Source, ignore_keyring: bool) -> Result<()>
+pub(crate) async fn login<T>(
+    client: &T,
+    source: Source,
+    ignore_keyring: bool,
+) -> Result<Option<UserInfo>>
 where
     T: Client,
 {
@@ -24,6 +28,7 @@ where
 
             if password.is_ok() {
                 info!("Successfully obtained password from Keyring");
+
                 client.login(username, password.unwrap()).await?;
             } else {
                 info!("Unable to get password from keyring");
@@ -36,7 +41,7 @@ where
         }
     }
 
-    Ok(())
+    Ok(user_info)
 }
 
 fn get_username() -> Result<String> {

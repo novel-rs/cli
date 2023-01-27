@@ -19,6 +19,7 @@ use crate::{
     LANG_ID, LOCALES,
 };
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "download_command").expect("`download_command` does not exists"))]
@@ -88,8 +89,12 @@ async fn do_execute<T>(client: T, config: Download) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    utils::login(&client, config.source, config.ignore_keyring).await?;
-    let user_info = client.user_info().await?.unwrap();
+    let mut user_info = utils::login(&client, config.source, config.ignore_keyring).await?;
+    if user_info.is_none() {
+        user_info = client.user_info().await?;
+    }
+
+    let user_info = user_info.unwrap();
     print_login_msg(user_info);
 
     let mut handles = Vec::new();
@@ -185,7 +190,7 @@ where
 
                                 let image_content = client.image_info(&url).await?;
                                 let image = Image {
-                                    name: image_name,
+                                    file_name: image_name,
                                     content: image_content,
                                 };
 

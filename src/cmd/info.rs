@@ -1,6 +1,6 @@
 use std::{collections::HashMap, path::PathBuf};
 
-use anyhow::{bail, Result};
+use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, SfacgClient};
@@ -9,6 +9,7 @@ use url::Url;
 use crate::cmd::{Convert, Source};
 use crate::{utils, LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "info_command").expect("`info_command` does not exists"))]
@@ -74,11 +75,7 @@ where
         utils::login(&client, config.source, config.ignore_keyring).await?;
     }
 
-    let novel_info = client.novel_info(config.novel_id).await?;
-    if novel_info.is_none() {
-        bail!("The novel does not exist");
-    }
-    let novel_info = novel_info.unwrap();
+    let novel_info = utils::novel_info(&client, config.novel_id).await?;
 
     if let Some(ref url) = novel_info.cover_url {
         let image_info = client.image_info(url).await?;

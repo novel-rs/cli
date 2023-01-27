@@ -8,6 +8,7 @@ use url::Url;
 
 use crate::{LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(about = LOCALES.lookup(&LANG_ID, "update_command").expect("`update_command` does not exists"))]
 pub struct Update {

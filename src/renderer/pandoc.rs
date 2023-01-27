@@ -14,7 +14,7 @@ use crate::{
     utils::{self, Content, MetaData, Novel},
 };
 
-pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
+pub(crate) async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
     let mut timing = Timing::new();
 
     let path = to_markdown_file_name(&novel.name);
@@ -124,7 +124,7 @@ where
                             buf.write_str("\n\n")?;
                         }
                         Content::Image(image) => {
-                            let image_path = image_path.join(&image.name);
+                            let image_path = image_path.join(&image.file_name);
                             let image_path = pathdiff::diff_paths(image_path, &base_path).unwrap();
 
                             buf.write_str(&super::image_markdown_str(image_path))?;
@@ -148,7 +148,7 @@ async fn save_image(novel: Novel) -> Result<Vec<JoinHandle<Result<()>>>> {
         for chapter in volume.chapters {
             for index in 0..chapter.contents.read().await.len() {
                 if let Content::Image(ref image) = chapter.contents.read().await[index] {
-                    let path = image_path.join(&image.name);
+                    let path = image_path.join(&image.file_name);
 
                     let contents = Arc::clone(&chapter.contents);
                     handles.push(task::spawn_blocking(move || {

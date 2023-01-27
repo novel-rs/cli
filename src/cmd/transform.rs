@@ -8,6 +8,7 @@ use rayon::prelude::*;
 
 use crate::{cmd::Convert, utils, LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "transform_command").expect("`transform_command` does not exists"))]

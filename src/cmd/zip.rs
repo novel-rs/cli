@@ -13,6 +13,7 @@ use zip::{write::FileOptions, CompressionMethod, ZipWriter};
 
 use crate::{utils, LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "zip_command").expect("`zip_command` does not exists"))]

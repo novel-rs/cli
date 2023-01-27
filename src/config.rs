@@ -10,22 +10,24 @@ use crate::{
     LANG_ID, LOCALES,
 };
 
+#[must_use]
 #[derive(Debug, Parser)]
 #[command(author, version, about = about_msg(), long_about = None, propagate_version = true)]
 pub struct Config {
     #[command(subcommand)]
     pub command: Commands,
 
-    #[arg(long, short, action = ArgAction::Count, global = true, default_value_t = 0,
+    #[arg(short, long, action = ArgAction::Count, global = true, default_value_t = 0,
         value_parser = value_parser!(u8).range(0..=4),
         help = LOCALES.lookup(&LANG_ID, "verbose").expect("`verbose` does not exists"))]
     pub verbose: u8,
 
-    #[arg(long, short, global = true, conflicts_with = "verbose", default_value_t = false,
+    #[arg(short, long, global = true, conflicts_with = "verbose", default_value_t = false,
         help = LOCALES.lookup(&LANG_ID, "quiet").expect("`quiet` does not exists"))]
     pub quiet: bool,
 }
 
+#[must_use]
 #[derive(Debug, Subcommand)]
 pub enum Commands {
     Download(Download),
@@ -42,7 +44,9 @@ pub enum Commands {
     Completions(Completions),
 }
 
-fn about_msg() -> &'static str {
+#[must_use]
+#[inline]
+const fn about_msg() -> &'static str {
     concat!(
         crate_name!(),
         " ",

@@ -1,6 +1,6 @@
 use std::io;
 
-use anyhow::{bail, Result};
+use anyhow::{ensure, Result};
 use comfy_table::{
     modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL, Cell, CellAlignment, ContentArrangement,
     Table,
@@ -17,9 +17,7 @@ where
     T: Client,
 {
     let novel_info = client.novel_info(novel_id).await?;
-    if novel_info.is_none() {
-        bail!("The novel does not exist");
-    }
+    ensure!(novel_info.is_some(), "The novel does not exist");
 
     Ok(novel_info.unwrap())
 }
@@ -234,6 +232,7 @@ pub(crate) fn print_novel_infos(
     Ok(())
 }
 
+#[must_use]
 fn try_get_introduction(novel_info: &NovelInfo) -> String {
     if novel_info.introduction.is_some() {
         novel_info.introduction.as_ref().unwrap().join("\n")
@@ -242,6 +241,7 @@ fn try_get_introduction(novel_info: &NovelInfo) -> String {
     }
 }
 
+#[must_use]
 fn try_get_word_count(novel_info: &NovelInfo) -> String {
     if novel_info.word_count.is_some() {
         let word_count = novel_info.word_count.as_ref().unwrap();
@@ -256,6 +256,7 @@ fn try_get_word_count(novel_info: &NovelInfo) -> String {
     }
 }
 
+#[must_use]
 fn try_get_finished(novel_info: &NovelInfo) -> String {
     if novel_info.finished.is_some() {
         if novel_info.finished.unwrap() {
@@ -268,6 +269,7 @@ fn try_get_finished(novel_info: &NovelInfo) -> String {
     }
 }
 
+#[must_use]
 fn try_get_create_time(novel_info: &NovelInfo) -> String {
     if novel_info.create_time.is_some() {
         novel_info.create_time.as_ref().unwrap().to_string()
@@ -276,6 +278,7 @@ fn try_get_create_time(novel_info: &NovelInfo) -> String {
     }
 }
 
+#[must_use]
 fn try_get_update_time(novel_info: &NovelInfo) -> String {
     if novel_info.update_time.is_some() {
         novel_info.update_time.as_ref().unwrap().to_string()
@@ -284,6 +287,7 @@ fn try_get_update_time(novel_info: &NovelInfo) -> String {
     }
 }
 
+#[must_use]
 fn try_get_genre(novel_info: &NovelInfo) -> String {
     if novel_info.genre.is_some() {
         novel_info.genre.as_ref().unwrap().to_string()
@@ -292,6 +296,7 @@ fn try_get_genre(novel_info: &NovelInfo) -> String {
     }
 }
 
+#[must_use]
 fn try_get_tags(novel_info: &NovelInfo) -> String {
     if novel_info.tags.is_some() {
         novel_info

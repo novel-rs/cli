@@ -5,11 +5,13 @@ use anyhow::{ensure, Result};
 use clap::Args;
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
+use parking_lot::RwLock;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
 use rayon::prelude::*;
 
 use crate::{utils, LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "check_command").expect("`check_command` does not exists"))]
@@ -32,16 +34,17 @@ pub fn execute(config: Check) -> Result<()> {
     let parser = Parser::new_ext(markdown, options);
 
     let events = parser.into_offset_iter().collect::<Vec<(_, _)>>();
-    let set = parking_lot::RwLock::new(AHashSet::new());
+    let char_set = RwLock::new(AHashSet::new());
 
+    // TODO 检查图片是否存在
     events.into_par_iter().for_each(|(event, range)| {
         if let Event::Start(Tag::Heading(heading_level, _, _)) = &event {
             let title = markdown[range].trim_start_matches('#').trim();
 
             if *heading_level == HeadingLevel::H1 && !check_volume_title(title) {
-                println!("{} Irregular volume title format: {}", emoji(), title);
+                println!("{} Irregular volume title format: {title}", emoji());
             } else if *heading_level == HeadingLevel::H2 && !check_chapter_title(title) {
-                println!("{} Irregular chapter title format: {}", emoji(), title);
+                println!("{} Irregular chapter title format: {title}", emoji());
             }
         } else if let Event::Text(text) = &event {
             for c in text.chars() {
@@ -50,10 +53,10 @@ pub fn execute(config: Check) -> Result<()> {
                     && !c.is_ascii_alphanumeric()
                     && c != ' '
                 {
-                    if set.read().contains(&c) {
+                    if char_set.read().contains(&c) {
                         continue;
                     } else {
-                        set.write().insert(c);
+                        char_set.write().insert(c);
                         println!(
                             "{} Irregular char: {}, at {}",
                             emoji(),
@@ -69,6 +72,7 @@ pub fn execute(config: Check) -> Result<()> {
     Ok(())
 }
 
+#[must_use]
 fn emoji() -> String {
     let emoji = Emoji("⚠️", ">").to_string();
     let emoji = console::pad_str(&emoji, 2, Alignment::Left, None);
@@ -82,6 +86,7 @@ macro_rules! regex {
     }};
 }
 
+#[must_use]
 fn check_chapter_title<T>(title: T) -> bool
 where
     T: AsRef<str>,
@@ -90,6 +95,7 @@ where
     regex.is_match(title.as_ref())
 }
 
+#[must_use]
 fn check_volume_title<T>(title: T) -> bool
 where
     T: AsRef<str>,

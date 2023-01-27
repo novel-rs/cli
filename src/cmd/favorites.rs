@@ -1,6 +1,6 @@
 use std::{collections::HashMap, path::PathBuf};
 
-use anyhow::{bail, Result};
+use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, SfacgClient};
@@ -9,6 +9,7 @@ use url::Url;
 use crate::cmd::{Convert, Source};
 use crate::{utils, LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(about = LOCALES.lookup(&LANG_ID, "favorites_command").expect("`favorites_command` does not exists"))]
 pub struct Favorites {
@@ -71,13 +72,7 @@ where
 
     let mut novel_infos = Vec::new();
     for novel_id in novel_ids {
-        let novel_info = client.novel_info(novel_id).await?;
-        if novel_info.is_none() {
-            bail!("The novel does not exist");
-        }
-        let novel_info = novel_info.unwrap();
-
-        novel_infos.push(novel_info);
+        novel_infos.push(utils::novel_info(&client, novel_id).await?);
     }
 
     utils::print_novel_infos(novel_infos, &config.converts)?;

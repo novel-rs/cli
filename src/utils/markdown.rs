@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::utils;
 
+#[must_use]
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub(crate) struct MetaData {

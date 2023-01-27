@@ -37,6 +37,7 @@ where
     Ok(file_stem)
 }
 
+#[must_use]
 pub(crate) fn is_markdown<T>(path: T) -> bool
 where
     T: AsRef<Path>,
@@ -45,6 +46,7 @@ where
     path.is_file() && novel_api::is_some_and(path.extension(), |ext| ext == "md")
 }
 
+#[must_use]
 pub(crate) fn num_to_str(num: u16) -> String {
     if num < 10 {
         format!("00{num}")

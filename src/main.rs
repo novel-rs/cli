@@ -27,10 +27,10 @@ async fn main() -> Result<()> {
 
     init_log(&config)?;
 
-    debug!("{:#?}", config);
+    debug!("{config:#?}");
 
     debug!("{:#?}", sys_locale::get_locale());
-    debug!("{:#?}", LANG_ID);
+    debug!("{LANG_ID:#?}");
 
     match config.command {
         Commands::Download(config) => download::execute(config).await?,

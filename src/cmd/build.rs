@@ -11,6 +11,7 @@ use tracing::{info, warn};
 
 use crate::{utils, LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "build_command").expect("`build_command` does not exists"))]
@@ -92,9 +93,6 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
     mdbook.build()?;
 
     if config.delete {
-        info!("{}", book_path.display());
-        info!("{}", config.build_path.display());
-
         let mut options = CopyOptions::new();
         options.copy_inside = true;
         options.content_only = true;

@@ -12,6 +12,7 @@ use crate::{
     utils, LANG_ID, LOCALES,
 };
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "search_command").expect("`search_command` does not exists"))]
@@ -125,10 +126,12 @@ where
     Ok(())
 }
 
+#[must_use]
 fn meet_criteria(novel_info: &NovelInfo, config: &Search) -> bool {
     meet_word_count_criteria(novel_info, config) && meet_tags_criteria(novel_info, config)
 }
 
+#[must_use]
 fn meet_word_count_criteria(novel_info: &NovelInfo, config: &Search) -> bool {
     if let Some(min_word_count) = config.min_word_count {
         if let Some(word_count) = novel_info.word_count {
@@ -139,6 +142,7 @@ fn meet_word_count_criteria(novel_info: &NovelInfo, config: &Search) -> bool {
     true
 }
 
+#[must_use]
 fn meet_tags_criteria(novel_info: &NovelInfo, config: &Search) -> bool {
     if let Some(ref config_tags) = config.tags {
         if novel_info.tags.is_some() {

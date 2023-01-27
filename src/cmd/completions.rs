@@ -7,6 +7,7 @@ use fluent_templates::Loader;
 
 use crate::{config::Config, LANG_ID, LOCALES};
 
+#[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "completions_command").expect("`completions_command` does not exists"))]
