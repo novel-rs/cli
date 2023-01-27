@@ -21,7 +21,9 @@ use url::Url;
 #[must_use]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, AsRefStr)]
 pub enum Source {
+    #[strum(serialize = "sfacg")]
     Sfacg,
+    #[strum(serialize = "ciweimao")]
     Ciweimao,
 }
 
