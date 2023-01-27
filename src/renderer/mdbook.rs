@@ -85,7 +85,7 @@ where
             title: novel.name.clone(),
             description: novel.introduction.clone().map(|v| v.join("\n")),
             authors: vec![novel.author_name.clone()],
-            language: super::lang(convert),
+            language: utils::lang(convert),
         },
         output: Output {
             html: Html {

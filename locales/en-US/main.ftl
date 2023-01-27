@@ -36,7 +36,7 @@ quiet=Do not print log messages [default: false]
 source=Specify the source of the novel
 image_path=The path of the image to run realcugan-ncnn-vulkan, if not specified, it is the current directory
 
-login_msg={$emoji} Login successful, nick name: {$name}
+login_msg={$emoji} Login successful, nickname: {$name}
 start_msg={$emoji} Start downloading novel: {$name}
 download_complete_msg={$emoji} Novel download complete
 build_complete_msg={$emoji} Novel build complete

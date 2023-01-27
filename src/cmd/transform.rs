@@ -49,6 +49,7 @@ pub fn execute(config: Transform) -> Result<()> {
             &config.converts,
         )?);
     }
+    meta_data.lang = utils::lang(&config.converts);
 
     let mut buf = String::with_capacity(markdown.len() + 1024);
     buf.push_str("---\n");

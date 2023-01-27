@@ -24,6 +24,8 @@ use std::{
 use anyhow::{anyhow, bail, Result};
 use tracing::warn;
 
+use crate::cmd::Convert;
+
 pub(crate) fn file_stem<T>(path: T) -> Result<PathBuf>
 where
     T: AsRef<Path>,
@@ -90,4 +92,13 @@ where
     }
 
     Ok(())
+}
+
+#[must_use]
+pub(crate) fn lang(convert: &[Convert]) -> String {
+    if convert.contains(&Convert::S2T) {
+        String::from("zh-Hant")
+    } else {
+        String::from("zh-Hans")
+    }
 }

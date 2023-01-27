@@ -76,7 +76,7 @@ where
     let meta_data = MetaData {
         title: novel.name.clone(),
         author: novel.author_name.clone(),
-        lang: super::lang(convert),
+        lang: utils::lang(convert),
         description,
         cover_image,
     };
