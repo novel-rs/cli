@@ -22,6 +22,7 @@ use std::{
 };
 
 use anyhow::{anyhow, bail, Result};
+use image::{ColorType, DynamicImage};
 use tracing::warn;
 
 use crate::cmd::Convert;
@@ -100,5 +101,13 @@ pub(crate) fn lang(convert: &[Convert]) -> String {
         String::from("zh-Hant")
     } else {
         String::from("zh-Hans")
+    }
+}
+
+#[must_use]
+pub(crate) fn image_ext(image: &DynamicImage) -> String {
+    match image.color() {
+        ColorType::Rgb8 | ColorType::Rgba8 => String::from("webp"),
+        _ => String::from("png"),
     }
 }

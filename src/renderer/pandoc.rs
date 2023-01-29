@@ -1,6 +1,6 @@
 use std::{env, fmt, path::PathBuf, sync::Arc};
 
-use anyhow::{Ok, Result};
+use anyhow::Result;
 use novel_api::Timing;
 use once_cell::sync::OnceCell;
 use tokio::{
@@ -67,7 +67,10 @@ where
     let mut cover_image = None;
     if novel.cover_image.read().await.is_some() {
         let base_path = env::current_dir()?;
-        let path = base_path.join("images").join("cover.webp");
+        let path = base_path.join("images").join(format!(
+            "cover.{}",
+            utils::image_ext(novel.cover_image.read().await.as_ref().unwrap())
+        ));
         let path = pathdiff::diff_paths(path, base_path).unwrap();
 
         cover_image = Some(path);
@@ -164,10 +167,13 @@ async fn save_image(novel: Novel) -> Result<Vec<JoinHandle<Result<()>>>> {
     }
 
     if novel.cover_image.read().await.is_some() {
-        let path = image_path.join("cover.webp");
-
         let cover_image = Arc::clone(&novel.cover_image);
+
         handles.push(task::spawn_blocking(move || {
+            let path = image_path.join(format!(
+                "cover.{}",
+                utils::image_ext(cover_image.blocking_read().as_ref().unwrap())
+            ));
             cover_image.blocking_read().as_ref().unwrap().save(path)?;
             Ok(())
         }));

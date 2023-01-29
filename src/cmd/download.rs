@@ -1,6 +1,6 @@
 use std::{collections::HashMap, path::PathBuf, sync::Arc};
 
-use anyhow::{Ok, Result};
+use anyhow::Result;
 use clap::{value_parser, Args};
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
@@ -181,21 +181,26 @@ where
                             ContentInfo::Text(text) => {
                                 contents.write().await.push(Content::Text(text))
                             }
-                            ContentInfo::Image(url) => {
-                                let image_name = format!(
-                                    "{}.webp",
-                                    utils::num_to_str(*image_count.read().await)
-                                );
-                                *image_count.write().await += 1;
+                            ContentInfo::Image(url) => match client.image_info(&url).await {
+                                Ok(image) => {
+                                    let image_name = format!(
+                                        "{}.{}",
+                                        utils::num_to_str(*image_count.read().await),
+                                        utils::image_ext(&image)
+                                    );
+                                    *image_count.write().await += 1;
 
-                                let image_content = client.image_info(&url).await?;
-                                let image = Image {
-                                    file_name: image_name,
-                                    content: image_content,
-                                };
+                                    let image = Image {
+                                        file_name: image_name,
+                                        content: image,
+                                    };
 
-                                contents.write().await.push(Content::Image(image));
-                            }
+                                    contents.write().await.push(Content::Image(image));
+                                }
+                                Err(error) => {
+                                    warn!("{error}");
+                                }
+                            },
                         }
                     }
 
@@ -229,8 +234,13 @@ where
     let cover_image = Arc::clone(&novel.cover_image);
 
     Ok(tokio::spawn(async move {
-        let image = client.image_info(&url).await?;
-        *cover_image.write().await = Some(image);
+        match client.image_info(&url).await {
+            Ok(image) => *cover_image.write().await = Some(image),
+            Err(error) => {
+                warn!("{error}");
+            }
+        };
+
         Ok(())
     }))
 }

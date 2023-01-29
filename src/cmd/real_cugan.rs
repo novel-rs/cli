@@ -52,7 +52,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
         let scale = calc_scale(image.width(), image.height());
 
         let mut output_path = input_path.clone();
-        output_path.set_extension("webp");
+        output_path.set_extension(utils::image_ext(&image));
 
         if input_path != output_path {
             to_remove.push(input_path.clone());

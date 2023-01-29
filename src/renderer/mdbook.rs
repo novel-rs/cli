@@ -294,10 +294,15 @@ where
     }
 
     if novel.cover_image.read().await.is_some() {
-        let path = image_path.join("cover.webp");
-
         let cover_image = Arc::clone(&novel.cover_image);
+        let image_path = image_path.clone();
+
         handles.push(task::spawn_blocking(move || {
+            let path = image_path.join(format!(
+                "cover.{}",
+                utils::image_ext(cover_image.blocking_read().as_ref().unwrap())
+            ));
+
             cover_image.blocking_read().as_ref().unwrap().save(path)?;
             Ok(())
         }));

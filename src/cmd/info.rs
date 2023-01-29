@@ -4,6 +4,7 @@ use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, SfacgClient};
+use tracing::warn;
 use url::Url;
 
 use crate::cmd::{Convert, Source};
@@ -78,8 +79,10 @@ where
     let novel_info = utils::novel_info(&client, config.novel_id).await?;
 
     if let Some(ref url) = novel_info.cover_url {
-        let image_info = client.image_info(url).await?;
-        utils::print_novel_info(Some(image_info), novel_info, &config.converts)?;
+        match client.image_info(url).await {
+            Ok(image) => utils::print_novel_info(Some(image), novel_info, &config.converts)?,
+            Err(error) => warn!("{error}"),
+        }
     } else {
         utils::print_novel_info(None, novel_info, &config.converts)?;
     }
