@@ -23,11 +23,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # https://doc.rust-lang.org/rustc/platform-support.html
           - os: ubuntu-latest
-          - os: macos-latest
+            target: x86_64-unknown-linux-gnu
           - os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
 
-    name: Build for ${{ matrix.os }}
+    name: Build for ${{ matrix.os }}-${{ matrix.target }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -44,11 +50,16 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
+          targets: ${{ matrix.target }}
 
       # https://github.com/ilammy/setup-nasm
       - name: Install NASM
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/setup-nasm@v1
 
+      - name: Run cargo build
+        run: cargo build --workspace --all-targets --target ${{ matrix.target }}
+
       - name: Run cargo test
-        run: cargo test --workspace --all-targets
+        if: ${{ startsWith(matrix.target, 'x86_64') }}
+        run: cargo test --workspace --all-targets --target ${{ matrix.target }}
