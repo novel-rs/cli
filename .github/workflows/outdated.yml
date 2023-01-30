@@ -13,9 +13,6 @@ on:
       - main
     paths-ignore:
       - "**.md"
-  schedule:
-    # every day
-    - cron: "0 0 * * *"
 
 permissions:
   contents: read
