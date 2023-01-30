@@ -65,21 +65,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "250f629c0161ad8107cf89319e990051fae62832fd343083bea452d93e2205fd"
 
 [[package]]
-name = "alloc-no-stdlib"
-version = "2.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc7bb162ec39d46ab1ca8c77bf72e890535becd1751bb45f64c597edb4c8c6b3"
-
-[[package]]
-name = "alloc-stdlib"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94fb8275041c72129eb51b7d0322c29b8387a0386127718b096429201a5d6ece"
-dependencies = [
- "alloc-no-stdlib",
-]
-
-[[package]]
 name = "android_system_properties"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -129,7 +114,6 @@ version = "0.3.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "942c7cd7ae39e91bde4820d74132e9862e62c2f386c3aa90ccf55949f5bad63a"
 dependencies = [
- "brotli",
  "flate2",
  "futures-core",
  "memchr",
@@ -361,27 +345,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "brotli"
-version = "3.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1a0b1dbcc8ae29329621f8d4f0d835787c1c38bb1401979b49d13b0b305ff68"
-dependencies = [
- "alloc-no-stdlib",
- "alloc-stdlib",
- "brotli-decompressor",
-]
-
-[[package]]
-name = "brotli-decompressor"
-version = "2.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b6561fd3f895a11e8f72af2cb7d22e08366bebc2b6b57f7744c4bda27034744"
-dependencies = [
- "alloc-no-stdlib",
- "alloc-stdlib",
-]
-
-[[package]]
 name = "bstr"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -593,18 +556,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c278839b831783b70278b14df4d45e1beb1aad306c07bb796637de9a0e323e8e"
 dependencies = [
  "crossbeam-utils",
-]
-
-[[package]]
-name = "confy"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e37668cb35145dcfaa1931a5f37fde375eeae8068b4c0d2f289da28a270b2d2c"
-dependencies = [
- "directories",
- "serde",
- "thiserror",
- "toml 0.5.11",
 ]
 
 [[package]]
@@ -2329,16 +2280,15 @@ dependencies = [
 [[package]]
 name = "novel-api"
 version = "0.3.0"
-source = "git+https://github.com/novel-rs/api#e886a995344d285d36f6280b8925b1c08739286b"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29b1c6973581f5f56091cf2cfaa21448e74bee8919d81307830e36b053d57dcb"
 dependencies = [
  "ahash 0.8.3",
- "anyhow",
  "async-compression",
  "async-trait",
  "base64-simd",
  "boring",
  "chrono",
- "confy",
  "cookie_store 0.19.0",
  "directories",
  "hex-simd",
@@ -2361,6 +2311,7 @@ dependencies = [
  "simdutf8",
  "thiserror",
  "tokio",
+ "toml 0.7.0",
  "tracing",
  "url",
  "uuid",
@@ -2562,9 +2513,9 @@ dependencies = [
 
 [[package]]
 name = "opencc-sys"
-version = "0.1.5+1.1.6"
+version = "0.1.6+1.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "041dcfdb763c4a24ff1908d5d988348c34f16880c2181baaa226869183f86c1b"
+checksum = "209d52d4a9d6aae6378ef4f8438787062a82d87b089d0e651c705ff06b79e787"
 dependencies = [
  "bindgen 0.63.0",
  "cmake",
@@ -2574,9 +2525,9 @@ dependencies = [
 
 [[package]]
 name = "opener"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb5aec1b5ae1cc1714a2638def57cd3b9187d61779b2fecdbe833938b192120a"
+checksum = "293c15678e37254c15bd2f092314abb4e51d7fdde05c2021279c12631b54f005"
 dependencies = [
  "bstr",
  "winapi",
@@ -3727,6 +3678,9 @@ name = "semver"
 version = "1.0.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "58bc9567378fc7690d6b2addae4e60ac2eeea07becb2c64b9f218b53865cba2a"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "serde"
@@ -4359,9 +4313,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.24.2"
+version = "1.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "597a12a59981d9e3c38d216785b0c37399f6e415e8d0712047620f189371b0bb"
+checksum = "c8e00990ebabbe4c14c08aca901caed183ecd5c09562a12c824bb53d3c3fd3af"
 dependencies = [
  "autocfg",
  "bytes",

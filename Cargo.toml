@@ -16,14 +16,14 @@ categories = ["command-line-utilities"]
 # https://github.com/novel-rs/opencc-rs
 opencc-rs = "0.2.0"
 # https://github.com/novel-rs/api
-novel-api = { git = "https://github.com/novel-rs/api" }
+novel-api = "0.3.0"
 
 # https://github.com/dtolnay/anyhow
 anyhow = "1.0.68"
 # https://github.com/serde-rs/serde
 serde = { version = "1.0.152", features = ["derive"] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.24.2", features = [
+tokio = { version = "1.25.0", features = [
   "macros",
   "io-std",
   "fs",
@@ -100,7 +100,7 @@ fs_extra = "1.2.0"
 # https://github.com/Byron/trash-rs
 trash = "3.0.0"
 # https://github.com/Seeker14491/opener
-opener = "0.5.1"
+opener = "0.5.2"
 # https://github.com/dtolnay/serde-yaml
 serde_yaml = "0.9.17"
 # https://github.com/toml-rs/toml
