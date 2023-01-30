@@ -11,17 +11,17 @@ use crate::{cmd::Convert, utils, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "transform_command").expect("`transform_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "transform_command").unwrap())]
 pub struct Transform {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path").expect("`markdown_path` does not exists"))]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path").unwrap())]
     pub markdown_path: PathBuf,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").expect("`converts` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
     pub converts: Vec<Convert>,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "delete").expect("`delete` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
     pub delete: bool,
 }
 

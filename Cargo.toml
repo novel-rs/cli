@@ -98,7 +98,7 @@ walkdir = "2.3.2"
 # https://github.com/webdesus/fs_extra
 fs_extra = "1.2.0"
 # https://github.com/Byron/trash-rs
-trash = "3.0.0"
+trash = "3.0.1"
 # https://github.com/Seeker14491/opener
 opener = "0.5.2"
 # https://github.com/dtolnay/serde-yaml

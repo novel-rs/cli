@@ -15,13 +15,13 @@ use crate::{utils, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "unzip_command").expect("`unzip_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "unzip_command").unwrap())]
 pub struct Unzip {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "epub_path").expect("`epub_path` does not exists"))]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "epub_path").unwrap())]
     pub epub_path: PathBuf,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "delete").expect("`delete` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
     pub delete: bool,
 }
 

@@ -15,41 +15,41 @@ use crate::{
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "search_command").expect("`search_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "search_command").unwrap())]
 pub struct Search {
     #[arg(short, long,
-        help = LOCALES.lookup(&LANG_ID, "source").expect("`source` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
     pub source: Source,
 
-    #[arg(help = LOCALES.lookup(&LANG_ID, "keywords").expect("`keywords` does not exists"))]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "keywords").unwrap())]
     pub keyword: String,
 
     #[arg(short, long,
-        help = LOCALES.lookup(&LANG_ID, "min_word_count").expect("`min_word_count` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "min_word_count").unwrap())]
     pub min_word_count: Option<u32>,
 
     #[arg(short, long, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "tags").expect("`tags` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "tags").unwrap())]
     pub tags: Option<Vec<String>>,
 
     #[arg(long, default_value_t = 12,
-      help = LOCALES.lookup(&LANG_ID, "limit").expect("`limit` does not exists"))]
+      help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
     pub limit: u8,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").expect("`converts` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
     pub converts: Vec<Convert>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").expect("`ignore_keyring` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
-        help = LOCALES.lookup(&LANG_ID, "proxy").expect("`proxy` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "no_proxy").expect("`no_proxy` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "no_proxy").unwrap())]
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
@@ -60,7 +60,7 @@ pub struct Search {
                 map
             };
 
-            LOCALES.lookup_with_args(&LANG_ID, "cert", &args).expect("`cert` does not exists")
+            LOCALES.lookup_with_args(&LANG_ID, "cert", &args).unwrap()
         })]
     pub cert: Option<PathBuf>,
 }

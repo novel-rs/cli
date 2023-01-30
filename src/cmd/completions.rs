@@ -10,10 +10,10 @@ use crate::{config::Config, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "completions_command").expect("`completions_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "completions_command").unwrap())]
 pub struct Completions {
     #[arg(value_enum,
-        help = LOCALES.lookup(&LANG_ID, "shell").expect("`shell` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "shell").unwrap())]
     pub shell: Shell,
 }
 

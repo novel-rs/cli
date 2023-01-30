@@ -15,7 +15,10 @@ static_loader! {
 }
 
 pub static LANG_ID: Lazy<LanguageIdentifier> = Lazy::new(|| {
-    let locale = sys_locale::get_locale().unwrap_or_else(|| String::from("en-US"));
+    let locale = sys_locale::get_locale().unwrap_or_else(|| {
+        eprintln!("Failed to get active locale for the system, use `en-US`");
+        String::from("en-US")
+    });
 
     match locale.parse::<LanguageIdentifier>() {
         Ok(lang_id) => lang_id,

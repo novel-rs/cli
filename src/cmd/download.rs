@@ -2,9 +2,8 @@ use std::{collections::HashMap, path::PathBuf, sync::Arc};
 
 use anyhow::Result;
 use clap::{value_parser, Args};
-use console::{Alignment, Emoji};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, UserInfo, VolumeInfos};
+use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, VolumeInfos};
 use tokio::{
     sync::{RwLock, Semaphore},
     task::JoinHandle,
@@ -22,37 +21,37 @@ use crate::{
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "download_command").expect("`download_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "download_command").unwrap())]
 pub struct Download {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "novel_id").expect("`novel_id` does not exists"))]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "novel_id").unwrap())]
     pub novel_id: u32,
 
     #[arg(short, long,
-        help = LOCALES.lookup(&LANG_ID, "source").expect("`source` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
     pub source: Source,
 
     #[arg(short, long, value_enum,
-        help = LOCALES.lookup(&LANG_ID, "format").expect("`format` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "format").unwrap())]
     pub format: Format,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").expect("`converts` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
     pub converts: Vec<Convert>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").expect("`ignore_keyring` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
     #[arg(short, long, default_value_t = 4, value_parser = value_parser!(u8).range(1..=16),
-        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").expect("`maximum_concurrency` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
     pub maximum_concurrency: u8,
 
     #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
-        help = LOCALES.lookup(&LANG_ID, "proxy").expect("`proxy` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "no_proxy").expect("`no_proxy` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "no_proxy").unwrap())]
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
@@ -63,7 +62,7 @@ pub struct Download {
                 map
             };
 
-            LOCALES.lookup_with_args(&LANG_ID, "cert", &args).expect("`cert` does not exists")
+            LOCALES.lookup_with_args(&LANG_ID, "cert", &args).unwrap()
         })]
     pub cert: Option<PathBuf>,
 }
@@ -95,7 +94,10 @@ where
     }
 
     let user_info = user_info.unwrap();
-    print_login_msg(user_info);
+    println!(
+        "{}",
+        utils::locales_with_arg("login_msg", "✨", user_info.nickname)
+    );
 
     let mut handles = Vec::new();
     let mut novel = download_novel(client, &config, &mut handles).await?;
@@ -104,7 +106,7 @@ where
         handle.await??;
     }
 
-    print_completed_msg();
+    println!("{}", utils::locales("download_complete_msg", "✔️"));
 
     utils::convert(&mut novel, &config.converts).await?;
 
@@ -139,7 +141,10 @@ where
         handles.push(cover_image(&client, novel_info.cover_url.unwrap(), &novel)?);
     }
 
-    print_start_msg(&novel.name);
+    println!(
+        "{}",
+        utils::locales_with_arg("start_msg", "🚚", &novel.name)
+    );
     let volume_infos = client.volume_infos(config.novel_id).await?;
 
     let pb = Arc::new(parking_lot::RwLock::new(ProgressBar::new(
@@ -157,8 +162,8 @@ where
         };
 
         for chapter_info in volume_info.chapter_infos {
-            if novel_api::is_some_and(chapter_info.accessible, |x| x)
-                && novel_api::is_some_and(chapter_info.is_valid, |x| x)
+            if !novel_api::is_some_and(chapter_info.accessible, |x| !x)
+                && !novel_api::is_some_and(chapter_info.is_valid, |x| !x)
             {
                 let chapter = Chapter {
                     title: chapter_info.title.clone(),
@@ -251,8 +256,8 @@ fn chapter_count(volume_infos: &VolumeInfos) -> u16 {
 
     for volume_info in volume_infos {
         for chapter_info in &volume_info.chapter_infos {
-            if novel_api::is_some_and(chapter_info.accessible, |x| x)
-                && novel_api::is_some_and(chapter_info.is_valid, |x| x)
+            if !novel_api::is_some_and(chapter_info.accessible, |x| !x)
+                && !novel_api::is_some_and(chapter_info.is_valid, |x| !x)
             {
                 count += 1;
             }
@@ -260,63 +265,4 @@ fn chapter_count(volume_infos: &VolumeInfos) -> u16 {
     }
 
     count
-}
-
-fn print_login_msg(user_info: UserInfo) {
-    let args = {
-        let emoji = Emoji("✨", ">").to_string();
-        let emoji = console::pad_str(&emoji, 2, Alignment::Left, None);
-
-        let mut map = HashMap::new();
-        map.insert(String::from("emoji"), emoji.to_string().into());
-        map.insert(String::from("name"), user_info.nickname.into());
-        map
-    };
-
-    println!(
-        "{}",
-        LOCALES
-            .lookup_with_args(&LANG_ID, "login_msg", &args)
-            .expect("`login_msg` does not exists")
-    );
-}
-
-fn print_start_msg<T>(novel_name: T)
-where
-    T: AsRef<str>,
-{
-    let args = {
-        let emoji = Emoji("🚚", ">").to_string();
-        let emoji = console::pad_str(&emoji, 2, Alignment::Left, None);
-
-        let mut map = HashMap::new();
-        map.insert(String::from("emoji"), emoji.to_string().into());
-        map.insert(String::from("name"), novel_name.as_ref().into());
-        map
-    };
-
-    println!(
-        "{}",
-        LOCALES
-            .lookup_with_args(&LANG_ID, "start_msg", &args)
-            .expect("`start_msg` does not exists")
-    );
-}
-
-fn print_completed_msg() {
-    let args = {
-        let emoji = Emoji("✔️", ">").to_string();
-        let emoji = console::pad_str(&emoji, 2, Alignment::Left, None);
-
-        let mut map = HashMap::new();
-        map.insert(String::from("emoji"), emoji.to_string().into());
-        map
-    };
-
-    println!(
-        "{}",
-        LOCALES
-            .lookup_with_args(&LANG_ID, "download_complete_msg", &args)
-            .expect("`download_complete_msg` does not exists")
-    );
 }

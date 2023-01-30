@@ -17,15 +17,18 @@ pub(crate) use unicode::*;
 pub(crate) use writer::*;
 
 use std::{
+    collections::HashMap,
     fs,
     path::{Path, PathBuf},
 };
 
 use anyhow::{anyhow, bail, Result};
+use console::{Alignment, Emoji};
+use fluent_templates::Loader;
 use image::{ColorType, DynamicImage};
 use tracing::warn;
 
-use crate::cmd::Convert;
+use crate::{cmd::Convert, LANG_ID, LOCALES};
 
 pub(crate) fn file_stem<T>(path: T) -> Result<PathBuf>
 where
@@ -110,4 +113,46 @@ pub(crate) fn image_ext(image: &DynamicImage) -> String {
         ColorType::Rgb8 | ColorType::Rgba8 => String::from("webp"),
         _ => String::from("png"),
     }
+}
+
+pub(crate) fn emoji<T>(str: T) -> String
+where
+    T: AsRef<str>,
+{
+    let emoji = Emoji(str.as_ref(), ">").to_string();
+    console::pad_str(&emoji, 2, Alignment::Left, None).to_string()
+}
+
+pub(crate) fn locales<T, E>(name: T, emoji: E) -> String
+where
+    T: AsRef<str>,
+    E: AsRef<str>,
+{
+    let args = {
+        let mut map = HashMap::new();
+        map.insert(String::from("emoji"), self::emoji(emoji).into());
+        map
+    };
+
+    LOCALES
+        .lookup_with_args(&LANG_ID, name.as_ref(), &args)
+        .unwrap()
+}
+
+pub(crate) fn locales_with_arg<T, E, F>(name: T, emoji: E, arg: F) -> String
+where
+    T: AsRef<str>,
+    E: AsRef<str>,
+    F: AsRef<str>,
+{
+    let args = {
+        let mut map = HashMap::new();
+        map.insert(String::from("emoji"), self::emoji(emoji).into());
+        map.insert(String::from("arg"), arg.as_ref().into());
+        map
+    };
+
+    LOCALES
+        .lookup_with_args(&LANG_ID, name.as_ref(), &args)
+        .unwrap()
 }

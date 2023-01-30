@@ -1,8 +1,7 @@
-use std::{collections::HashMap, path::PathBuf, process::Command};
+use std::{path::PathBuf, process::Command};
 
 use anyhow::{bail, ensure, Result};
 use clap::Args;
-use console::{Alignment, Emoji};
 use fluent_templates::Loader;
 use fs_extra::dir::CopyOptions;
 use mdbook::MDBook;
@@ -14,17 +13,17 @@ use crate::{utils, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "build_command").expect("`build_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "build_command").unwrap())]
 pub struct Build {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "build_path").expect("`build_path` does not exists"))]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "build_path").unwrap())]
     pub build_path: PathBuf,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "delete").expect("`delete` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
     pub delete: bool,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "open").expect("`open` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "open").unwrap())]
     pub open: bool,
 }
 
@@ -34,18 +33,18 @@ pub fn execute(config: Build) -> Result<()> {
     let mut timing = Timing::new();
 
     if utils::is_markdown(&config.build_path) {
-        print_build_msg("pandoc");
+        println!("{}", utils::locales_with_arg("build_msg", "📚", "pandoc"));
         execute_pandoc(config)?;
         info!("Time spent on `pandoc build`: {}", timing.elapsed()?);
     } else if config.build_path.is_dir() {
-        print_build_msg("mdBook");
+        println!("{}", utils::locales_with_arg("build_msg", "📚", "mdBook"));
         execute_mdbook(config)?;
         info!("Time spent on `mdBook build`: {}", timing.elapsed()?);
     } else {
         bail!("Unsupported input format")
     }
 
-    print_completed_msg();
+    println!("{}", utils::locales("build_complete_msg", "✔️"));
 
     Ok(())
 }
@@ -63,7 +62,10 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
         .args(["-o", output_path.to_str().unwrap()])
         .arg(&config.build_path)
         .spawn()?;
-    pandoc.wait()?;
+    let status = pandoc.wait()?;
+    if !status.success() {
+        bail!("pandoc run failed");
+    }
 
     if config.delete {
         utils::remove_file_or_dir(&config.build_path)?;
@@ -110,41 +112,4 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
     }
 
     Ok(())
-}
-
-fn print_build_msg(format: &str) {
-    let args = {
-        let emoji = Emoji("📚", ">").to_string();
-        let emoji = console::pad_str(&emoji, 2, Alignment::Left, None);
-
-        let mut map = HashMap::new();
-        map.insert(String::from("emoji"), emoji.to_string().into());
-        map.insert(String::from("type"), format.to_string().into());
-        map
-    };
-
-    println!(
-        "{}",
-        LOCALES
-            .lookup_with_args(&LANG_ID, "build_msg", &args)
-            .unwrap()
-    );
-}
-
-fn print_completed_msg() {
-    let args = {
-        let emoji = Emoji("✔️", ">").to_string();
-        let emoji = console::pad_str(&emoji, 2, Alignment::Left, None);
-
-        let mut map = HashMap::new();
-        map.insert(String::from("emoji"), emoji.to_string().into());
-        map
-    };
-
-    println!(
-        "{}",
-        LOCALES
-            .lookup_with_args(&LANG_ID, "build_complete_msg", &args)
-            .expect("`build_complete_msg` does not exists")
-    );
 }

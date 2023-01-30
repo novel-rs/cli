@@ -5,7 +5,7 @@ use std::{
 };
 
 use anyhow::{ensure, Result};
-use clap::{value_parser, Args};
+use clap::Args;
 use fluent_templates::Loader;
 use tracing::warn;
 use walkdir::{DirEntry, WalkDir};
@@ -16,19 +16,14 @@ use crate::{utils, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "zip_command").expect("`zip_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "zip_command").unwrap())]
 pub struct Zip {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "epub_dir_path").expect("`epub_dir_path` does not exists"))]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "epub_dir_path").unwrap())]
     pub epub_dir_path: PathBuf,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "delete").expect("`delete` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
     pub delete: bool,
-
-    #[arg(long, default_value_t = 6,
-        value_parser = value_parser!(i32).range(0..=9),
-        help = LOCALES.lookup(&LANG_ID, "level").expect("`level` does not exists"))]
-    pub level: i32,
 }
 
 pub fn execute(config: Zip) -> Result<()> {
@@ -46,12 +41,7 @@ pub fn execute(config: Zip) -> Result<()> {
     let walkdir = WalkDir::new(&config.epub_dir_path);
     let it = walkdir.into_iter();
 
-    zip_dir(
-        &mut it.filter_map(|e| e.ok()),
-        &config.epub_dir_path,
-        file,
-        config.level,
-    )?;
+    zip_dir(&mut it.filter_map(|e| e.ok()), &config.epub_dir_path, file)?;
 
     if config.delete {
         utils::remove_file_or_dir(&config.epub_dir_path)?;
@@ -72,20 +62,13 @@ where
     Ok(())
 }
 
-fn zip_dir<T, E>(
-    it: &mut dyn Iterator<Item = DirEntry>,
-    prefix: T,
-    writer: E,
-    level: i32,
-) -> Result<()>
+fn zip_dir<T, E>(it: &mut dyn Iterator<Item = DirEntry>, prefix: T, writer: E) -> Result<()>
 where
     T: AsRef<Path>,
     E: Write + Seek,
 {
     let mut zip = ZipWriter::new(writer);
-    let options = FileOptions::default()
-        .compression_method(CompressionMethod::Deflated)
-        .compression_level(Some(level));
+    let options = FileOptions::default().compression_method(CompressionMethod::Deflated);
 
     let mut buffer = Vec::new();
     for entry in it {

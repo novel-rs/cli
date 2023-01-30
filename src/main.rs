@@ -15,7 +15,6 @@ use novel_cli::{
         unzip, update,
     },
     config::{Commands, Config},
-    LANG_ID,
 };
 
 #[global_allocator]
@@ -27,10 +26,7 @@ async fn main() -> Result<()> {
 
     init_log(&config)?;
 
-    debug!("{config:#?}");
-
     debug!("{:#?}", sys_locale::get_locale());
-    debug!("{LANG_ID:#?}");
 
     match config.command {
         Commands::Download(config) => download::execute(config).await?,
@@ -43,7 +39,7 @@ async fn main() -> Result<()> {
         Commands::Zip(config) => cmd::zip::execute(config)?,
         Commands::Unzip(config) => unzip::execute(config)?,
         Commands::RealCugan(config) => real_cugan::execute(config).await?,
-        Commands::Update(config) => update::execute(config)?,
+        Commands::Update(config) => update::execute(config).await?,
         Commands::Completions(config) => completions::execute(config)?,
     }
 
@@ -62,7 +58,9 @@ async fn main() -> Result<()> {
 }
 
 fn init_log(config: &Config) -> Result<()> {
-    LogTracer::init()?;
+    if config.verbose >= 1 {
+        LogTracer::init()?;
+    }
 
     let rust_log = if config.quiet {
         "none"

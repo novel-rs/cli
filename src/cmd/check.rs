@@ -3,7 +3,6 @@ use std::{fs, path::PathBuf};
 use ahash::AHashSet;
 use anyhow::{ensure, Result};
 use clap::Args;
-use console::{Alignment, Emoji};
 use fluent_templates::Loader;
 use parking_lot::RwLock;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
@@ -14,9 +13,9 @@ use crate::{utils, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Debug, Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "check_command").expect("`check_command` does not exists"))]
+    about = LOCALES.lookup(&LANG_ID, "check_command").unwrap())]
 pub struct Check {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path").expect("`markdown_path` does not exists"))]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path").unwrap())]
     pub markdown_path: PathBuf,
 }
 
@@ -42,9 +41,15 @@ pub fn execute(config: Check) -> Result<()> {
             let title = markdown[range].trim_start_matches('#').trim();
 
             if *heading_level == HeadingLevel::H1 && !check_volume_title(title) {
-                println!("{} Irregular volume title format: {title}", emoji());
+                println!(
+                    "{} Irregular volume title format: {title}",
+                    utils::emoji("⚠️")
+                );
             } else if *heading_level == HeadingLevel::H2 && !check_chapter_title(title) {
-                println!("{} Irregular chapter title format: {title}", emoji());
+                println!(
+                    "{} Irregular chapter title format: {title}",
+                    utils::emoji("⚠️")
+                );
             }
         } else if let Event::Text(text) = &event {
             for c in text.chars() {
@@ -59,7 +64,7 @@ pub fn execute(config: Check) -> Result<()> {
                         char_set.write().insert(c);
                         println!(
                             "{} Irregular char: {}, at {}",
-                            emoji(),
+                            utils::emoji("⚠️"),
                             c,
                             markdown[range.clone()].trim()
                         );
@@ -70,13 +75,6 @@ pub fn execute(config: Check) -> Result<()> {
     });
 
     Ok(())
-}
-
-#[must_use]
-fn emoji() -> String {
-    let emoji = Emoji("⚠️", ">").to_string();
-    let emoji = console::pad_str(&emoji, 2, Alignment::Left, None);
-    emoji.to_string()
 }
 
 macro_rules! regex {

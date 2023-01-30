@@ -1,3 +1,5 @@
+use std::env;
+
 use clap::{crate_authors, crate_name, crate_version, value_parser, ArgAction, Parser, Subcommand};
 use fluent_templates::Loader;
 
@@ -12,18 +14,18 @@ use crate::{
 
 #[must_use]
 #[derive(Debug, Parser)]
-#[command(author, version, about = about_msg(), long_about = None, propagate_version = true)]
+#[command(author, version = version_msg(), about = about_msg(), long_about = None, propagate_version = true)]
 pub struct Config {
     #[command(subcommand)]
     pub command: Commands,
 
     #[arg(short, long, action = ArgAction::Count, global = true, default_value_t = 0,
         value_parser = value_parser!(u8).range(0..=4),
-        help = LOCALES.lookup(&LANG_ID, "verbose").expect("`verbose` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "verbose").unwrap())]
     pub verbose: u8,
 
     #[arg(short, long, global = true, conflicts_with = "verbose", default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "quiet").expect("`quiet` does not exists"))]
+        help = LOCALES.lookup(&LANG_ID, "quiet").unwrap())]
     pub quiet: bool,
 }
 
@@ -45,7 +47,6 @@ pub enum Commands {
 }
 
 #[must_use]
-#[inline]
 const fn about_msg() -> &'static str {
     concat!(
         crate_name!(),
@@ -55,6 +56,17 @@ const fn about_msg() -> &'static str {
         crate_authors!(),
         "\nProject home page: ",
         env!("CARGO_PKG_HOMEPAGE"),
+    )
+}
+
+#[must_use]
+fn version_msg() -> String {
+    format!(
+        "{}\nexe: {}\nconfig dir: {}\ndata dir: {}",
+        crate_version!(),
+        env::current_exe().unwrap().display(),
+        novel_api::config_dir_path("").unwrap().display(),
+        novel_api::data_dir_path("").unwrap().display()
     )
 }
 
