@@ -116,12 +116,13 @@ pub(crate) const fn is_cjk(c: char) -> bool {
         || c == '\u{FA21}'
         || range(c, '\u{FA23}', '\u{FA24}')
         || range(c, '\u{FA27}', '\u{FA29}')
-        || range(c, '\u{020000}', '\u{02A6DF}')
-        || range(c, '\u{02A700}', '\u{02B738}')
-        || range(c, '\u{02B740}', '\u{02B81D}')
-        || range(c, '\u{02B820}', '\u{02CEA1}')
-        || range(c, '\u{02CEB0}', '\u{02EBE0}')
-        || range(c, '\u{030000}', '\u{03134A}')
+        || range(c, '\u{20000}', '\u{2A6DF}')
+        || range(c, '\u{2A700}', '\u{2B739}')
+        || range(c, '\u{2B740}', '\u{2B81D}')
+        || range(c, '\u{2B820}', '\u{2CEA1}')
+        || range(c, '\u{2CEB0}', '\u{2EBE0}')
+        || range(c, '\u{30000}', '\u{3134A}')
+        || range(c, '\u{31350}', '\u{323AF}')
 }
 
 #[must_use]
@@ -197,6 +198,7 @@ mod test {
         assert!(is_cjk('鿃'));
         assert!(is_cjk('\u{9FEB}'));
         assert!(is_cjk('﨧'));
+        assert!(is_cjk('𱞈'));
 
         assert!(!is_cjk('a'));
         assert!(!is_cjk('🍌'));
