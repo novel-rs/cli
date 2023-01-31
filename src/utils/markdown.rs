@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use crate::utils;
 
 #[must_use]
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub(crate) struct MetaData {
     pub title: String,
@@ -17,6 +17,18 @@ pub(crate) struct MetaData {
     pub lang: String,
     pub description: Option<String>,
     pub cover_image: Option<PathBuf>,
+}
+
+impl MetaData {
+    pub(crate) fn lang_is_ok(&self) -> bool {
+        self.lang == "zh-Hant" || self.lang == "zh-Hans"
+    }
+
+    pub(crate) fn cover_image_is_ok(&self) -> bool {
+        !novel_api::is_some_and(self.cover_image.as_ref(), |cover_image| {
+            !cover_image.is_file()
+        })
+    }
 }
 
 pub(crate) fn read_markdown<T>(markdown_path: T) -> Result<(MetaData, String)>
@@ -41,18 +53,6 @@ where
     let yaml = &markdown[4..index];
 
     let meta_data: MetaData = serde_yaml::from_str(yaml).unwrap();
-
-    ensure!(
-        meta_data.lang == "zh-Hant" || meta_data.lang == "zh-Hans",
-        "The lang field must be zh-Hant or zh-Hans"
-    );
-    if meta_data.cover_image.is_some() {
-        ensure!(
-            meta_data.cover_image.as_ref().unwrap().exists(),
-            "Cover image does not exist"
-        );
-    }
-
     let markdown = markdown[index + 5..].to_string();
 
     Ok((meta_data, markdown))

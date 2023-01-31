@@ -1,10 +1,11 @@
-use std::{collections::HashMap, path::PathBuf};
+use std::{collections::HashMap, path::PathBuf, sync::Arc};
 
-use anyhow::Result;
-use clap::Args;
+use anyhow::{Ok, Result};
+use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, NovelInfo, SfacgClient};
-use tracing::log::warn;
+use novel_api::{CiweimaoClient, Client, NovelInfo, SfacgClient, Timing};
+use tokio::sync::Semaphore;
+use tracing::{info, log::warn};
 use url::Url;
 
 use crate::{
@@ -13,7 +14,7 @@ use crate::{
 };
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "search_command").unwrap())]
 pub struct Search {
@@ -24,11 +25,11 @@ pub struct Search {
     #[arg(help = LOCALES.lookup(&LANG_ID, "keywords").unwrap())]
     pub keyword: String,
 
-    #[arg(short, long,
+    #[arg(long,
         help = LOCALES.lookup(&LANG_ID, "min_word_count").unwrap())]
     pub min_word_count: Option<u32>,
 
-    #[arg(short, long, value_delimiter = ',',
+    #[arg(long, value_delimiter = ',',
         help = LOCALES.lookup(&LANG_ID, "tags").unwrap())]
     pub tags: Option<Vec<String>>,
 
@@ -43,6 +44,10 @@ pub struct Search {
     #[arg(long, default_value_t = false,
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
+
+    #[arg(short, long, default_value_t = 8, value_parser = value_parser!(u8).range(1..=16),
+    help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
+    pub maximum_concurrency: u8,
 
     #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
@@ -66,6 +71,8 @@ pub struct Search {
 }
 
 pub async fn execute(config: Search) -> Result<()> {
+    let mut timing = Timing::new();
+
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -79,22 +86,31 @@ pub async fn execute(config: Search) -> Result<()> {
         }
     }
 
+    info!("Time spent on `search`: {}", timing.elapsed()?);
+
     Ok(())
 }
 
 async fn do_execute<T>(client: T, config: Search) -> Result<()>
 where
-    T: Client,
+    T: Client + Send + Sync + 'static,
 {
     if config.source == Source::Ciweimao {
-        utils::login(&client, config.source, config.ignore_keyring).await?;
+        utils::login(&client, &config.source, config.ignore_keyring).await?;
     }
 
     let mut novel_infos = Vec::new();
 
+    let client = Arc::new(client);
+    super::ctrl_c(&client);
+
+    let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
+
     let mut page = 0;
     let size = 12;
     loop {
+        let mut handles = Vec::new();
+
         let novel_ids = client.search_infos(&config.keyword, page, size).await?;
         if novel_ids.is_empty() {
             break;
@@ -107,7 +123,18 @@ where
         }
 
         for novel_id in novel_ids {
-            let novel_info = utils::novel_info(&client, novel_id).await?;
+            let client = Arc::clone(&client);
+            let permit = semaphore.clone().acquire_owned().await.unwrap();
+
+            handles.push(tokio::spawn(async move {
+                let novel_info = utils::novel_info(&client, novel_id).await?;
+                drop(permit);
+                Ok(novel_info)
+            }));
+        }
+
+        for handle in handles {
+            let novel_info = handle.await??;
 
             if !novel_infos.contains(&novel_info) && meet_criteria(&novel_info, &config) {
                 novel_infos.push(novel_info);

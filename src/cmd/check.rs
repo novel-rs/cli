@@ -1,17 +1,19 @@
-use std::{fs, path::PathBuf};
+use std::path::PathBuf;
 
 use ahash::AHashSet;
-use anyhow::{ensure, Result};
+use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
+use novel_api::Timing;
 use parking_lot::RwLock;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
 use rayon::prelude::*;
+use tracing::info;
 
 use crate::{utils, LANG_ID, LOCALES};
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "check_command").unwrap())]
 pub struct Check {
@@ -20,61 +22,117 @@ pub struct Check {
 }
 
 pub fn execute(config: Check) -> Result<()> {
-    ensure!(
-        utils::is_markdown(&config.markdown_path),
-        "The input file is not in markdown format"
-    );
+    let mut timing = Timing::new();
 
-    let bytes = fs::read(&config.markdown_path)?;
-    let markdown = simdutf8::basic::from_utf8(&bytes)?;
+    let (meta_data, markdown) = utils::read_markdown(config.markdown_path)?;
+
+    if !meta_data.lang_is_ok() {
+        println(format!(
+            "The lang field must be zh-Hant or zh-Hans: {}",
+            meta_data.lang
+        ));
+    }
+
+    if !meta_data.cover_image_is_ok() {
+        println(format!(
+            "Cover image does not exist: {}",
+            meta_data.cover_image.unwrap().display()
+        ));
+    }
 
     let mut options = Options::all();
     options.remove(Options::ENABLE_SMART_PUNCTUATION);
-    let parser = Parser::new_ext(markdown, options);
+    let parser = Parser::new_ext(&markdown, options);
 
     let events = parser.into_offset_iter().collect::<Vec<(_, _)>>();
     let char_set = RwLock::new(AHashSet::new());
 
-    // TODO 检查图片是否存在
-    events.into_par_iter().for_each(|(event, range)| {
-        if let Event::Start(Tag::Heading(heading_level, _, _)) = &event {
-            let title = markdown[range].trim_start_matches('#').trim();
+    events
+        .into_par_iter()
+        .for_each(|(event, range)| match event {
+            Event::Start(tag) => match tag {
+                Tag::Heading(heading_level, _, _) => {
+                    let title = markdown[range].trim_start_matches('#').trim();
 
-            if *heading_level == HeadingLevel::H1 && !check_volume_title(title) {
-                println!(
-                    "{} Irregular volume title format: {title}",
-                    utils::emoji("⚠️")
-                );
-            } else if *heading_level == HeadingLevel::H2 && !check_chapter_title(title) {
-                println!(
-                    "{} Irregular chapter title format: {title}",
-                    utils::emoji("⚠️")
-                );
-            }
-        } else if let Event::Text(text) = &event {
-            for c in text.chars() {
-                if !utils::is_cjk(c)
-                    && !utils::is_punctuation(c)
-                    && !c.is_ascii_alphanumeric()
-                    && c != ' '
-                {
-                    if char_set.read().contains(&c) {
-                        continue;
-                    } else {
-                        char_set.write().insert(c);
-                        println!(
-                            "{} Irregular char: {}, at {}",
-                            utils::emoji("⚠️"),
-                            c,
-                            markdown[range.clone()].trim()
-                        );
+                    if heading_level == HeadingLevel::H1 && !check_volume_title(title) {
+                        println(format!("Irregular volume title format: {title}"));
+                    } else if heading_level == HeadingLevel::H2 && !check_chapter_title(title) {
+                        println(format!("Irregular chapter title format: {title}"));
+                    }
+                }
+                Tag::Image(_, path, _) => {
+                    let image_path = path.to_string();
+                    let image_path = PathBuf::from(&image_path);
+
+                    if !image_path.is_file() {
+                        println(format!("Image `{}` does not exist", image_path.display()));
+                    }
+                }
+                Tag::Paragraph => (),
+                Tag::BlockQuote
+                | Tag::CodeBlock(_)
+                | Tag::List(_)
+                | Tag::Item
+                | Tag::FootnoteDefinition(_)
+                | Tag::Table(_)
+                | Tag::TableHead
+                | Tag::TableRow
+                | Tag::TableCell
+                | Tag::Emphasis
+                | Tag::Strong
+                | Tag::Strikethrough
+                | Tag::Link(_, _, _) => {
+                    let content = &markdown[range].trim();
+
+                    println(format!(
+                        "Markdown tag that should not appear: {tag:?}, content: {content}"
+                    ));
+                }
+            },
+            Event::Text(text) => {
+                for c in text.chars() {
+                    if !utils::is_cjk(c)
+                        && !utils::is_punctuation(c)
+                        && !c.is_ascii_alphanumeric()
+                        && c != ' '
+                    {
+                        if char_set.read().contains(&c) {
+                            continue;
+                        } else {
+                            char_set.write().insert(c);
+
+                            println(format!(
+                                "Irregular char: {}, at {}",
+                                c,
+                                markdown[range.clone()].trim()
+                            ));
+                        }
                     }
                 }
             }
-        }
-    });
+            Event::End(_) => (),
+            Event::HardBreak => (),
+            Event::Code(_)
+            | Event::Html(_)
+            | Event::FootnoteReference(_)
+            | Event::SoftBreak
+            | Event::Rule
+            | Event::TaskListMarker(_) => {
+                let content = &markdown[range].trim();
+
+                println(format!(
+                    "Markdown event that should not appear: {event:?}, content: {content}"
+                ));
+            }
+        });
+
+    info!("Time spent on `check`: {}", timing.elapsed()?);
 
     Ok(())
+}
+
+fn println(msg: String) {
+    println!("{} {}", utils::emoji("⚠️"), msg);
 }
 
 macro_rules! regex {
@@ -85,6 +143,7 @@ macro_rules! regex {
 }
 
 #[must_use]
+#[inline]
 fn check_chapter_title<T>(title: T) -> bool
 where
     T: AsRef<str>,
@@ -94,6 +153,7 @@ where
 }
 
 #[must_use]
+#[inline]
 fn check_volume_title<T>(title: T) -> bool
 where
     T: AsRef<str>,

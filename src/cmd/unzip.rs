@@ -7,13 +7,14 @@ use std::{
 use anyhow::{ensure, Result};
 use clap::Args;
 use fluent_templates::Loader;
-use tracing::warn;
+use novel_api::Timing;
+use tracing::{info, warn};
 use zip::ZipArchive;
 
 use crate::{utils, LANG_ID, LOCALES};
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "unzip_command").unwrap())]
 pub struct Unzip {
@@ -26,6 +27,8 @@ pub struct Unzip {
 }
 
 pub fn execute(config: Unzip) -> Result<()> {
+    let mut timing = Timing::new();
+
     ensure_epub(&config.epub_path)?;
 
     unzip(&config.epub_path)?;
@@ -33,6 +36,8 @@ pub fn execute(config: Unzip) -> Result<()> {
     if config.delete {
         utils::remove_file_or_dir(&config.epub_path)?;
     }
+
+    info!("Time spent on `check`: {}", timing.elapsed()?);
 
     Ok(())
 }

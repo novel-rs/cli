@@ -17,7 +17,7 @@ use crate::{
 pub(crate) async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
     let mut timing = Timing::new();
 
-    let path = to_markdown_file_name(&novel.name);
+    let path = utils::to_markdown_file_name(&novel.name);
     if path.is_file() {
         warn!("The epub output file already exists and will be overwritten");
     }
@@ -184,22 +184,6 @@ async fn save_image(novel: Novel) -> Result<Vec<JoinHandle<Result<()>>>> {
     }
 
     Ok(handles)
-}
-
-fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
-where
-    T: AsRef<str>,
-{
-    let novel_name = novel_name.as_ref();
-
-    if !sanitize_filename::is_sanitized(novel_name) {
-        warn!("The output file name is invalid and has been modified");
-    }
-
-    let mut path = PathBuf::from(sanitize_filename::sanitize(novel_name));
-    path.set_extension("md");
-
-    path
 }
 
 fn images_path() -> Result<&'static PathBuf> {

@@ -1,7 +1,4 @@
-use std::{
-    path::{Path, PathBuf},
-    sync::Arc,
-};
+use std::{path::Path, sync::Arc};
 
 use anyhow::{Ok, Result};
 use novel_api::Timing;
@@ -50,7 +47,7 @@ struct Html {
 pub(crate) async fn generate_mdbook(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
     let mut timing = Timing::new();
 
-    let base_path = to_mdbook_dir_name(&novel.name);
+    let base_path = utils::to_mdbook_dir_name(&novel.name);
     if base_path.is_dir() {
         warn!("The mdBook output folder already exists and will be deleted");
         utils::remove_file_or_dir(&base_path)?;
@@ -313,17 +310,4 @@ where
     }
 
     Ok(handles)
-}
-
-fn to_mdbook_dir_name<T>(novel_name: T) -> PathBuf
-where
-    T: AsRef<str>,
-{
-    let novel_name = novel_name.as_ref();
-
-    if !sanitize_filename::is_sanitized(novel_name) {
-        warn!("The output file name is invalid and has been modified");
-    }
-
-    PathBuf::from(sanitize_filename::sanitize(novel_name))
 }

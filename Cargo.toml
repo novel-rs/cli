@@ -14,9 +14,9 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
-opencc-rs = "0.2.0"
+opencc-rs = { git = "https://github.com/novel-rs/opencc-rs" }
 # https://github.com/novel-rs/api
-novel-api = "0.3.0"
+novel-api = { git = "https://github.com/novel-rs/api" }
 
 # https://github.com/dtolnay/anyhow
 anyhow = "1.0.68"
@@ -29,6 +29,7 @@ tokio = { version = "1.25.0", features = [
   "fs",
   "sync",
   "process",
+  "signal",
   "rt-multi-thread",
   "parking_lot",
 ] }
@@ -142,6 +143,8 @@ self_update = { version = "0.34.0", default-features = false, features = [
   "compression-zip-deflate",
   "rustls",
 ] }
+# https://github.com/rust-lang/libc
+libc = "0.2.139"
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions

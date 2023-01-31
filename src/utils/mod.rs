@@ -26,7 +26,7 @@ use anyhow::{anyhow, bail, Result};
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
 use image::{ColorType, DynamicImage};
-use tracing::warn;
+use tracing::{info, warn};
 
 use crate::{cmd::Convert, LANG_ID, LOCALES};
 
@@ -74,6 +74,8 @@ where
     }
 
     if path.is_file() {
+        info!("File `{}` will be deleted", path.display());
+
         if let Err(error) = trash::delete(path) {
             warn!(
                 "Failed to move file `{}` to trash, the file will be permanently deleted: {}",
@@ -83,6 +85,8 @@ where
             fs::remove_file(path)?;
         }
     } else if path.is_dir() {
+        info!("Directory `{}` will be deleted", path.display());
+
         if let Err(error) = trash::delete(path) {
             warn!(
                 "Failed to move directory `{}` to trash, the directory will be permanently deleted: {}",
@@ -155,4 +159,27 @@ where
     LOCALES
         .lookup_with_args(&LANG_ID, name.as_ref(), &args)
         .unwrap()
+}
+
+pub(crate) fn to_mdbook_dir_name<T>(novel_name: T) -> PathBuf
+where
+    T: AsRef<str>,
+{
+    let novel_name = novel_name.as_ref();
+
+    if !sanitize_filename::is_sanitized(novel_name) {
+        warn!("The output file name is invalid and has been modified");
+    }
+
+    PathBuf::from(sanitize_filename::sanitize(novel_name))
+}
+
+pub(crate) fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
+where
+    T: AsRef<str>,
+{
+    let mut path = to_mdbook_dir_name(novel_name);
+    path.set_extension("md");
+
+    path
 }

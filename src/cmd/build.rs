@@ -7,11 +7,12 @@ use fs_extra::dir::CopyOptions;
 use mdbook::MDBook;
 use novel_api::Timing;
 use tracing::{info, warn};
+use walkdir::WalkDir;
 
 use crate::{utils, LANG_ID, LOCALES};
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "build_command").unwrap())]
 pub struct Build {
@@ -41,7 +42,10 @@ pub fn execute(config: Build) -> Result<()> {
         execute_mdbook(config)?;
         info!("Time spent on `mdBook build`: {}", timing.elapsed()?);
     } else {
-        bail!("Unsupported input format")
+        bail!(
+            "Unsupported input format: `{}`",
+            config.build_path.display()
+        );
     }
 
     println!("{}", utils::locales("build_complete_msg", "✔️"));
@@ -52,6 +56,7 @@ pub fn execute(config: Build) -> Result<()> {
 pub fn execute_pandoc(config: Build) -> Result<()> {
     let mut output_path = utils::file_stem(&config.build_path)?;
     output_path.set_extension("epub");
+
     if output_path.exists() {
         warn!("The epub output file already exists and will be overwritten");
     }
@@ -64,7 +69,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
         .spawn()?;
     let status = pandoc.wait()?;
     if !status.success() {
-        bail!("pandoc run failed");
+        bail!("`pandoc` failed to execute");
     }
 
     if config.delete {
@@ -95,12 +100,18 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
     mdbook.build()?;
 
     if config.delete {
+        for entry in WalkDir::new(&config.build_path).max_depth(1) {
+            let path = entry?.path().to_path_buf();
+
+            if path != config.build_path && path != book_path {
+                utils::remove_file_or_dir(path)?;
+            }
+        }
+
         let mut options = CopyOptions::new();
         options.copy_inside = true;
         options.content_only = true;
-        fs_extra::dir::copy(&book_path, &config.build_path, &options)?;
-
-        utils::remove_file_or_dir(&book_path)?;
+        fs_extra::dir::move_dir(&book_path, &config.build_path, &options)?;
     }
 
     if config.open {

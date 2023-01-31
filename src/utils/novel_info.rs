@@ -1,4 +1,4 @@
-use std::io;
+use std::{io, sync::Arc};
 
 use anyhow::{ensure, Result};
 use comfy_table::{
@@ -12,9 +12,9 @@ use viuer::{Config, KittySupport};
 
 use crate::{cmd::Convert, utils};
 
-pub(crate) async fn novel_info<T>(client: &T, novel_id: u32) -> Result<NovelInfo>
+pub(crate) async fn novel_info<T>(client: &Arc<T>, novel_id: u32) -> Result<NovelInfo>
 where
-    T: Client,
+    T: Client + Send + Sync + 'static,
 {
     let novel_info = client.novel_info(novel_id).await?;
     ensure!(novel_info.is_some(), "The novel does not exist");
@@ -35,8 +35,8 @@ pub(crate) fn print_novel_info(
 
             let config = Config {
                 absolute_offset: false,
-                width: Some(width as u32 / 4),
-                height: Some(height as u32 / 4),
+                width: Some(width as u32 / 2),
+                height: Some(height as u32 / 2),
                 ..Default::default()
             };
 
@@ -112,59 +112,46 @@ pub(crate) fn print_novel_infos(
         utils::convert_str("作者", converts)?,
     ];
 
-    let mut genre = false;
-    let mut tags = false;
-    let mut word_count = false;
-    let mut finished = false;
-    let mut create_time = false;
-    let mut update_time = false;
-
-    for item in &novel_infos {
-        if item.genre.is_some() {
-            genre = true;
-            row.push(utils::convert_str("类型", converts)?);
-            break;
-        }
+    let genre = novel_infos
+        .iter()
+        .any(|novel_info| novel_info.genre.is_some());
+    if genre {
+        row.push(utils::convert_str("类型", converts)?);
     }
 
-    for item in &novel_infos {
-        if item.tags.is_some() {
-            tags = true;
-            row.push(utils::convert_str("标签", converts)?);
-            break;
-        }
+    let tags = novel_infos
+        .iter()
+        .any(|novel_info| novel_info.tags.is_some());
+    if tags {
+        row.push(utils::convert_str("标签", converts)?);
     }
 
-    for item in &novel_infos {
-        if item.word_count.is_some() {
-            word_count = true;
-            row.push(utils::convert_str("字数", converts)?);
-            break;
-        }
+    let word_count = novel_infos
+        .iter()
+        .any(|novel_info| novel_info.word_count.is_some());
+    if word_count {
+        row.push(utils::convert_str("字数", converts)?);
     }
 
-    for item in &novel_infos {
-        if item.finished.is_some() {
-            finished = true;
-            row.push(utils::convert_str("状态", converts)?);
-            break;
-        }
+    let finished = novel_infos
+        .iter()
+        .any(|novel_info| novel_info.finished.is_some());
+    if finished {
+        row.push(utils::convert_str("状态", converts)?);
     }
 
-    for item in &novel_infos {
-        if item.create_time.is_some() {
-            create_time = true;
-            row.push(utils::convert_str("创建时间", converts)?);
-            break;
-        }
+    let create_time = novel_infos
+        .iter()
+        .any(|novel_info| novel_info.create_time.is_some());
+    if create_time {
+        row.push(utils::convert_str("创建时间", converts)?);
     }
 
-    for item in &novel_infos {
-        if item.update_time.is_some() {
-            update_time = true;
-            row.push(utils::convert_str("更新时间", converts)?);
-            break;
-        }
+    let update_time = novel_infos
+        .iter()
+        .any(|novel_info| novel_info.update_time.is_some());
+    if update_time {
+        row.push(utils::convert_str("更新时间", converts)?);
     }
 
     let mut table = Table::new();

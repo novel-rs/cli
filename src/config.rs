@@ -13,7 +13,7 @@ use crate::{
 };
 
 #[must_use]
-#[derive(Debug, Parser)]
+#[derive(Parser)]
 #[command(author, version = version_msg(), about = about_msg(), long_about = None, propagate_version = true)]
 pub struct Config {
     #[command(subcommand)]
@@ -30,7 +30,7 @@ pub struct Config {
 }
 
 #[must_use]
-#[derive(Debug, Subcommand)]
+#[derive(Subcommand)]
 pub enum Commands {
     Download(Download),
     Search(Search),

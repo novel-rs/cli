@@ -7,14 +7,15 @@ use std::{
 use anyhow::{ensure, Result};
 use clap::Args;
 use fluent_templates::Loader;
-use tracing::warn;
+use novel_api::Timing;
+use tracing::{info, warn};
 use walkdir::{DirEntry, WalkDir};
 use zip::{write::FileOptions, CompressionMethod, ZipWriter};
 
 use crate::{utils, LANG_ID, LOCALES};
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "zip_command").unwrap())]
 pub struct Zip {
@@ -27,6 +28,8 @@ pub struct Zip {
 }
 
 pub fn execute(config: Zip) -> Result<()> {
+    let mut timing = Timing::new();
+
     ensure_epub_dir(&config.epub_dir_path)?;
 
     let mut epub_file_path = utils::file_stem(&config.epub_dir_path)?;
@@ -46,6 +49,8 @@ pub fn execute(config: Zip) -> Result<()> {
     if config.delete {
         utils::remove_file_or_dir(&config.epub_dir_path)?;
     }
+
+    info!("Time spent on `check`: {}", timing.elapsed()?);
 
     Ok(())
 }

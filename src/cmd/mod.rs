@@ -11,15 +11,17 @@ pub mod unzip;
 pub mod update;
 pub mod zip;
 
-use std::path::Path;
+use std::{path::Path, process, sync::Arc};
 
 use clap::ValueEnum;
 use novel_api::Client;
 use strum::AsRefStr;
+use tokio::signal;
+use tracing::warn;
 use url::Url;
 
 #[must_use]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, AsRefStr)]
+#[derive(Clone, PartialEq, ValueEnum, AsRefStr)]
 pub enum Source {
     #[strum(serialize = "sfacg")]
     Sfacg,
@@ -28,14 +30,14 @@ pub enum Source {
 }
 
 #[must_use]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+#[derive(Clone, PartialEq, ValueEnum, AsRefStr)]
 pub enum Format {
     Pandoc,
     Mdbook,
 }
 
 #[must_use]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+#[derive(Clone, PartialEq, ValueEnum, AsRefStr)]
 pub enum Convert {
     S2T,
     T2S,
@@ -68,4 +70,20 @@ where
     if let Some(cert) = cert {
         client.cert(cert)
     }
+}
+
+fn ctrl_c<T>(client: &Arc<T>)
+where
+    T: Client + Send + Sync + 'static,
+{
+    let client = Arc::clone(client);
+
+    tokio::spawn(async move {
+        signal::ctrl_c().await.unwrap();
+
+        warn!("Download terminated, login data will be saved");
+
+        client.shutdown().unwrap();
+        process::exit(128 + libc::SIGINT);
+    });
 }

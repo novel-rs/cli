@@ -3,7 +3,7 @@ use std::{collections::HashMap, path::PathBuf, sync::Arc};
 use anyhow::Result;
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, VolumeInfos};
+use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, Timing, VolumeInfos};
 use tokio::{
     sync::{RwLock, Semaphore},
     task::JoinHandle,
@@ -19,7 +19,7 @@ use crate::{
 };
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "download_command").unwrap())]
 pub struct Download {
@@ -68,6 +68,8 @@ pub struct Download {
 }
 
 pub async fn execute(config: Download) -> Result<()> {
+    let mut timing = Timing::new();
+
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -81,6 +83,8 @@ pub async fn execute(config: Download) -> Result<()> {
         }
     }
 
+    info!("Time spent on `search`: {}", timing.elapsed()?);
+
     Ok(())
 }
 
@@ -88,15 +92,13 @@ async fn do_execute<T>(client: T, config: Download) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    let mut user_info = utils::login(&client, config.source, config.ignore_keyring).await?;
+    let mut user_info = utils::login(&client, &config.source, config.ignore_keyring).await?;
     if user_info.is_none() {
         user_info = client.user_info().await?;
     }
-
-    let user_info = user_info.unwrap();
     println!(
         "{}",
-        utils::locales_with_arg("login_msg", "✨", user_info.nickname)
+        utils::locales_with_arg("login_msg", "✨", user_info.unwrap().nickname)
     );
 
     let mut handles = Vec::new();
@@ -126,6 +128,9 @@ async fn download_novel<T>(
 where
     T: Client + Send + Sync + 'static,
 {
+    let client = Arc::new(client);
+    super::ctrl_c(&client);
+
     let novel_info = utils::novel_info(&client, config.novel_id).await?;
 
     let mut novel = Novel {
@@ -136,7 +141,6 @@ where
         volumes: Vec::new(),
     };
 
-    let client = Arc::new(client);
     if novel_info.cover_url.is_some() {
         handles.push(cover_image(&client, novel_info.cover_url.unwrap(), &novel)?);
     }
@@ -153,7 +157,7 @@ where
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
     let image_count = Arc::new(RwLock::new(1));
 
-    let mut exists_cannot_downloaded = false;
+    let mut exists_can_not_downloaded = false;
 
     for volume_info in volume_infos {
         let mut volume = Volume {
@@ -162,9 +166,7 @@ where
         };
 
         for chapter_info in volume_info.chapter_infos {
-            if !novel_api::is_some_and(chapter_info.accessible, |x| !x)
-                && !novel_api::is_some_and(chapter_info.is_valid, |x| !x)
-            {
+            if chapter_info.can_download() {
                 let chapter = Chapter {
                     title: chapter_info.title.clone(),
                     contents: Arc::new(RwLock::new(Vec::new())),
@@ -215,7 +217,7 @@ where
                 volume.chapters.push(chapter);
             } else {
                 info!("`{}` can not be downloaded", chapter_info.title);
-                exists_cannot_downloaded = true;
+                exists_can_not_downloaded = true;
             }
         }
 
@@ -224,7 +226,7 @@ where
 
     pb.write().finish();
 
-    if exists_cannot_downloaded {
+    if exists_can_not_downloaded {
         warn!("There are chapters that cannot be downloaded");
     }
 
@@ -256,9 +258,7 @@ fn chapter_count(volume_infos: &VolumeInfos) -> u16 {
 
     for volume_info in volume_infos {
         for chapter_info in &volume_info.chapter_infos {
-            if !novel_api::is_some_and(chapter_info.accessible, |x| !x)
-                && !novel_api::is_some_and(chapter_info.is_valid, |x| !x)
-            {
+            if chapter_info.can_download() {
                 count += 1;
             }
         }

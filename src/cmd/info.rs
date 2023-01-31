@@ -1,17 +1,18 @@
+use std::sync::Arc;
 use std::{collections::HashMap, path::PathBuf};
 
 use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, SfacgClient};
-use tracing::warn;
+use novel_api::{CiweimaoClient, Client, SfacgClient, Timing};
+use tracing::{info, warn};
 use url::Url;
 
 use crate::cmd::{Convert, Source};
 use crate::{utils, LANG_ID, LOCALES};
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "info_command").unwrap())]
 pub struct Info {
@@ -52,6 +53,8 @@ pub struct Info {
 }
 
 pub async fn execute(config: Info) -> Result<()> {
+    let mut timing = Timing::new();
+
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -65,16 +68,21 @@ pub async fn execute(config: Info) -> Result<()> {
         }
     }
 
+    info!("Time spent on `info`: {}", timing.elapsed()?);
+
     Ok(())
 }
 
 async fn do_execute<T>(client: T, config: Info) -> Result<()>
 where
-    T: Client,
+    T: Client + Send + Sync + 'static,
 {
     if config.source == Source::Ciweimao {
-        utils::login(&client, config.source, config.ignore_keyring).await?;
+        utils::login(&client, &config.source, config.ignore_keyring).await?;
     }
+
+    let client = Arc::new(client);
+    super::ctrl_c(&client);
 
     let novel_info = utils::novel_info(&client, config.novel_id).await?;
 

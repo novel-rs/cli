@@ -8,7 +8,7 @@ use crate::cmd::Source;
 
 pub(crate) async fn login<T>(
     client: &T,
-    source: Source,
+    source: &Source,
     ignore_keyring: bool,
 ) -> Result<Option<UserInfo>>
 where

@@ -10,6 +10,7 @@ use bytes::BytesMut;
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
 use image::io::Reader;
+use novel_api::Timing;
 use parking_lot::RwLock;
 use tokio::{
     fs::{self, File},
@@ -26,7 +27,7 @@ use crate::{
 };
 
 #[must_use]
-#[derive(Debug, Args)]
+#[derive(Args)]
 #[command(about = LOCALES.lookup(&LANG_ID, "real_cugan_command").unwrap())]
 pub struct RealCugan {
     #[arg(help = LOCALES.lookup(&LANG_ID, "image_path").unwrap())]
@@ -38,6 +39,8 @@ pub struct RealCugan {
 }
 
 pub async fn execute(config: RealCugan) -> Result<()> {
+    let mut timing = Timing::new();
+
     let mut handles = Vec::new();
     let mut to_remove = Vec::new();
 
@@ -91,6 +94,8 @@ pub async fn execute(config: RealCugan) -> Result<()> {
     for path in to_remove {
         utils::remove_file_or_dir(path)?;
     }
+
+    info!("Time spent on `info`: {}", timing.elapsed()?);
 
     Ok(())
 }
