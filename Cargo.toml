@@ -170,7 +170,7 @@ memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.1.0", default-features = false }
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.25", default-features = false }
+mdbook = { git = "https://github.com/rust-lang/mdBook", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.4.0", default-features = false }
 # https://github.com/magiclen/html-escape
