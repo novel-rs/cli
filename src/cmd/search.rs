@@ -3,7 +3,7 @@ use std::{collections::HashMap, path::PathBuf, sync::Arc};
 use anyhow::{Ok, Result};
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, NovelInfo, SfacgClient, Timing};
+use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Timing};
 use tokio::sync::Semaphore;
 use tracing::{info, log::warn};
 use url::Url;
@@ -22,18 +22,50 @@ pub struct Search {
         help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
     pub source: Source,
 
-    #[arg(help = LOCALES.lookup(&LANG_ID, "keywords").unwrap())]
-    pub keyword: String,
+    #[arg(long, default_value_t = false,
+        help = LOCALES.lookup(&LANG_ID, "show_category").unwrap())]
+    pub show_category: bool,
 
-    #[arg(long,
+    #[arg(long, default_value_t = false,
+        help = LOCALES.lookup(&LANG_ID, "show_tags").unwrap())]
+    pub show_tags: bool,
+
+    #[arg(help = LOCALES.lookup(&LANG_ID, "keyword").unwrap())]
+    pub keyword: Option<String>,
+
+    #[arg(long, conflicts_with = "keyword",
         help = LOCALES.lookup(&LANG_ID, "min_word_count").unwrap())]
     pub min_word_count: Option<u32>,
 
-    #[arg(long, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "tags").unwrap())]
-    pub tags: Option<Vec<String>>,
+    #[arg(long, conflicts_with = "keyword",
+        help = LOCALES.lookup(&LANG_ID, "max_word_count").unwrap())]
+    pub max_word_count: Option<u32>,
 
-    #[arg(long, default_value_t = 12,
+    #[arg(long, conflicts_with = "keyword",
+        help = LOCALES.lookup(&LANG_ID, "update_days").unwrap())]
+    pub update_days: Option<u8>,
+
+    #[arg(long, conflicts_with = "keyword",
+        help = LOCALES.lookup(&LANG_ID, "is_finished").unwrap())]
+    pub is_finished: Option<bool>,
+
+    #[arg(long, conflicts_with = "keyword",
+        help = LOCALES.lookup(&LANG_ID, "is_vip").unwrap())]
+    pub is_vip: Option<bool>,
+
+    #[arg(long, conflicts_with = "keyword",
+        help = LOCALES.lookup(&LANG_ID, "category").unwrap())]
+    pub category: Option<String>,
+
+    #[arg(long, conflicts_with = "keyword", value_delimiter = ',',
+        help = LOCALES.lookup(&LANG_ID, "tags").unwrap())]
+    pub tags: Vec<String>,
+
+    #[arg(long, conflicts_with = "keyword", value_delimiter = ',',
+    help = LOCALES.lookup(&LANG_ID, "exclude_tags").unwrap())]
+    pub exclude_tags: Vec<String>,
+
+    #[arg(long, default_value_t = 10,
       help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
     pub limit: u8,
 
@@ -91,6 +123,38 @@ pub async fn execute(config: Search) -> Result<()> {
     Ok(())
 }
 
+async fn show_categories<T>(client: T) -> Result<()>
+where
+    T: Client,
+{
+    let categories = client.categories().await?;
+    let categories = categories
+        .iter()
+        .map(|category| category.name.to_string())
+        .collect::<Vec<String>>()
+        .join("，");
+
+    println!("{categories}");
+
+    Ok(())
+}
+
+async fn show_tags<T>(client: T) -> Result<()>
+where
+    T: Client,
+{
+    let tags = client.tags().await?;
+    let tags = tags
+        .iter()
+        .map(|category| category.name.to_string())
+        .collect::<Vec<String>>()
+        .join("，");
+
+    println!("{tags}");
+
+    Ok(())
+}
+
 async fn do_execute<T>(client: T, config: Search) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
@@ -99,95 +163,70 @@ where
         utils::login(&client, &config.source, config.ignore_keyring).await?;
     }
 
-    let mut novel_infos = Vec::new();
+    if config.show_category {
+        show_categories(client).await?;
+    } else if config.show_tags {
+        show_tags(client).await?;
+    } else {
+        let options = Options::default();
 
-    let client = Arc::new(client);
-    super::ctrl_c(&client);
+        let mut novel_infos = Vec::new();
 
-    let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
+        let client = Arc::new(client);
+        super::ctrl_c(&client);
 
-    let mut page = 0;
-    let size = 12;
-    loop {
-        let mut handles = Vec::new();
+        let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
 
-        let novel_ids = client.search_infos(&config.keyword, page, size).await?;
-        if novel_ids.is_empty() {
-            break;
-        }
+        let mut page = 0;
+        let size = 12;
+        loop {
+            let mut handles = Vec::new();
 
-        page += 1;
-        if page > 30 {
-            warn!("Too many requests, terminated");
-            break;
-        }
-
-        for novel_id in novel_ids {
-            let client = Arc::clone(&client);
-            let permit = semaphore.clone().acquire_owned().await.unwrap();
-
-            handles.push(tokio::spawn(async move {
-                let novel_info = utils::novel_info(&client, novel_id).await?;
-                drop(permit);
-                Ok(novel_info)
-            }));
-        }
-
-        for handle in handles {
-            let novel_info = handle.await??;
-
-            if !novel_infos.contains(&novel_info) && meet_criteria(&novel_info, &config) {
-                novel_infos.push(novel_info);
+            let novel_ids = if config.keyword.is_some() {
+                client
+                    .search_infos(config.keyword.as_ref().unwrap(), page, size)
+                    .await?
+            } else {
+                client.novels(&options, page, size).await?
+            };
+            if novel_ids.is_empty() {
+                break;
             }
-        }
 
-        if novel_infos.len() >= config.limit as usize {
-            break;
-        }
-    }
+            page += 1;
+            if page > 30 {
+                warn!("Too many requests, terminated");
+                break;
+            }
 
-    novel_infos.truncate(config.limit as usize);
+            for novel_id in novel_ids {
+                let client = Arc::clone(&client);
+                let permit = semaphore.clone().acquire_owned().await.unwrap();
 
-    utils::print_novel_infos(novel_infos, &config.converts)?;
+                handles.push(tokio::spawn(async move {
+                    let novel_info = utils::novel_info(&client, novel_id).await?;
+                    drop(permit);
+                    Ok(novel_info)
+                }));
+            }
 
-    Ok(())
-}
+            for handle in handles {
+                let novel_info = handle.await??;
 
-#[must_use]
-fn meet_criteria(novel_info: &NovelInfo, config: &Search) -> bool {
-    meet_word_count_criteria(novel_info, config) && meet_tags_criteria(novel_info, config)
-}
-
-#[must_use]
-fn meet_word_count_criteria(novel_info: &NovelInfo, config: &Search) -> bool {
-    if let Some(min_word_count) = config.min_word_count {
-        if let Some(word_count) = novel_info.word_count {
-            return word_count >= min_word_count;
-        }
-    }
-
-    true
-}
-
-#[must_use]
-fn meet_tags_criteria(novel_info: &NovelInfo, config: &Search) -> bool {
-    if let Some(ref config_tags) = config.tags {
-        if novel_info.tags.is_some() {
-            let tags: Vec<String> = novel_info
-                .tags
-                .as_ref()
-                .unwrap()
-                .iter()
-                .map(|tag| tag.name.to_string())
-                .collect();
-
-            for config_tag in config_tags {
-                if !tags.contains(config_tag) {
-                    return false;
+                if !novel_infos.contains(&novel_info) {
+                    novel_infos.push(novel_info);
                 }
             }
+
+            if novel_infos.len() >= config.limit as usize {
+                break;
+            }
         }
+
+        novel_infos.truncate(config.limit as usize);
+
+        utils::print_novel_infos(novel_infos, &config.converts)?;
     }
 
-    true
+    Ok(())
 }
