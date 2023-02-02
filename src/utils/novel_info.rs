@@ -59,7 +59,7 @@ pub(crate) fn print_novel_info(
     println!(
         "{}：{}",
         utils::convert_str("类型", converts)?,
-        utils::convert_str(try_get_genre(&novel_info), converts)?
+        utils::convert_str(try_get_category(&novel_info), converts)?
     );
 
     println!(
@@ -112,10 +112,10 @@ pub(crate) fn print_novel_infos(
         utils::convert_str("作者", converts)?,
     ];
 
-    let genre = novel_infos
+    let category = novel_infos
         .iter()
-        .any(|novel_info| novel_info.genre.is_some());
-    if genre {
+        .any(|novel_info| novel_info.category.is_some());
+    if category {
         row.push(utils::convert_str("类型", converts)?);
     }
 
@@ -170,9 +170,9 @@ pub(crate) fn print_novel_infos(
             Cell::new(utils::convert_str(&novel_info.author_name, converts)?),
         ];
 
-        if genre {
+        if category {
             row.push(Cell::new(utils::convert_str(
-                try_get_genre(&novel_info),
+                try_get_category(&novel_info),
                 converts,
             )?));
         }
@@ -275,9 +275,9 @@ fn try_get_update_time(novel_info: &NovelInfo) -> String {
 }
 
 #[must_use]
-fn try_get_genre(novel_info: &NovelInfo) -> String {
-    if novel_info.genre.is_some() {
-        novel_info.genre.as_ref().unwrap().to_string()
+fn try_get_category(novel_info: &NovelInfo) -> String {
+    if novel_info.category.is_some() {
+        novel_info.category.as_ref().unwrap().name.to_string()
     } else {
         String::default()
     }

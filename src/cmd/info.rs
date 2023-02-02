@@ -87,7 +87,7 @@ where
     let novel_info = utils::novel_info(&client, config.novel_id).await?;
 
     if let Some(ref url) = novel_info.cover_url {
-        match client.image_info(url).await {
+        match client.image(url).await {
             Ok(image) => utils::print_novel_info(Some(image), novel_info, &config.converts)?,
             Err(error) => warn!("{error}"),
         }

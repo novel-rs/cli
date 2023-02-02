@@ -188,7 +188,7 @@ where
                             ContentInfo::Text(text) => {
                                 contents.write().await.push(Content::Text(text))
                             }
-                            ContentInfo::Image(url) => match client.image_info(&url).await {
+                            ContentInfo::Image(url) => match client.image(&url).await {
                                 Ok(image) => {
                                     let image_name = format!(
                                         "{}.{}",
@@ -241,7 +241,7 @@ where
     let cover_image = Arc::clone(&novel.cover_image);
 
     Ok(tokio::spawn(async move {
-        match client.image_info(&url).await {
+        match client.image(&url).await {
             Ok(image) => *cover_image.write().await = Some(image),
             Err(error) => {
                 warn!("{error}");
