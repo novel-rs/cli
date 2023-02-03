@@ -168,12 +168,42 @@ where
     } else if config.show_tags {
         show_tags(client).await?;
     } else {
-        let options = Options::default();
-
-        let mut novel_infos = Vec::new();
-
         let client = Arc::new(client);
         super::ctrl_c(&client);
+
+        let mut options = Options::default();
+
+        let mut result = Vec::new();
+        let tags = client.tags().await?;
+        for name in config.tags {
+            match tags.iter().find(|tag| tag.name == name) {
+                Some(tag) => result.push(tag),
+                None => warn!("not found tag, ignore"),
+            }
+        }
+        if !result.is_empty() {
+            options.tags = Some(result);
+        }
+
+        let mut result = Vec::new();
+        let tags = client.tags().await?;
+        for name in config.exclude_tags {
+            match tags.iter().find(|tag| tag.name == name) {
+                Some(tag) => result.push(tag),
+                None => warn!("not found tag, ignore"),
+            }
+        }
+        if !result.is_empty() {
+            options.exclude_tags = Some(result);
+        }
+
+        if config.min_word_count.is_some() {
+            options.word_count = Some(novel_api::WordCountRange::RangeFrom(
+                config.min_word_count.unwrap()..,
+            ));
+        }
+
+        let mut novel_infos = Vec::new();
 
         let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
 
