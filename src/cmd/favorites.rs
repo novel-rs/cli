@@ -1,5 +1,5 @@
+use std::path::PathBuf;
 use std::sync::Arc;
-use std::{collections::HashMap, path::PathBuf};
 
 use anyhow::{Ok, Result};
 use clap::{value_parser, Args};
@@ -32,7 +32,7 @@ pub struct Favorites {
         help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
     pub maximum_concurrency: u8,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
+    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -41,15 +41,7 @@ pub struct Favorites {
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
-        help = {
-            let args = {
-                let mut map = HashMap::new();
-                map.insert(String::from("cert_path"), super::default_cert_path().into());
-                map
-            };
-
-            LOCALES.lookup_with_args(&LANG_ID, "cert", &args).unwrap()
-        })]
+        help = super::cert_help_msg())]
     pub cert: Option<PathBuf>,
 }
 
@@ -84,7 +76,7 @@ where
     let mut novel_infos = Vec::new();
 
     let client = Arc::new(client);
-    super::ctrl_c(&client);
+    super::handle_ctrl_c(&client);
 
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
     let mut handles = Vec::new();

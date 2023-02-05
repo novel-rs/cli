@@ -19,7 +19,7 @@ opencc-rs = { git = "https://github.com/novel-rs/opencc-rs" }
 novel-api = { git = "https://github.com/novel-rs/api" }
 
 # https://github.com/dtolnay/anyhow
-anyhow = { version = "1.0.68", default-features = false, features = ["std"] }
+anyhow = { version = "1.0.69", default-features = false, features = ["std"] }
 # https://github.com/serde-rs/serde
 serde = { version = "1.0.152", default-features = false, features = [
   "std",
@@ -169,6 +169,8 @@ infer = { version = "0.12.0", default-features = false, features = ["std"] }
 memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.1.0", default-features = false }
+# https://github.com/benwilber/exitcode
+exitcode = { version = "1.1.2", default-features = false }
 # https://github.com/rust-lang/mdBook
 mdbook = { git = "https://github.com/rust-lang/mdBook", default-features = false }
 # https://github.com/kardeiz/sanitize-filename

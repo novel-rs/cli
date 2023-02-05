@@ -1,5 +1,5 @@
+use std::path::PathBuf;
 use std::sync::Arc;
-use std::{collections::HashMap, path::PathBuf};
 
 use anyhow::Result;
 use clap::Args;
@@ -31,7 +31,7 @@ pub struct Info {
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
+    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -40,15 +40,7 @@ pub struct Info {
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
-        help = {
-            let args = {
-                let mut map = HashMap::new();
-                map.insert(String::from("cert_path"), super::default_cert_path().into());
-                map
-            };
-
-            LOCALES.lookup_with_args(&LANG_ID, "cert", &args).unwrap()
-        })]
+        help = super::cert_help_msg())]
     pub cert: Option<PathBuf>,
 }
 
@@ -64,6 +56,7 @@ pub async fn execute(config: Info) -> Result<()> {
         Source::Ciweimao => {
             let mut client = CiweimaoClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            utils::login(&client, &config.source, config.ignore_keyring).await?;
             do_execute(client, config).await?
         }
     }
@@ -77,12 +70,8 @@ async fn do_execute<T>(client: T, config: Info) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    if config.source == Source::Ciweimao {
-        utils::login(&client, &config.source, config.ignore_keyring).await?;
-    }
-
     let client = Arc::new(client);
-    super::ctrl_c(&client);
+    super::handle_ctrl_c(&client);
 
     let novel_info = utils::novel_info(&client, config.novel_id).await?;
 

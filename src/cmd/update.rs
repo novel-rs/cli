@@ -15,7 +15,7 @@ use crate::{LANG_ID, LOCALES};
 #[derive(Args)]
 #[command(about = LOCALES.lookup(&LANG_ID, "update_command").unwrap())]
 pub struct Update {
-    #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
+    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 }

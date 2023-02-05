@@ -11,14 +11,19 @@ pub mod unzip;
 pub mod update;
 pub mod zip;
 
-use std::{path::Path, process, sync::Arc};
+use std::{collections::HashMap, path::Path, process, sync::Arc};
 
 use clap::ValueEnum;
+use fluent_templates::Loader;
 use novel_api::Client;
 use strum::AsRefStr;
 use tokio::signal;
 use tracing::warn;
 use url::Url;
+
+use crate::{LANG_ID, LOCALES};
+
+const PROXY: &str = "http://127.0.0.1:8080";
 
 #[must_use]
 #[derive(Clone, PartialEq, ValueEnum, AsRefStr)]
@@ -72,7 +77,7 @@ where
     }
 }
 
-fn ctrl_c<T>(client: &Arc<T>)
+fn handle_ctrl_c<T>(client: &Arc<T>)
 where
     T: Client + Send + Sync + 'static,
 {
@@ -86,4 +91,14 @@ where
         client.shutdown().unwrap();
         process::exit(128 + libc::SIGINT);
     });
+}
+
+fn cert_help_msg() -> String {
+    let args = {
+        let mut map = HashMap::new();
+        map.insert(String::from("cert_path"), default_cert_path().into());
+        map
+    };
+
+    LOCALES.lookup_with_args(&LANG_ID, "cert", &args).unwrap()
 }

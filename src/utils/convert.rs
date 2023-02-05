@@ -42,10 +42,13 @@ pub(crate) async fn convert(novel: &mut Novel, converts: &Vec<Convert>) -> Resul
     Ok(())
 }
 
-pub(crate) fn convert_str<T>(str: T, converts: &Vec<Convert>) -> Result<String>
+pub(crate) fn convert_str<T, E>(str: T, converts: E) -> Result<String>
 where
     T: AsRef<str>,
+    E: AsRef<[Convert]>,
 {
+    let converts = converts.as_ref();
+
     if converts.is_empty() {
         return Ok(str.as_ref().to_string());
     } else {

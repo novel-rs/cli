@@ -1,11 +1,11 @@
-use std::{collections::HashMap, path::PathBuf, sync::Arc};
+use std::{path::PathBuf, process, sync::Arc};
 
 use anyhow::{Ok, Result};
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Timing};
+use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Tag, Timing, WordCountRange};
 use tokio::sync::Semaphore;
-use tracing::{info, log::warn};
+use tracing::{error, info};
 use url::Url;
 
 use crate::{
@@ -23,8 +23,8 @@ pub struct Search {
     pub source: Source,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "show_category").unwrap())]
-    pub show_category: bool,
+        help = LOCALES.lookup(&LANG_ID, "show_categories").unwrap())]
+    pub show_categories: bool,
 
     #[arg(long, default_value_t = false,
         help = LOCALES.lookup(&LANG_ID, "show_tags").unwrap())]
@@ -65,7 +65,7 @@ pub struct Search {
     help = LOCALES.lookup(&LANG_ID, "exclude_tags").unwrap())]
     pub exclude_tags: Vec<String>,
 
-    #[arg(long, default_value_t = 10,
+    #[arg(long, default_value_t = 10, value_parser = value_parser!(u8).range(1..=100),
       help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
     pub limit: u8,
 
@@ -81,7 +81,7 @@ pub struct Search {
     help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
     pub maximum_concurrency: u8,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = "http://127.0.0.1:8080",
+    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -90,15 +90,7 @@ pub struct Search {
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
-        help = {
-            let args = {
-                let mut map = HashMap::new();
-                map.insert(String::from("cert_path"), super::default_cert_path().into());
-                map
-            };
-
-            LOCALES.lookup_with_args(&LANG_ID, "cert", &args).unwrap()
-        })]
+        help = super::cert_help_msg())]
     pub cert: Option<PathBuf>,
 }
 
@@ -114,6 +106,7 @@ pub async fn execute(config: Search) -> Result<()> {
         Source::Ciweimao => {
             let mut client = CiweimaoClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            utils::login(&client, &config.source, config.ignore_keyring).await?;
             do_execute(client, config).await?
         }
     }
@@ -123,95 +116,27 @@ pub async fn execute(config: Search) -> Result<()> {
     Ok(())
 }
 
-async fn show_categories<T>(client: T) -> Result<()>
-where
-    T: Client,
-{
-    let categories = client.categories().await?;
-    let categories = categories
-        .iter()
-        .map(|category| category.name.to_string())
-        .collect::<Vec<String>>()
-        .join("，");
-
-    println!("{categories}");
-
-    Ok(())
-}
-
-async fn show_tags<T>(client: T) -> Result<()>
-where
-    T: Client,
-{
-    let tags = client.tags().await?;
-    let tags = tags
-        .iter()
-        .map(|category| category.name.to_string())
-        .collect::<Vec<String>>()
-        .join("，");
-
-    println!("{tags}");
-
-    Ok(())
-}
-
 async fn do_execute<T>(client: T, config: Search) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    if config.source == Source::Ciweimao {
-        utils::login(&client, &config.source, config.ignore_keyring).await?;
-    }
-
-    if config.show_category {
-        show_categories(client).await?;
+    if config.show_categories {
+        let categories = client.categories().await?;
+        println!("{}", vec_to_string(categories, &config.converts)?);
     } else if config.show_tags {
-        show_tags(client).await?;
+        let tags = client.tags().await?;
+        println!("{}", vec_to_string(tags, &config.converts)?);
     } else {
         let client = Arc::new(client);
-        super::ctrl_c(&client);
-
-        let mut options = Options::default();
-
-        let mut result = Vec::new();
-        let tags = client.tags().await?;
-        for name in config.tags {
-            match tags.iter().find(|tag| tag.name == name) {
-                Some(tag) => result.push(tag),
-                None => warn!("not found tag, ignore"),
-            }
-        }
-        if !result.is_empty() {
-            options.tags = Some(result);
-        }
-
-        let mut result = Vec::new();
-        let tags = client.tags().await?;
-        for name in config.exclude_tags {
-            match tags.iter().find(|tag| tag.name == name) {
-                Some(tag) => result.push(tag),
-                None => warn!("not found tag, ignore"),
-            }
-        }
-        if !result.is_empty() {
-            options.exclude_tags = Some(result);
-        }
-
-        if config.min_word_count.is_some() {
-            options.word_count = Some(novel_api::WordCountRange::RangeFrom(
-                config.min_word_count.unwrap()..,
-            ));
-        }
-
-        let mut novel_infos = Vec::new();
-
-        let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
+        super::handle_ctrl_c(&client);
 
         let mut page = 0;
-        let size = 12;
-        loop {
-            let mut handles = Vec::new();
+        let size = 10;
+        let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
+        let options = create_options(&client, &config).await?;
 
+        let mut novel_infos = Vec::new();
+        loop {
             let novel_ids = if config.keyword.is_some() {
                 client
                     .search_infos(config.keyword.as_ref().unwrap(), page, size)
@@ -224,11 +149,8 @@ where
             }
 
             page += 1;
-            if page > 30 {
-                warn!("Too many requests, terminated");
-                break;
-            }
 
+            let mut handles = Vec::new();
             for novel_id in novel_ids {
                 let client = Arc::clone(&client);
                 let permit = semaphore.clone().acquire_owned().await.unwrap();
@@ -259,4 +181,96 @@ where
     }
 
     Ok(())
+}
+
+fn vec_to_string<T, E>(vec: &[T], convert: E) -> Result<String>
+where
+    T: ToString,
+    E: AsRef<[Convert]>,
+{
+    let result = vec
+        .iter()
+        .map(|item| item.to_string())
+        .collect::<Vec<String>>()
+        .join("、");
+
+    Ok(utils::convert_str(result, convert)?)
+}
+
+async fn create_options<T>(client: &Arc<T>, config: &Search) -> Result<Options>
+where
+    T: Client,
+{
+    let mut options = Options {
+        is_finished: config.is_finished,
+        is_vip: config.is_vip,
+        update_days: config.update_days,
+        ..Default::default()
+    };
+
+    if config.category.is_some() {
+        let categories = client.categories().await?;
+        let name = config.category.as_ref().unwrap();
+
+        match categories.iter().find(|category| category.name == *name) {
+            Some(category) => options.category = Some(category.clone()),
+            None => {
+                error!(
+                    "The category was not found: `{name}`, all available categories are: `{}`",
+                    vec_to_string(categories, &config.converts)?
+                );
+                process::exit(exitcode::DATAERR)
+            }
+        }
+    }
+
+    let tags = to_tags(client, &config.tags, &config.converts).await?;
+    if tags.is_some() {
+        options.tags = Some(tags.unwrap());
+    }
+
+    let tags = to_tags(client, &config.exclude_tags, &config.converts).await?;
+    if tags.is_some() {
+        options.exclude_tags = Some(tags.unwrap());
+    }
+
+    if config.min_word_count.is_some() && config.max_word_count.is_none() {
+        options.word_count = Some(WordCountRange::RangeFrom(config.min_word_count.unwrap()..));
+    } else if config.min_word_count.is_none() && config.max_word_count.is_some() {
+        options.word_count = Some(WordCountRange::RangeTo(..config.max_word_count.unwrap()));
+    } else if config.min_word_count.is_some() && config.max_word_count.is_some() {
+        options.word_count = Some(WordCountRange::Range(
+            config.min_word_count.unwrap()..config.max_word_count.unwrap(),
+        ));
+    }
+
+    Ok(options)
+}
+
+async fn to_tags<T, E>(client: &Arc<T>, str: &Vec<String>, converts: E) -> Result<Option<Vec<Tag>>>
+where
+    T: Client,
+    E: AsRef<[Convert]>,
+{
+    let mut result = Vec::new();
+
+    let tags = client.tags().await?;
+    for name in str {
+        match tags.iter().find(|tag| tag.name == *name) {
+            Some(tag) => result.push(tag.clone()),
+            None => {
+                error!(
+                    "The tag was not found: `{name}`, all available tags are: `{}`",
+                    vec_to_string(tags, converts)?
+                );
+                process::exit(exitcode::DATAERR)
+            }
+        }
+    }
+
+    if !result.is_empty() {
+        Ok(Some(result))
+    } else {
+        Ok(None)
+    }
 }
