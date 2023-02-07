@@ -42,6 +42,7 @@ verbose=Use verbose output
 quiet=Do not print log messages [default: false]
 source=Specify the source of the novel
 image_path=The path of the image to run realcugan-ncnn-vulkan, if not specified, it is the current directory
+read=Read
 
 login_msg={$emoji} Login successful, nickname: {$arg}
 start_msg={$emoji} Start downloading novel: {$arg}

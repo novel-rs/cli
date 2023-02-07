@@ -42,6 +42,7 @@ verbose=使用详细的输出
 quiet=不打印日志 [default: false]
 source=指定小说的来源
 image_path=要运行 realcugan-ncnn-vulkan 的图片所在路径，如果不指定，则为当前目录
+read=Read
 
 login_msg={$emoji} 登录成功，昵称：{$arg}
 start_msg={$emoji} 开始下载小说：{$arg}

@@ -4,8 +4,6 @@ use anyhow::{ensure, Result};
 use clap::Args;
 use fluent_templates::Loader;
 use novel_api::Timing;
-use pulldown_cmark::{Event, Options, Parser};
-use rayon::prelude::*;
 use tracing::info;
 
 use crate::{cmd::Convert, utils, LANG_ID, LOCALES};
@@ -49,18 +47,7 @@ pub fn execute(config: Transform) -> Result<()> {
     }
     meta_data.lang = utils::lang(&config.converts);
 
-    let mut options = Options::all();
-    options.remove(Options::ENABLE_SMART_PUNCTUATION);
-    let parser = Parser::new_ext(&markdown, options);
-
-    let events = parser.collect::<Vec<_>>();
-    let iter = events.into_par_iter().map(|event| match event {
-        Event::Text(text) => {
-            Event::Text(utils::convert_str(text, &config.converts).unwrap().into())
-        }
-        _ => event.to_owned(),
-    });
-    let events = iter.collect::<Vec<Event>>();
+    let events = utils::to_events(&markdown, &config.converts)?;
 
     let mut buf = String::with_capacity(markdown.len() + 1024);
     buf.push_str("---\n");

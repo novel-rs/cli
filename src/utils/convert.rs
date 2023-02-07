@@ -1,4 +1,4 @@
-use anyhow::{Ok, Result};
+use anyhow::Result;
 use novel_api::Timing;
 use once_cell::sync::OnceCell;
 use opencc_rs::{Config, OpenCC};

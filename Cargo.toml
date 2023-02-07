@@ -190,6 +190,11 @@ self_update = { version = "0.34.0", default-features = false, features = [
   "compression-zip-deflate",
   "rustls",
 ] }
+# https://github.com/sharkdp/bat
+bat = { version = "0.22.1", default-features = false, features = [
+  "paging",
+  "regex-onig",
+] }
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions

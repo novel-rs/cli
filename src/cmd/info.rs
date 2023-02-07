@@ -2,9 +2,10 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use anyhow::Result;
-use clap::Args;
+use bat::{PagingMode, PrettyPrinter};
+use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, SfacgClient, Timing};
+use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, Timing};
 use tracing::{info, warn};
 use url::Url;
 
@@ -22,6 +23,14 @@ pub struct Info {
     #[arg(short, long,
         help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
     pub source: Source,
+
+    #[arg(long, default_value_t = false,
+        help = LOCALES.lookup(&LANG_ID, "read").unwrap())]
+    pub read: bool,
+
+    #[arg(long, default_value_t = 10, value_parser = value_parser!(u8).range(1..=16),
+    help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
+    pub limit: u8,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
         help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
@@ -70,18 +79,60 @@ async fn do_execute<T>(client: T, config: Info) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
+    if config.read {
+        utils::login(&client, &config.source, config.ignore_keyring).await?;
+    }
+
     let client = Arc::new(client);
     super::handle_ctrl_c(&client);
 
-    let novel_info = utils::novel_info(&client, config.novel_id).await?;
+    if config.read {
+        let mut count = 0;
+        let mut result = String::with_capacity(16384);
 
-    if let Some(ref url) = novel_info.cover_url {
-        match client.image(url).await {
-            Ok(image) => utils::print_novel_info(Some(image), novel_info, &config.converts)?,
-            Err(error) => warn!("{error}"),
+        'a: for volume in client.volume_infos(config.novel_id).await? {
+            result.push_str(&format!("# {}\n\n", volume.title));
+
+            for chapter in volume.chapter_infos {
+                if chapter.can_download() {
+                    result.push_str(&format!("## {}\n\n", chapter.title));
+
+                    for content_info in client.content_infos(&chapter).await? {
+                        if let ContentInfo::Text(line) = content_info {
+                            result.push_str(&line);
+                            result.push('\n');
+                        }
+                    }
+                    result.push('\n');
+
+                    count += 1;
+                    if count >= config.limit {
+                        break 'a;
+                    }
+                }
+            }
         }
+
+        let events = utils::to_events(&result, &config.converts)?;
+        let mut buf = String::with_capacity(result.len());
+        pulldown_cmark_to_cmark::cmark(events.iter(), &mut buf)?;
+
+        PrettyPrinter::new()
+            .input_from_bytes(buf.as_bytes())
+            .language("markdown")
+            .paging_mode(PagingMode::QuitIfOneScreen)
+            .print()?;
     } else {
-        utils::print_novel_info(None, novel_info, &config.converts)?;
+        let novel_info = utils::novel_info(&client, config.novel_id).await?;
+
+        if let Some(ref url) = novel_info.cover_url {
+            match client.image(url).await {
+                Ok(image) => utils::print_novel_info(Some(image), novel_info, &config.converts)?,
+                Err(error) => warn!("{error}"),
+            }
+        } else {
+            utils::print_novel_info(None, novel_info, &config.converts)?;
+        }
     }
 
     Ok(())

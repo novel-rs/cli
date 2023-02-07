@@ -4,9 +4,11 @@ use std::{
 };
 
 use anyhow::{ensure, Result};
+use pulldown_cmark::{Event, Options, Parser};
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::utils;
+use crate::{cmd::Convert, utils};
 
 #[must_use]
 #[derive(Serialize, Deserialize)]
@@ -56,4 +58,23 @@ where
     let markdown = markdown[index + 5..].to_string();
 
     Ok((meta_data, markdown))
+}
+
+pub(crate) fn to_events<T>(markdown: &str, converts: T) -> Result<Vec<Event>>
+where
+    T: AsRef<[Convert]> + Sync,
+{
+    let mut options = Options::all();
+    options.remove(Options::ENABLE_SMART_PUNCTUATION);
+    let parser = Parser::new_ext(markdown, options);
+
+    let events = parser.collect::<Vec<_>>();
+    let iter = events.into_par_iter().map(|event| match event {
+        Event::Text(text) => {
+            Event::Text(utils::convert_str(text, converts.as_ref()).unwrap().into())
+        }
+        _ => event.to_owned(),
+    });
+
+    Ok(iter.collect::<Vec<Event>>())
 }
