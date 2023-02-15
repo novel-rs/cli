@@ -2347,8 +2347,8 @@ checksum = "2532096657941c2fea9c289d370a250971c689d4f143798ff67113ec042024a5"
 
 [[package]]
 name = "mdbook"
-version = "0.4.25"
-source = "git+https://github.com/rust-lang/mdBook#69bb5c7fbad5f90ed880a00b02f19c09197e745e"
+version = "0.4.27"
+source = "git+https://github.com/rust-lang/mdBook#1668ab78776ea966fa8ea4b335dd1394103d1cad"
 dependencies = [
  "anyhow",
  "chrono",
