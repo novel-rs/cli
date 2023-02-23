@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, path::PathBuf};
 
 use clap::{crate_authors, crate_name, crate_version, value_parser, ArgAction, Parser, Subcommand};
 use fluent_templates::Loader;
@@ -62,9 +62,14 @@ const fn about_msg() -> &'static str {
 #[must_use]
 fn version_msg() -> String {
     format!(
-        "{}\nexe: {}\nconfig dir: {}\ndata dir: {}",
+        "{}\nExecutable Path: {}\nConfig Dir: {}\nData Dir: {}",
         crate_version!(),
-        env::current_exe().unwrap().display(),
+        env::current_exe()
+            .unwrap_or_else(|_| {
+                eprintln!("Unable to get current executable path");
+                PathBuf::from(crate_name!())
+            })
+            .display(),
         novel_api::config_dir_path("").unwrap().display(),
         novel_api::data_dir_path("").unwrap().display()
     )

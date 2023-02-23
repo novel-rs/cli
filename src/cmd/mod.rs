@@ -88,7 +88,7 @@ where
 
         warn!("Download terminated, login data will be saved");
 
-        client.shutdown().unwrap();
+        client.shutdown().await.unwrap();
         process::exit(128 + libc::SIGINT);
     });
 }

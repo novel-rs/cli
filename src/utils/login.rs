@@ -23,7 +23,7 @@ where
             let password = get_password()?;
             client.login(username, password).await?;
         } else {
-            let keyring = Keyring::new(source, &username);
+            let keyring = Keyring::new(source, &username)?;
             let password = keyring.get_password();
 
             if password.is_ok() {

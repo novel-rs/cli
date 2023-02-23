@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use bat::{PagingMode, PrettyPrinter};
-use clap::{value_parser, Args};
+use clap::Args;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, Timing};
 use tracing::{info, warn};
@@ -24,13 +24,9 @@ pub struct Info {
         help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
     pub source: Source,
 
-    #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "read").unwrap())]
-    pub read: bool,
-
-    #[arg(long, default_value_t = 10, value_parser = value_parser!(u8).range(1..=16),
-    help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
-    pub limit: u8,
+    #[arg(long, num_args = 0..=1, default_missing_value = "16",
+        help = LOCALES.lookup(&LANG_ID, "preview").unwrap())]
+    pub preview: Option<u8>,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
         help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
@@ -79,14 +75,14 @@ async fn do_execute<T>(client: T, config: Info) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    if config.read {
+    if config.preview.is_some() {
         utils::login(&client, &config.source, config.ignore_keyring).await?;
     }
 
     let client = Arc::new(client);
     super::handle_ctrl_c(&client);
 
-    if config.read {
+    if config.preview.is_some() {
         let mut count = 0;
         let mut result = String::with_capacity(16384);
 
@@ -106,7 +102,7 @@ where
                     result.push('\n');
 
                     count += 1;
-                    if count >= config.limit {
+                    if count >= config.preview.unwrap() {
                         break 'a;
                     }
                 }

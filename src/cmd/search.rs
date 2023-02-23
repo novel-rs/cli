@@ -62,10 +62,10 @@ pub struct Search {
     pub tags: Vec<String>,
 
     #[arg(long, conflicts_with = "keyword", value_delimiter = ',',
-    help = LOCALES.lookup(&LANG_ID, "exclude_tags").unwrap())]
-    pub exclude_tags: Vec<String>,
+    help = LOCALES.lookup(&LANG_ID, "excluded_tags").unwrap())]
+    pub excluded_tags: Vec<String>,
 
-    #[arg(long, default_value_t = 10, value_parser = value_parser!(u8).range(1..=100),
+    #[arg(long, default_value_t = 16, value_parser = value_parser!(u8).range(1..=100),
       help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
     pub limit: u8,
 
@@ -229,9 +229,9 @@ where
         options.tags = Some(tags.unwrap());
     }
 
-    let tags = to_tags(client, &config.exclude_tags, &config.converts).await?;
+    let tags = to_tags(client, &config.excluded_tags, &config.converts).await?;
     if tags.is_some() {
-        options.exclude_tags = Some(tags.unwrap());
+        options.excluded_tags = Some(tags.unwrap());
     }
 
     if config.min_word_count.is_some() && config.max_word_count.is_none() {

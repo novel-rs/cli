@@ -77,7 +77,7 @@ pub(crate) fn print_novel_info(
     println!(
         "{}：{}",
         utils::convert_str("状态", converts)?,
-        utils::convert_str(try_get_finished(&novel_info), converts)?
+        utils::convert_str(try_get_is_finished(&novel_info), converts)?
     );
 
     println!(
@@ -133,10 +133,10 @@ pub(crate) fn print_novel_infos(
         row.push(utils::convert_str("字数", converts)?);
     }
 
-    let finished = novel_infos
+    let is_finished = novel_infos
         .iter()
-        .any(|novel_info| novel_info.finished.is_some());
-    if finished {
+        .any(|novel_info| novel_info.is_finished.is_some());
+    if is_finished {
         row.push(utils::convert_str("状态", converts)?);
     }
 
@@ -194,9 +194,9 @@ pub(crate) fn print_novel_infos(
             );
         }
 
-        if finished {
+        if is_finished {
             row.push(Cell::new(utils::convert_str(
-                try_get_finished(&novel_info),
+                try_get_is_finished(&novel_info),
                 converts,
             )?));
         }
@@ -244,9 +244,9 @@ fn try_get_word_count(novel_info: &NovelInfo) -> String {
 }
 
 #[must_use]
-fn try_get_finished(novel_info: &NovelInfo) -> String {
-    if novel_info.finished.is_some() {
-        if novel_info.finished.unwrap() {
+fn try_get_is_finished(novel_info: &NovelInfo) -> String {
+    if novel_info.is_finished.is_some() {
+        if novel_info.is_finished.unwrap() {
             String::from("已完结")
         } else {
             String::from("未完结")
