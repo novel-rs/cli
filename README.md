@@ -10,6 +10,12 @@
 
 A set of tools for downloading novels from the web, manipulating text, and generating EPUB
 
+## Platform
+
+- Windows
+- Linux
+- macOS
+
 ## Installation
 
 You can download the compiled file from [release](https://github.com/novel-rs/cli/releases), or compile it yourself
