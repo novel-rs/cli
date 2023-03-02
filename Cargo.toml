@@ -26,7 +26,7 @@ serde = { version = "1.0.152", default-features = false, features = [
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.25.0", default-features = false, features = [
+tokio = { version = "1.26.0", default-features = false, features = [
   "macros",
   "io-std",
   "fs",
@@ -93,7 +93,7 @@ image = { version = "0.24.5", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.1.6", default-features = false, features = [
+clap = { version = "4.1.8", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -107,7 +107,7 @@ clap = { version = "4.1.6", default-features = false, features = [
   "string",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.1.2", default-features = false }
+clap_complete = { version = "4.1.4", default-features = false }
 # https://github.com/console-rs/indicatif
 indicatif = { version = "0.17.3", default-features = false, features = [
   "improved_unicode",
@@ -123,7 +123,7 @@ comfy-table = { version = "6.1.4", default-features = false, features = [
 # https://github.com/atanunq/viuer
 viuer = { version = "0.6.2", default-features = false }
 # https://github.com/sunfishcode/is-terminal
-is-terminal = { version = "0.4.3", default-features = false }
+is-terminal = { version = "0.4.4", default-features = false }
 # https://github.com/conradkleinespel/rpassword
 rpassword = { version = "7.2.0", default-features = false }
 # https://github.com/Manishearth/pathdiff
@@ -164,11 +164,11 @@ fluent-templates = { version = "0.8.0", default-features = false, features = [
   "macros",
 ] }
 # https://github.com/bojand/infer
-infer = { version = "0.12.0", default-features = false, features = ["std"] }
+infer = { version = "0.13.0", default-features = false, features = ["std"] }
 # https://github.com/Arc-blroth/memory-stats
 memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
-bytesize = { version = "1.1.0", default-features = false }
+bytesize = { version = "1.2.0", default-features = false }
 # https://github.com/benwilber/exitcode
 exitcode = { version = "1.1.2", default-features = false }
 # https://github.com/rust-lang/mdBook
