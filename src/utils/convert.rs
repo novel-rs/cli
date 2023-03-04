@@ -8,30 +8,35 @@ use crate::cmd::Convert;
 
 use super::{Content, Novel};
 
-pub(crate) async fn convert(novel: &mut Novel, converts: &Vec<Convert>) -> Result<()> {
-    if converts.is_empty() {
+pub(crate) async fn convert<T>(novel: &mut Novel, converts: T) -> Result<()>
+where
+    T: AsRef<[Convert]>,
+{
+    if converts.as_ref().is_empty() {
         return Ok(());
     }
 
     let mut timing = Timing::new();
 
-    novel.name = convert_str(&novel.name, converts)?;
+    novel.name = convert_str(&novel.name, &converts)?;
+
+    novel.author_name = convert_str(&novel.author_name, &converts)?;
 
     if novel.introduction.is_some() {
         for line in novel.introduction.as_mut().unwrap() {
-            *line = convert_str(&line, converts)?;
+            *line = convert_str(&line, &converts)?;
         }
     }
 
     for volume in &mut novel.volumes {
-        volume.title = convert_str(&volume.title, converts)?;
+        volume.title = convert_str(&volume.title, &converts)?;
 
         for chapter in &mut volume.chapters {
-            chapter.title = convert_str(&chapter.title, converts)?;
+            chapter.title = convert_str(&chapter.title, &converts)?;
 
             for content in chapter.contents.write().await.iter_mut() {
                 if let Content::Text(line) = content {
-                    *line = convert_str(&line, converts)?;
+                    *line = convert_str(&line, &converts)?;
                 }
             }
         }
@@ -52,7 +57,7 @@ where
     if converts.is_empty() {
         return Ok(str.as_ref().to_string());
     } else {
-        let mut result = String::new();
+        let mut result;
 
         static OPENCC_S2T: OnceCell<OpenCC> = OnceCell::new();
         static OPENCC_T2S: OnceCell<OpenCC> = OnceCell::new();
@@ -70,6 +75,8 @@ where
             result = OPENCC_S2T
                 .get_or_try_init(|| OpenCC::new(vec![Config::S2T]))?
                 .convert(&str)?;
+        } else {
+            unreachable!("OpenCC config can only be JP2T2S, T2S and S2T");
         }
 
         if converts.contains(&Convert::CUSTOM) {
@@ -115,15 +122,16 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
         || c == '\u{200D}'
         // https://en.wikipedia.org/wiki/Word_joiner
         || c == '\u{2060}'
+        // https://en.wikipedia.org/wiki/Byte_order_mark
         || c == '\u{FEFF}'
         || c.is_control()
     {
         // do nothing
     } else if c.is_whitespace() {
-        if novel_api::is_some_and(last, |c| !super::is_chinese_punctuation(c)) {
+        if novel_api::is_some_and(last, |c| !super::is_punctuation(c)) {
             result.push(space)
         }
-    } else if super::is_chinese_punctuation(c) || super::is_english_punctuation(c) {
+    } else if super::is_punctuation(c) {
         if novel_api::is_some_and(last, |c| c == space) {
             result.pop();
         }
@@ -144,7 +152,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
                 result.push('：');
             }
         } else if c == ';' {
-            // https://zh.wikipedia.org/wiki/%E4%B8%8D%E6%8D%A2%E8%A1%8C%E7%A9%BA%E6%A0%BC
+            // https://en.wikipedia.org/wiki/Non-breaking_space
             if result.ends_with("&nbsp") {
                 result.truncate(result.len() - 5);
                 result.push(' ');
@@ -209,6 +217,7 @@ mod tests {
         assert_eq!(convert_str("，，，", &config)?, "，");
         assert_eq!(convert_str("安　装", &config)?, "安 装");
         assert_eq!(convert_str("你\n好", &config)?, "你\n好");
+        assert_eq!(convert_str("08:00", &config)?, "08:00");
 
         Ok(())
     }

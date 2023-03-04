@@ -31,7 +31,7 @@ where
 
                 client.login(username, password.unwrap()).await?;
             } else {
-                info!("Unable to get password from keyring");
+                info!("Unable to get password from Keyring");
 
                 let password = get_password()?;
                 client.login(username, &password).await?;
@@ -51,7 +51,14 @@ fn get_username() -> Result<String> {
     let mut buffer = String::new();
     io::stdin().read_line(&mut buffer)?;
 
-    Ok(buffer.trim().to_string())
+    if buffer.ends_with('\n') {
+        buffer.pop();
+        if buffer.ends_with('\r') {
+            buffer.pop();
+        }
+    }
+
+    Ok(buffer.to_string())
 }
 
 fn get_password() -> Result<String> {

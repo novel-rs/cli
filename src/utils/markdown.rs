@@ -3,7 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{ensure, Result};
+use anyhow::{bail, ensure, Result};
 use pulldown_cmark::{Event, Options, Parser};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -27,9 +27,7 @@ impl MetaData {
     }
 
     pub(crate) fn cover_image_is_ok(&self) -> bool {
-        !novel_api::is_some_and(self.cover_image.as_ref(), |cover_image| {
-            !cover_image.is_file()
-        })
+        !novel_api::is_some_and(self.cover_image.as_ref(), |path| !path.is_file())
     }
 }
 
@@ -48,16 +46,19 @@ where
 
     ensure!(
         markdown.starts_with("---"),
-        "Markdown format is incorrectnot: start with `---`"
+        "The markdown format is incorrect, it should start with `---`"
     );
 
-    let index = markdown.find("\n...\n").unwrap();
-    let yaml = &markdown[4..index];
+    if let Some(index) = markdown.find("\n...\n") {
+        let yaml = &markdown[4..index];
 
-    let meta_data: MetaData = serde_yaml::from_str(yaml).unwrap();
-    let markdown = markdown[index + 5..].to_string();
+        let meta_data: MetaData = serde_yaml::from_str(yaml)?;
+        let markdown = markdown[index + 5..].to_string();
 
-    Ok((meta_data, markdown))
+        Ok((meta_data, markdown))
+    } else {
+        bail!("The markdown format is incorrect, it should end with `...`");
+    }
 }
 
 pub(crate) fn to_events<T>(markdown: &str, converts: T) -> Result<Vec<Event>>
