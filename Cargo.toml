@@ -58,7 +58,7 @@ simdutf8 = { version = "0.1.4", default-features = false, features = [
   "aarch64_neon",
 ] }
 # https://github.com/rayon-rs/rayon
-rayon = { version = "1.6.1", default-features = false }
+rayon = { version = "1.7.0", default-features = false }
 # https://github.com/tokio-rs/tracing
 tracing = { version = "0.1.37", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/tracing
