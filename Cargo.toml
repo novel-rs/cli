@@ -156,7 +156,7 @@ zip = { version = "0.6.4", default-features = false, features = [
   "time",
 ] }
 # https://github.com/1Password/sys-locale
-sys-locale = { version = "0.2.3", default-features = false }
+sys-locale = { version = "0.2.4", default-features = false }
 # https://github.com/zbraniecki/unic-locale
 unic-langid = { version = "0.9.1", default-features = false }
 # https://github.com/XAMPPRocky/fluent-templates
