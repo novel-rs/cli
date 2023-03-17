@@ -2718,7 +2718,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "opencc-rs"
 version = "0.3.0"
-source = "git+https://github.com/novel-rs/opencc-rs#c38060d19a7c99dda5a9fdd06c142ff00a8214d2"
+source = "git+https://github.com/novel-rs/opencc-rs#cb290ef70882fac4b01e5610e4669c3a647b8424"
 dependencies = [
  "libc",
  "opencc-sys",
@@ -2729,7 +2729,7 @@ dependencies = [
 [[package]]
 name = "opencc-sys"
 version = "0.1.7+1.1.6"
-source = "git+https://github.com/novel-rs/opencc-rs#c38060d19a7c99dda5a9fdd06c142ff00a8214d2"
+source = "git+https://github.com/novel-rs/opencc-rs#cb290ef70882fac4b01e5610e4669c3a647b8424"
 dependencies = [
  "bindgen 0.64.0",
  "cmake",
