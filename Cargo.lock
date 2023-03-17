@@ -2473,7 +2473,7 @@ dependencies = [
 [[package]]
 name = "novel-api"
 version = "0.4.0"
-source = "git+https://github.com/novel-rs/api#af5541da7c9dd9554bcee7670bfa33a7432f317f"
+source = "git+https://github.com/novel-rs/api#2875ffb0095cff561bf8e75f41b96c9f18eb0599"
 dependencies = [
  "async-compression",
  "async-trait",
