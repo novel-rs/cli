@@ -14,9 +14,9 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
-opencc-rs = { git = "https://github.com/novel-rs/opencc-rs" }
+opencc-rs = { version = "0.3.0", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { git = "https://github.com/novel-rs/api" }
+novel-api = { git = "https://github.com/novel-rs/api", default-features = false }
 
 # https://github.com/dtolnay/anyhow
 anyhow = { version = "1.0.69", default-features = false, features = ["std"] }

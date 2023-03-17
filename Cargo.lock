@@ -2473,7 +2473,7 @@ dependencies = [
 [[package]]
 name = "novel-api"
 version = "0.4.0"
-source = "git+https://github.com/novel-rs/api#af5541da7c9dd9554bcee7670bfa33a7432f317f"
+source = "git+https://github.com/novel-rs/api#2875ffb0095cff561bf8e75f41b96c9f18eb0599"
 dependencies = [
  "async-compression",
  "async-trait",
@@ -2718,7 +2718,8 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "opencc-rs"
 version = "0.3.0"
-source = "git+https://github.com/novel-rs/opencc-rs#c38060d19a7c99dda5a9fdd06c142ff00a8214d2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d8d048459f12d4b34c43630d28c1dc1b087d654e58f293d0552d88d776a5a5ae"
 dependencies = [
  "libc",
  "opencc-sys",
@@ -2729,7 +2730,8 @@ dependencies = [
 [[package]]
 name = "opencc-sys"
 version = "0.1.7+1.1.6"
-source = "git+https://github.com/novel-rs/opencc-rs#c38060d19a7c99dda5a9fdd06c142ff00a8214d2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8c65344d50f6392714a4e9baaca57deef886b5a17d051ddee96828de4175580a"
 dependencies = [
  "bindgen 0.64.0",
  "cmake",
