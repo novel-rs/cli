@@ -19,7 +19,7 @@ opencc-rs = { version = "0.3.0", default-features = false }
 novel-api = { git = "https://github.com/novel-rs/api", default-features = false }
 
 # https://github.com/dtolnay/anyhow
-anyhow = { version = "1.0.69", default-features = false, features = ["std"] }
+anyhow = { version = "1.0.70", default-features = false, features = ["std"] }
 # https://github.com/serde-rs/serde
 serde = { version = "1.0.156", default-features = false, features = [
   "std",
