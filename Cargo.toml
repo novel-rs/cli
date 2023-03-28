@@ -93,7 +93,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.1.11", default-features = false, features = [
+clap = { version = "4.1.14", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -107,7 +107,7 @@ clap = { version = "4.1.11", default-features = false, features = [
   "string",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.1.5", default-features = false }
+clap_complete = { version = "4.1.6", default-features = false }
 # https://github.com/console-rs/indicatif
 indicatif = { version = "0.17.3", default-features = false, features = [
   "improved_unicode",
