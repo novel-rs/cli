@@ -191,7 +191,7 @@ self_update = { version = "0.36.0", default-features = false, features = [
   "rustls",
 ] }
 # https://github.com/sharkdp/bat
-bat = { version = "0.22.1", default-features = false, features = [
+bat = { version = "0.23.0", default-features = false, features = [
   "paging",
   "regex-onig",
 ] }
