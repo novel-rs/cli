@@ -139,7 +139,7 @@ trash = { version = "3.0.1", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Seeker14491/opener
-opener = { version = "0.5.2", default-features = false }
+opener = { version = "0.6.0", default-features = false }
 # https://github.com/dtolnay/serde-yaml
 serde_yaml = { version = "0.9.19", default-features = false }
 # https://github.com/toml-rs/toml
