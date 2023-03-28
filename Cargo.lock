@@ -2354,7 +2354,7 @@ dependencies = [
  "log",
  "memchr",
  "once_cell",
- "opener",
+ "opener 0.5.2",
  "pulldown-cmark",
  "regex",
  "serde",
@@ -2488,6 +2488,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "normpath"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "972dec05f98e7c787ede35d7a9ea4735eb7788c299287352757b3def6cc1f7b5"
+dependencies = [
+ "windows-sys 0.45.0",
+]
+
+[[package]]
 name = "novel-api"
 version = "0.4.0"
 source = "git+https://github.com/novel-rs/api#f5d30ed63fe17337a7f1d3d1233c45d961f06708"
@@ -2505,7 +2514,7 @@ dependencies = [
  "keyring",
  "machine-uid",
  "once_cell",
- "opener",
+ "opener 0.5.2",
  "parking_lot 0.12.1",
  "portpicker",
  "reqwest",
@@ -2554,7 +2563,7 @@ dependencies = [
  "novel-api",
  "once_cell",
  "opencc-rs",
- "opener",
+ "opener 0.6.0",
  "parking_lot 0.12.1",
  "pathdiff",
  "pretty_assertions",
@@ -2763,6 +2772,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "293c15678e37254c15bd2f092314abb4e51d7fdde05c2021279c12631b54f005"
 dependencies = [
  "bstr",
+ "winapi",
+]
+
+[[package]]
+name = "opener"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d57fbd03b7f4ab9605d497df6f1cb7ea0ac60b18a2038b1e66e5ab34fe01fa99"
+dependencies = [
+ "bstr",
+ "normpath",
  "winapi",
 ]
 
