@@ -38,7 +38,7 @@ The **novel-cli build** subcommand requires [pandoc](https://github.com/jgm/pand
 The **novel-cli real-cugan** subcommand requires [realcugan-ncnn-vulkan](https://github.com/nihui/realcugan-ncnn-vulkan)
 
 ## Usage
- 
+
 
 You can run `novel-cli help` to view help information
 
@@ -48,10 +48,10 @@ You can run `novel-cli help` to view help information
   novel-cli [OPTIONS] <COMMAND> [COMMAND-OPTIONS] [ARGUMENTS]
   ````
 - **Download a novel from source in format**
-  ```shell 
+  ```shell
   novel-cli download <bookid> --source <app-source> --format <output-format>
   ```
-   
+
 ### Commands
 
 - `download`: Download novels from various sources.
