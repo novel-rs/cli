@@ -51,6 +51,10 @@ You can run `novel-cli help` to view help information
   ```shell
   novel-cli download <bookid> --source <app-source> --format <output-format>
   ```
+- **Search for a novel from source**
+  ```shell
+    novel-cli search --source <SOURCE> <KEYWORD>
+    ```
 
 ### Commands
 
