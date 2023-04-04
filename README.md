@@ -69,7 +69,7 @@ You can run `novel-cli help` to view help information
 - `help`: Print this message or the help of the given subcommand(s).
   ### Options
     - `-v, --verbose`: Use verbose output. This option provides more detailed output.
-    - `-q, --quiet`: Do not print logs (default: false). This option suppresses logging output.
+    - `-q, --quiet`: Do not print logs (default: **false**). This option suppresses logging output.
     - `-h, --help`: Print help. This option displays the help information.
     - `-V, --version`: Print version. This option prints the version information.
 
