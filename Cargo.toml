@@ -16,7 +16,7 @@ categories = ["command-line-utilities"]
 # https://github.com/novel-rs/opencc-rs
 opencc-rs = { version = "0.3.0", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { git = "https://github.com/novel-rs/api", default-features = false }
+novel-api = { version = "0.4.0", default-features = false }
 
 # https://github.com/dtolnay/anyhow
 anyhow = { version = "1.0.70", default-features = false, features = ["std"] }
@@ -77,7 +77,7 @@ tracing-log = { version = "0.1.3", default-features = false, features = [
   "log-tracer",
 ] }
 # https://github.com/rust-lang/libc
-libc = { version = "0.2.140", default-features = false, features = ["std"] }
+libc = { version = "0.2.141", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
 bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
@@ -123,7 +123,7 @@ comfy-table = { version = "6.1.4", default-features = false, features = [
 # https://github.com/atanunq/viuer
 viuer = { version = "0.6.2", default-features = false }
 # https://github.com/sunfishcode/is-terminal
-is-terminal = { version = "0.4.6", default-features = false }
+is-terminal = { version = "0.4.7", default-features = false }
 # https://github.com/conradkleinespel/rpassword
 rpassword = { version = "7.2.0", default-features = false }
 # https://github.com/Manishearth/pathdiff
@@ -141,7 +141,7 @@ trash = { version = "3.0.1", default-features = false, features = [
 # https://github.com/Seeker14491/opener
 opener = { version = "0.6.0", default-features = false }
 # https://github.com/dtolnay/serde-yaml
-serde_yaml = { version = "0.9.19", default-features = false }
+serde_yaml = { version = "0.9.21", default-features = false }
 # https://github.com/toml-rs/toml
 toml = { version = "0.7.3", default-features = false, features = ["display"] }
 # https://github.com/raphlinus/pulldown-cmark
@@ -156,7 +156,7 @@ zip = { version = "0.6.4", default-features = false, features = [
   "time",
 ] }
 # https://github.com/1Password/sys-locale
-sys-locale = { version = "0.2.4", default-features = false }
+sys-locale = { version = "0.3.0", default-features = false }
 # https://github.com/zbraniecki/unic-locale
 unic-langid = { version = "0.9.1", default-features = false }
 # https://github.com/XAMPPRocky/fluent-templates
