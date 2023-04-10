@@ -6,7 +6,7 @@ use clap::{value_parser, Args};
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, SfacgClient, Timing};
 use tokio::sync::Semaphore;
-use tracing::info;
+use tracing::{info, warn};
 use url::Url;
 
 use crate::cmd::{Convert, Source};
@@ -86,14 +86,20 @@ where
         let permit = semaphore.clone().acquire_owned().await.unwrap();
 
         handles.push(tokio::spawn(async move {
-            let novel_info = utils::novel_info(&client, novel_id).await?;
+            let novel_info = client.novel_info(novel_id).await?;
             drop(permit);
             Ok(novel_info)
         }));
     }
 
     for handle in handles {
-        novel_infos.push(handle.await??);
+        let novel_info = handle.await??;
+
+        if novel_info.is_none() {
+            warn!("The novel does not exist, and it may have been taken down");
+        } else {
+            novel_infos.push(novel_info.unwrap());
+        }
     }
 
     utils::print_novel_infos(novel_infos, &config.converts)?;
