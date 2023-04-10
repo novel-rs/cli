@@ -28,6 +28,7 @@ If you compile it yourself, you need the following dependencies:
 
 - Clang
 - CMake
+- Python / Python3
 
 If you are using Windows, you also need:
 
@@ -39,22 +40,27 @@ The **novel-cli real-cugan** subcommand requires [realcugan-ncnn-vulkan](https:/
 
 ## Usage
 
-
 You can run `novel-cli help` to view help information
 
 ### Examples
+
 - **The basic format of the command is:**
-  ```shell
-  novel-cli [OPTIONS] <COMMAND> [COMMAND-OPTIONS] [ARGUMENTS]
-  ````
+
+```shell
+novel-cli [OPTIONS] <COMMAND> [COMMAND-OPTIONS] [ARGUMENTS]
+```
+
 - **Download a novel from source in format**
-  ```shell
-  novel-cli download <bookid> --source <app-source> --format <output-format>
-  ```
+
+```shell
+novel-cli download <bookid> --source <app-source> --format <output-format>
+```
+
 - **Search for a novel from source**
-  ```shell
-    novel-cli search --source <SOURCE> <KEYWORD>
-    ```
+
+```shell
+novel-cli search --source <SOURCE> <KEYWORD>
+```
 
 ### Commands
 
@@ -71,11 +77,13 @@ You can run `novel-cli help` to view help information
 - `update`: Check for updates, download files from GitHub, and replace them.
 - `completions`: Generate shell completions to standard output.
 - `help`: Print this message or the help of the given subcommand(s).
-  ### Options
-    - `-v, --verbose`: Use verbose output. This option provides more detailed output.
-    - `-q, --quiet`: Do not print logs (default: **false**). This option suppresses logging output.
-    - `-h, --help`: Print help. This option displays the help information.
-    - `-V, --version`: Print version. This option prints the version information.
+
+### Options
+
+- `-v, --verbose`: Use verbose output. This option provides more detailed output.
+- `-q, --quiet`: Do not print logs (default: **false**). This option suppresses logging output.
+- `-h, --help`: Print help. This option displays the help information.
+- `-V, --version`: Print version. This option prints the version information.
 
 ## Contributing
 
