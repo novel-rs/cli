@@ -11,6 +11,10 @@ static_loader! {
     static LOCALES = {
         locales: "./locales",
         fallback_language: "en-US",
+        // Windows terminal does not seem to support isolating marks
+        // See https://github.com/XAMPPRocky/fluent-templates/issues/21
+        // TODO Should it be disabled directly?
+        customise: |bundle| bundle.set_use_isolating(false),
     };
 }
 
