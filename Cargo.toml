@@ -21,7 +21,7 @@ novel-api = { version = "0.4.0", default-features = false }
 # https://github.com/dtolnay/anyhow
 anyhow = { version = "1.0.70", default-features = false, features = ["std"] }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.159", default-features = false, features = [
+serde = { version = "1.0.160", default-features = false, features = [
   "std",
   "derive",
 ] }
