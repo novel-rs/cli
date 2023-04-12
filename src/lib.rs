@@ -19,10 +19,16 @@ static_loader! {
 }
 
 pub static LANG_ID: Lazy<LanguageIdentifier> = Lazy::new(|| {
-    let locale = sys_locale::get_locale().unwrap_or_else(|| {
+    let mut locale = sys_locale::get_locale().unwrap_or_else(|| {
         eprintln!("Failed to get active locale for the system, use `en-US`");
         String::from("en-US")
     });
+
+    if locale == "zh-CN" {
+        locale = "zh-Hans".to_string();
+    } else if locale == "zh-HK" || locale == "zh-TW" {
+        locale = "zh-Hant".to_string();
+    }
 
     match locale.parse::<LanguageIdentifier>() {
         Ok(lang_id) => lang_id,
