@@ -202,7 +202,7 @@ pretty_assertions = { version = "1.3.0", default-features = false, features = [
   "std",
 ] }
 # https://github.com/assert-rs/assert_cmd
-assert_cmd = { version = "2.0.10", default-features = false, features = [
+assert_cmd = { version = "2.0.11", default-features = false, features = [
   "color-auto",
 ] }
 
