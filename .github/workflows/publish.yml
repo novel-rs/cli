@@ -44,19 +44,10 @@ jobs:
           toolchain: stable
           targets: ${{ matrix.target }}
 
-      # https://github.com/taiki-e/install-action
-      - name: Install cargo-semver-checks
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-semver-checks
-
       # https://github.com/obi1kenobi/cargo-semver-checks-action
       - name: Check semver
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: obi1kenobi/cargo-semver-checks-action@v1
-        with:
-          version-tag-prefix: ""
+        uses: obi1kenobi/cargo-semver-checks-action@v2
 
       - name: Publish
         if: ${{ matrix.os == 'ubuntu-latest' }}

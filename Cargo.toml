@@ -19,14 +19,14 @@ opencc-rs = { version = "0.3.0", default-features = false }
 novel-api = { version = "0.4.0", default-features = false }
 
 # https://github.com/dtolnay/anyhow
-anyhow = { version = "1.0.70", default-features = false, features = ["std"] }
+anyhow = { version = "1.0.71", default-features = false, features = ["std"] }
 # https://github.com/serde-rs/serde
 serde = { version = "1.0.160", default-features = false, features = [
   "std",
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.27.0", default-features = false, features = [
+tokio = { version = "1.28.0", default-features = false, features = [
   "macros",
   "io-std",
   "fs",
@@ -62,7 +62,7 @@ rayon = { version = "1.7.0", default-features = false }
 # https://github.com/tokio-rs/tracing
 tracing = { version = "0.1.37", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/tracing
-tracing-subscriber = { version = "0.3.16", default-features = false, features = [
+tracing-subscriber = { version = "0.3.17", default-features = false, features = [
   "std",
   "fmt",
   "ansi",
@@ -77,13 +77,13 @@ tracing-log = { version = "0.1.3", default-features = false, features = [
   "log-tracer",
 ] }
 # https://github.com/rust-lang/libc
-libc = { version = "0.2.141", default-features = false, features = ["std"] }
+libc = { version = "0.2.142", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
 bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
 url = { version = "2.3.1", default-features = false }
 # https://github.com/rust-lang/regex
-regex = "1.7.3"
+regex = "1.8.1"
 # https://github.com/image-rs/image
 image = { version = "0.24.6", default-features = false, features = [
   "png",
@@ -93,7 +93,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.2.1", default-features = false, features = [
+clap = { version = "4.2.7", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -107,7 +107,7 @@ clap = { version = "4.2.1", default-features = false, features = [
   "string",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.2.0", default-features = false }
+clap_complete = { version = "4.2.1", default-features = false }
 # https://github.com/console-rs/indicatif
 indicatif = { version = "0.17.3", default-features = false, features = [
   "improved_unicode",
@@ -139,7 +139,7 @@ trash = { version = "3.0.1", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Seeker14491/opener
-opener = { version = "0.6.0", default-features = false }
+opener = { version = "0.6.1", default-features = false }
 # https://github.com/dtolnay/serde-yaml
 serde_yaml = { version = "0.9.21", default-features = false }
 # https://github.com/toml-rs/toml
@@ -190,11 +190,17 @@ self_update = { version = "0.36.0", default-features = false, features = [
   "compression-zip-deflate",
   "rustls",
 ] }
-# https://github.com/sharkdp/bat
-bat = { version = "0.23.0", default-features = false, features = [
-  "paging",
-  "regex-onig",
+# https://github.com/gyscos/cursive
+cursive = { version = "0.20.0", default-features = false, features = [
+  "crossterm-backend",
 ] }
+# https://github.com/rust-lang/futures-rs
+futures = { version = "0.3.28", default-features = false, features = [
+  "std",
+  "executor",
+] }
+# https://github.com/zkat/supports-color
+supports-color = { version = "2.0.0", default-features = false }
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions
@@ -202,7 +208,7 @@ pretty_assertions = { version = "1.3.0", default-features = false, features = [
   "std",
 ] }
 # https://github.com/assert-rs/assert_cmd
-assert_cmd = { version = "2.0.10", default-features = false, features = [
+assert_cmd = { version = "2.0.11", default-features = false, features = [
   "color-auto",
 ] }
 

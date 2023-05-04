@@ -76,7 +76,7 @@ where
                 .get_or_try_init(|| OpenCC::new(vec![Config::S2T]))?
                 .convert(&str)?;
         } else {
-            unreachable!("OpenCC config can only be JP2T2S, T2S and S2T");
+            unreachable!("OpenCC config can only be JP2T2S, T2S or S2T");
         }
 
         if converts.contains(&Convert::CUSTOM) {
@@ -96,13 +96,28 @@ fn custom_convert<T>(str: T) -> String
 where
     T: AsRef<str>,
 {
-    let str = html_escape::decode_html_entities(str.as_ref()).to_string();
+    if str.as_ref().is_empty() {
+        return String::default();
+    }
+
+    let mut s = String::new();
+    for c in html_escape::decode_html_entities(str.as_ref())
+        .to_string()
+        .chars()
+    {
+        match super::CONVERT_MAP.get(&c) {
+            Some(new) => {
+                s.push(*new);
+            }
+            None => s.push(c),
+        }
+    }
 
     let mut result = String::new();
-    for (c, next_c) in str.chars().zip(str.chars().skip(1)) {
+    for (c, next_c) in s.chars().zip(s.chars().skip(1)) {
         do_custom_convert(c, Some(next_c), &mut result);
     }
-    do_custom_convert(str.chars().last().unwrap(), None, &mut result);
+    do_custom_convert(s.chars().last().unwrap(), None, &mut result);
 
     result.trim().to_string()
 }
@@ -132,7 +147,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
             result.push(space)
         }
     } else if super::is_punctuation(c) {
-        if novel_api::is_some_and(last, |c| c == space) {
+        if novel_api::is_some_and(last, |c| c.is_whitespace()) {
             result.pop();
         }
 
@@ -143,7 +158,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
         } else if c == ',' {
             result.push('，');
         } else if c == ':' {
-            // 08:00
+            // e.g. 08:00
             if novel_api::is_some_and(last, |c| c.is_ascii_digit())
                 && novel_api::is_some_and(next_c, |c| c.is_ascii_digit())
             {
@@ -188,12 +203,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
             result.push(c);
         }
     } else {
-        match super::CONVERT_MAP.get(&c) {
-            Some(new) => {
-                result.push(*new);
-            }
-            None => result.push(c),
-        }
+        result.push(c);
     }
 }
 

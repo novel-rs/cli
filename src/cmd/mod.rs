@@ -4,6 +4,7 @@ pub mod completions;
 pub mod download;
 pub mod favorites;
 pub mod info;
+pub mod read;
 pub mod real_cugan;
 pub mod search;
 pub mod transform;

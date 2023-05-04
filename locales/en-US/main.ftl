@@ -1,6 +1,7 @@
 download_command = Download novel from sfacg/ciweimao
 search_command = Search novel from sfacg/ciweimao
 info_command = Show novel information from sfacg/ciweimao
+read_command = Read novel from sfacg/ciweimao
 favorites_command = Show favorite novel from sfacg/ciweimao
 transform_command = Transform pandoc-style markdown file
 check_command = Check pandoc-style markdown file format and content
@@ -42,10 +43,12 @@ verbose = Use verbose output
 quiet = Do not print log messages [default: false]
 source = Specify the source of the novel
 image_path = The path of the image to run realcugan-ncnn-vulkan, if not specified, it is the current directory
-preview = Preview the content of the novel, you can specify the number of chapters to preview [default: 16]
 
 login_msg = {$emoji} Login successful, nickname: {$arg}
 start_msg = {$emoji} Start downloading novel: {$arg}
 download_complete_msg = {$emoji} Novel download complete
 build_complete_msg = {$emoji} Novel build complete
 build_msg = {$emoji} Start building {$arg} format output
+
+download_failed_msg = Failed to download this chapter
+inaccessible_msg = This chapter was not purchased or this chapter is inaccessible

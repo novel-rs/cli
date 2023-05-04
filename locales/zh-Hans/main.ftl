@@ -1,6 +1,7 @@
 download_command = 从菠萝包/刺猬猫上下载小说
 search_command = 从菠萝包/刺猬猫上搜索小说
 info_command = 显示菠萝包/刺猬猫小说信息
+read_command = 阅读菠萝包/刺猬猫的小说
 favorites_command = 显示菠萝包/刺猬猫收藏夹小说
 transform_command = 转换 pandoc 风格的 markdown 文件
 check_command = 检查 pandoc 风格的 markdown 文件的格式和内容
@@ -42,10 +43,12 @@ verbose = 使用详细的输出
 quiet = 不打印日志 [default: false]
 source = 指定小说的来源
 image_path = 要运行 realcugan-ncnn-vulkan 的图片所在路径，如果不指定，则为当前目录
-preview = 预览小说内容，可以指定要预览章节数 [default: 16]
 
 login_msg = {$emoji} 登录成功，昵称：{$arg}
 start_msg = {$emoji} 开始下载小说：{$arg}
 download_complete_msg = {$emoji} 小说下载完成
 build_complete_msg = {$emoji} 小说构建完成
 build_msg = {$emoji} 开始构建 {$arg} 格式输出
+
+download_failed_msg = 无法下载该章节
+inaccessible_msg = 该章节未购买或者该章节无法访问

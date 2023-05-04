@@ -5,14 +5,15 @@ use bytesize::ByteSize;
 use clap::Parser;
 use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
+use supports_color::Stream;
 use tracing::{debug, info, subscriber, warn};
 use tracing_log::LogTracer;
 use tracing_subscriber::EnvFilter;
 
 use novel_cli::{
     cmd::{
-        self, build, check, completions, download, favorites, info, real_cugan, search, transform,
-        unzip, update,
+        self, build, check, completions, download, favorites, info, read, real_cugan, search,
+        transform, unzip, update,
     },
     config::{Commands, Config},
 };
@@ -32,6 +33,7 @@ async fn main() -> Result<()> {
         Commands::Download(config) => download::execute(config).await?,
         Commands::Search(config) => search::execute(config).await?,
         Commands::Info(config) => info::execute(config).await?,
+        Commands::Read(config) => read::execute(config).await?,
         Commands::Favorites(config) => favorites::execute(config).await?,
         Commands::Transform(config) => transform::execute(config)?,
         Commands::Check(config) => check::execute(config)?,
@@ -58,7 +60,7 @@ async fn main() -> Result<()> {
 }
 
 fn init_log(config: &Config) -> Result<()> {
-    if config.verbose >= 1 {
+    if config.verbose == 4 {
         LogTracer::init()?;
     }
 
@@ -80,6 +82,7 @@ fn init_log(config: &Config) -> Result<()> {
 
     let subscriber = tracing_subscriber::fmt()
         .without_time()
+        .with_ansi(supports_color::on(Stream::Stdout).is_some())
         .with_env_filter(EnvFilter::from_default_env())
         .finish();
 
