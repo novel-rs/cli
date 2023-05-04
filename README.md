@@ -42,6 +42,8 @@ The **novel-cli real-cugan** subcommand requires [realcugan-ncnn-vulkan](https:/
 
 You can run `novel-cli help` to view help information
 
+Note that markdown file downloaded by `novel-cli download --format=pandoc` often need to be manually modified before using `novel-cli build` to create epub.
+
 ### Examples
 
 - **The basic format of the command is:**
@@ -67,6 +69,7 @@ novel-cli search --source <SOURCE> <KEYWORD>
 - `download`: Download novels from various sources.
 - `search`: Search for novels on various sources.
 - `info`: Print information about a novel on various sources.
+- `read`: Read novel from various sources.
 - `favorites`: Show saved favorite novels on various sources.
 - `transform`: Convert markdown files to pandoc style.
 - `check`: Check the format and content of pandoc style markdown files.
