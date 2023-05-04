@@ -75,6 +75,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
     env::set_current_dir(&config.build_path)?;
 
     let mut pandoc = Command::new("pandoc")
+        .arg("--from=commonmark_x")
         .arg("--split-level=2")
         .arg("--epub-title-page=false")
         .args(["-o", output_path.to_str().unwrap()])
