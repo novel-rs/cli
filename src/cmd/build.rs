@@ -1,4 +1,4 @@
-use std::{path::PathBuf, process::Command};
+use std::{env, fs, path::PathBuf, process::Command};
 
 use anyhow::{bail, ensure, Result};
 use clap::Args;
@@ -11,6 +11,8 @@ use walkdir::WalkDir;
 
 use crate::{utils, LANG_ID, LOCALES};
 
+use super::Format;
+
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
@@ -18,6 +20,10 @@ use crate::{utils, LANG_ID, LOCALES};
 pub struct Build {
     #[arg(help = LOCALES.lookup(&LANG_ID, "build_path").unwrap())]
     pub build_path: PathBuf,
+
+    #[arg(short, long, value_enum,
+        help = LOCALES.lookup(&LANG_ID, "format").unwrap())]
+    pub format: Format,
 
     #[arg(short, long, default_value_t = false,
         help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
@@ -29,20 +35,20 @@ pub struct Build {
 }
 
 pub fn execute(config: Build) -> Result<()> {
-    ensure!(config.build_path.exists(), "Build input does not exist");
+    ensure!(config.build_path.is_dir(), "Build input does not exist");
 
     let mut timing = Timing::new();
 
-    if utils::is_markdown(&config.build_path) {
+    if config.format == Format::Pandoc {
         println!("{}", utils::locales_with_arg("build_msg", "📚", "pandoc"));
         execute_pandoc(config)?;
         info!("Time spent on `pandoc build`: {}", timing.elapsed()?);
-    } else if config.build_path.is_dir() {
+    } else if config.format == Format::Mdbook {
         println!("{}", utils::locales_with_arg("build_msg", "📚", "mdBook"));
         execute_mdbook(config)?;
         info!("Time spent on `mdBook build`: {}", timing.elapsed()?);
     } else {
-        bail!(
+        unreachable!(
             "Unsupported input format: `{}`",
             config.build_path.display()
         );
@@ -54,31 +60,35 @@ pub fn execute(config: Build) -> Result<()> {
 }
 
 pub fn execute_pandoc(config: Build) -> Result<()> {
-    let mut output_path = utils::file_stem(&config.build_path)?;
-    output_path.set_extension("epub");
+    let input_path = config.build_path.with_extension("md");
+    let output_path = fs::canonicalize(&config.build_path)?
+        .parent()
+        .unwrap()
+        .join(config.build_path.with_extension("epub"));
 
     if output_path.exists() {
-        warn!("The epub output file already exists and will be overwritten");
+        warn!("The epub output file already exists and will be deleted");
+        utils::remove_file_or_dir(&output_path)?;
     }
+
+    let backup = env::current_dir()?;
+    env::set_current_dir(&config.build_path)?;
 
     let mut pandoc = Command::new("pandoc")
         .arg("--split-level=2")
         .arg("--epub-title-page=false")
         .args(["-o", output_path.to_str().unwrap()])
-        .arg(&config.build_path)
+        .arg(input_path)
         .spawn()?;
     let status = pandoc.wait()?;
     if !status.success() {
         bail!("`pandoc` failed to execute");
     }
 
+    env::set_current_dir(backup)?;
+
     if config.delete {
         utils::remove_file_or_dir(&config.build_path)?;
-
-        let images_path = config.build_path.parent().unwrap().join("images");
-        if images_path.exists() {
-            utils::remove_file_or_dir(&images_path)?;
-        }
     }
 
     if config.open {

@@ -1,4 +1,4 @@
-use std::{env, fmt, path::PathBuf, sync::Arc};
+use std::{fmt, path::PathBuf, sync::Arc};
 
 use anyhow::Result;
 use novel_api::Timing;
@@ -17,17 +17,14 @@ use crate::{
 pub(crate) async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
     let mut timing = Timing::new();
 
-    let path = utils::to_markdown_file_name(&novel.name);
-    if path.is_file() {
+    let images_path = images_path(&novel.name)?;
+    if images_path.is_dir() {
         warn!("The epub output file already exists and will be overwritten");
+        utils::remove_file_or_dir(images_path)?;
     }
+    fs::create_dir(&images_path).await?;
 
-    let image_path = images_path()?;
-    if image_path.is_dir() {
-        warn!("The image output folder already exists and will be deleted");
-        utils::remove_file_or_dir(image_path)?;
-    }
-    fs::create_dir_all(image_path).await?;
+    let file_path = images_path.join(utils::to_markdown_file_name(&novel.name));
 
     let mut buf = String::with_capacity(4 * 1024 * 1024);
 
@@ -39,7 +36,7 @@ pub(crate) async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert
 
     let handles = save_image(novel).await?;
 
-    fs::write(path, &buf).await?;
+    fs::write(file_path, &buf).await?;
 
     for handle in handles {
         handle.await??;
@@ -66,14 +63,10 @@ where
 
     let mut cover_image = None;
     if novel.cover_image.read().await.is_some() {
-        let base_path = env::current_dir()?;
-        let path = base_path.join("images").join(format!(
+        cover_image = Some(PathBuf::from(format!(
             "cover.{}",
             utils::image_ext(novel.cover_image.read().await.as_ref().unwrap())
-        ));
-        let path = pathdiff::diff_paths(path, base_path).unwrap();
-
-        cover_image = Some(path);
+        )));
     }
 
     let meta_data = MetaData {
@@ -110,9 +103,6 @@ async fn write_chapters<T>(novel: &Novel, mut buf: T) -> Result<()>
 where
     T: fmt::Write,
 {
-    let base_path = env::current_dir()?;
-    let image_path = images_path()?;
-
     for volume in &novel.volumes {
         if !volume.chapters.is_empty() {
             buf.write_str(&format!("# {}\n\n", volume.title))?;
@@ -127,10 +117,7 @@ where
                             buf.write_str("\n\n")?;
                         }
                         Content::Image(image) => {
-                            let image_path = image_path.join(&image.file_name);
-                            let image_path = pathdiff::diff_paths(image_path, &base_path).unwrap();
-
-                            buf.write_str(&super::image_markdown_str(image_path))?;
+                            buf.write_str(&super::image_markdown_str(&image.file_name))?;
                             buf.write_str("\n\n")?;
                         }
                     }
@@ -143,7 +130,7 @@ where
 }
 
 async fn save_image(novel: Novel) -> Result<Vec<JoinHandle<Result<()>>>> {
-    let image_path = images_path()?;
+    let image_path = images_path(novel.name)?;
 
     let mut handles = Vec::new();
 
@@ -179,18 +166,13 @@ async fn save_image(novel: Novel) -> Result<Vec<JoinHandle<Result<()>>>> {
         }));
     }
 
-    if handles.is_empty() {
-        utils::remove_file_or_dir(image_path)?;
-    }
-
     Ok(handles)
 }
 
-fn images_path() -> Result<&'static PathBuf> {
+fn images_path<T>(novel_name: T) -> Result<&'static PathBuf>
+where
+    T: AsRef<str>,
+{
     static IMAGE_PATH: OnceCell<PathBuf> = OnceCell::new();
-
-    IMAGE_PATH.get_or_try_init(|| {
-        let base_path = env::current_dir()?;
-        Ok(base_path.join("images"))
-    })
+    IMAGE_PATH.get_or_try_init(|| Ok(utils::to_mdbook_dir_name(novel_name)))
 }
