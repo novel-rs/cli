@@ -32,6 +32,8 @@ jobs:
       # https://github.com/actions/checkout
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # https://github.com/Swatinem/rust-cache
       - name: Cache
@@ -84,10 +86,18 @@ jobs:
           path: ${{ matrix.artifact_name }}
           directory: target/${{ matrix.target }}/release
 
+      # https://github.com/orhun/git-cliff-action
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v2
+        id: git-cliff
+        with:
+          args: --latest --strip header
+
       # https://github.com/svenstaro/upload-release-action
       - name: Upload binary to release
         uses: svenstaro/upload-release-action@v2
         with:
           file: target/${{ matrix.target }}/release/release.zip
           asset_name: novel-cli-${{ matrix.target }}.zip
+          body: ${{ steps.git-cliff.outputs.content }}
           overwrite: true

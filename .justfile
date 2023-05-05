@@ -25,3 +25,7 @@ build:
 
 test:
     cargo test --workspace --all-targets
+
+changelog:
+    git cliff -o CHANGELOG.md
+    prettier --write CHANGELOG.md
