@@ -48,8 +48,12 @@ where
 {
     let path = path.as_ref();
 
-    ensure!(path.exists(), "File `{}` does not exist", path.display());
-    ensure!(path.is_file(), "`{}` is not file", path.display());
+    ensure!(
+        path.try_exists()?,
+        "File `{}` does not exist",
+        path.display()
+    );
+    ensure!(path.try_exists()?, "`{}` is not file", path.display());
     ensure!(
         novel_api::is_some_and(path.extension(), |extension| extension == "epub"),
         "File `{}` is not epub file",
@@ -66,7 +70,7 @@ where
     let path = path.as_ref();
 
     let output_directory = utils::file_stem(path)?;
-    if output_directory.exists() {
+    if output_directory.try_exists()? {
         warn!("The output directory already exists and will be deleted");
         utils::remove_file_or_dir(&output_directory)?;
     }
@@ -86,7 +90,7 @@ where
             fs::create_dir_all(&outpath)?;
         } else {
             if let Some(p) = outpath.parent() {
-                if !p.exists() {
+                if !p.try_exists()? {
                     fs::create_dir_all(p)?;
                 }
             }

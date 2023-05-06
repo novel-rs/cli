@@ -35,7 +35,7 @@ pub fn execute(config: Zip) -> Result<()> {
     let mut epub_file_path = utils::file_stem(&config.epub_dir_path)?;
     epub_file_path.set_extension("epub");
 
-    if epub_file_path.exists() {
+    if epub_file_path.try_exists()? {
         warn!("The epub output file already exists and will be overwritten");
     }
 
@@ -61,7 +61,11 @@ where
 {
     let path = path.as_ref();
 
-    ensure!(path.exists(), "Dir `{}` does not exist", path.display());
+    ensure!(
+        path.try_exists()?,
+        "Dir `{}` does not exist",
+        path.display()
+    );
     ensure!(path.is_dir(), "`{}` is not dir", path.display());
 
     Ok(())
