@@ -10,7 +10,10 @@ use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
 use rayon::prelude::*;
 use tracing::info;
 
-use crate::{utils, LANG_ID, LOCALES};
+use crate::{
+    utils::{self, CurrentDir},
+    LANG_ID, LOCALES,
+};
 
 #[must_use]
 #[derive(Args)]
@@ -24,26 +27,24 @@ pub struct Check {
 pub fn execute(config: Check) -> Result<()> {
     let mut timing = Timing::new();
 
-    let (meta_data, markdown) = utils::read_markdown(config.markdown_path)?;
+    let (meta_data, markdown) = utils::read_markdown(&config.markdown_path)?;
+
+    let current_dir = CurrentDir::new(config.markdown_path.parent().unwrap())?;
 
     if !meta_data.lang_is_ok() {
         println(format!(
-            "The lang field must be zh-Hant or zh-Hans: {}",
+            "The lang field must be zh-Hant or zh-Hans: `{}`",
             meta_data.lang
         ));
     }
-
     if !meta_data.cover_image_is_ok() {
         println(format!(
-            "Cover image does not exist: {}",
+            "Cover image does not exist: `{}`",
             meta_data.cover_image.unwrap().display()
         ));
     }
 
-    let mut options = Options::all();
-    options.remove(Options::ENABLE_SMART_PUNCTUATION);
-    let parser = Parser::new_ext(&markdown, options);
-
+    let parser = Parser::new_ext(&markdown, Options::empty());
     let events = parser.into_offset_iter().collect::<Vec<(_, _)>>();
     let char_set = RwLock::new(AHashSet::new());
 
@@ -55,14 +56,13 @@ pub fn execute(config: Check) -> Result<()> {
                     let title = markdown[range].trim_start_matches('#').trim();
 
                     if heading_level == HeadingLevel::H1 && !check_volume_title(title) {
-                        println(format!("Irregular volume title format: {title}"));
+                        println(format!("Irregular volume title format: `{title}`"));
                     } else if heading_level == HeadingLevel::H2 && !check_chapter_title(title) {
-                        println(format!("Irregular chapter title format: {title}"));
+                        println(format!("Irregular chapter title format: `{title}`"));
                     }
                 }
                 Tag::Image(_, path, _) => {
-                    let image_path = path.to_string();
-                    let image_path = PathBuf::from(&image_path);
+                    let image_path = PathBuf::from(&path.to_string());
 
                     if !image_path.is_file() {
                         println(format!("Image `{}` does not exist", image_path.display()));
@@ -85,7 +85,7 @@ pub fn execute(config: Check) -> Result<()> {
                     let content = &markdown[range].trim();
 
                     println(format!(
-                        "Markdown tag that should not appear: {tag:?}, content: {content}"
+                        "Markdown tag that should not appear: `{tag:?}`, content: `{content}`"
                     ));
                 }
             },
@@ -102,7 +102,7 @@ pub fn execute(config: Check) -> Result<()> {
                             char_set.write().insert(c);
 
                             println(format!(
-                                "Irregular char: {}, at {}",
+                                "Irregular char: `{}`, at `{}`",
                                 c,
                                 markdown[range.clone()].trim()
                             ));
@@ -121,16 +121,19 @@ pub fn execute(config: Check) -> Result<()> {
                 let content = &markdown[range].trim();
 
                 println(format!(
-                    "Markdown event that should not appear: {event:?}, content: {content}"
+                    "Markdown event that should not appear: `{event:?}`, content: `{content}`"
                 ));
             }
         });
+
+    current_dir.restore()?;
 
     info!("Time spent on `check`: {}", timing.elapsed()?);
 
     Ok(())
 }
 
+#[inline]
 fn println(msg: String) {
     println!("{} {}", utils::emoji("⚠️"), msg);
 }
