@@ -2550,6 +2550,7 @@ dependencies = [
  "strum",
  "supports-color",
  "sys-locale",
+ "tempfile",
  "tokio",
  "toml 0.7.3",
  "tracing",

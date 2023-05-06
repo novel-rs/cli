@@ -1,4 +1,5 @@
 mod convert;
+mod current_dir;
 mod login;
 mod markdown;
 mod novel;
@@ -8,6 +9,7 @@ mod unicode;
 mod writer;
 
 pub(crate) use convert::*;
+pub(crate) use current_dir::*;
 pub(crate) use login::*;
 pub(crate) use markdown::*;
 pub(crate) use novel::*;
@@ -69,7 +71,7 @@ where
 {
     let path = path.as_ref();
 
-    if !path.exists() {
+    if !path.try_exists()? {
         bail!("The item does not exist: {}", path.display());
     }
 

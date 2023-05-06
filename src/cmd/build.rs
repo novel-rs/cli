@@ -1,4 +1,4 @@
-use std::{env, fs, path::PathBuf, process::Command};
+use std::{fs, path::PathBuf, process::Command};
 
 use anyhow::{bail, ensure, Result};
 use clap::Args;
@@ -9,7 +9,10 @@ use novel_api::Timing;
 use tracing::{info, warn};
 use walkdir::WalkDir;
 
-use crate::{utils, LANG_ID, LOCALES};
+use crate::{
+    utils::{self, CurrentDir},
+    LANG_ID, LOCALES,
+};
 
 use super::Format;
 
@@ -35,23 +38,27 @@ pub struct Build {
 }
 
 pub fn execute(config: Build) -> Result<()> {
-    ensure!(config.build_path.is_dir(), "Build input does not exist");
+    ensure!(
+        config.build_path.is_dir(),
+        "The build input directory does not exist: `{}`",
+        config.build_path.display()
+    );
 
-    let mut timing = Timing::new();
+    match config.format {
+        Format::Pandoc => {
+            println!("{}", utils::locales_with_arg("build_msg", "📚", "pandoc"));
 
-    if config.format == Format::Pandoc {
-        println!("{}", utils::locales_with_arg("build_msg", "📚", "pandoc"));
-        execute_pandoc(config)?;
-        info!("Time spent on `pandoc build`: {}", timing.elapsed()?);
-    } else if config.format == Format::Mdbook {
-        println!("{}", utils::locales_with_arg("build_msg", "📚", "mdBook"));
-        execute_mdbook(config)?;
-        info!("Time spent on `mdBook build`: {}", timing.elapsed()?);
-    } else {
-        unreachable!(
-            "Unsupported input format: `{}`",
-            config.build_path.display()
-        );
+            let mut timing = Timing::new();
+            execute_pandoc(config)?;
+            info!("Time spent on `pandoc build`: {}", timing.elapsed()?);
+        }
+        Format::Mdbook => {
+            println!("{}", utils::locales_with_arg("build_msg", "📚", "mdBook"));
+
+            let mut timing = Timing::new();
+            execute_mdbook(config)?;
+            info!("Time spent on `mdbook build`: {}", timing.elapsed()?);
+        }
     }
 
     println!("{}", utils::locales("build_complete_msg", "✔️"));
@@ -60,22 +67,26 @@ pub fn execute(config: Build) -> Result<()> {
 }
 
 pub fn execute_pandoc(config: Build) -> Result<()> {
-    let input_path = config.build_path.with_extension("md");
+    let dir_name = PathBuf::from(config.build_path.file_name().unwrap());
+    let md_file_name = dir_name.with_extension("md");
+    let epub_file_name = dir_name.with_extension("epub");
+
+    let input_path = fs::canonicalize(&config.build_path)?.join(md_file_name);
     let output_path = fs::canonicalize(&config.build_path)?
         .parent()
         .unwrap()
-        .join(config.build_path.with_extension("epub"));
+        .join(epub_file_name);
 
-    if output_path.exists() {
+    if output_path.try_exists()? {
         warn!("The epub output file already exists and will be deleted");
         utils::remove_file_or_dir(&output_path)?;
     }
 
-    let backup = env::current_dir()?;
-    env::set_current_dir(&config.build_path)?;
-
+    let current_dir = CurrentDir::new(&config.build_path)?;
+    // TODO Could not determine image size for cover.webp: could not determine image type
     let mut pandoc = Command::new("pandoc")
         .arg("--from=commonmark+yaml_metadata_block")
+        .arg("--to=epub3")
         .arg("--split-level=2")
         .arg("--epub-title-page=false")
         .args(["-o", output_path.to_str().unwrap()])
@@ -85,14 +96,14 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
     if !status.success() {
         bail!("`pandoc` failed to execute");
     }
-
-    env::set_current_dir(backup)?;
+    current_dir.restore()?;
 
     if config.delete {
         utils::remove_file_or_dir(&config.build_path)?;
     }
 
     if config.open {
+        info!("Open file: `{}`", output_path.display());
         opener::open(output_path)?;
     }
 
@@ -102,7 +113,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
 pub fn execute_mdbook(config: Build) -> Result<()> {
     let book_path = config.build_path.join("book");
 
-    if book_path.exists() {
+    if book_path.try_exists()? {
         warn!("The output directory already exists and will be deleted");
         utils::remove_file_or_dir(&book_path)?;
     }
@@ -126,11 +137,14 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
     }
 
     if config.open {
-        if config.delete {
-            opener::open_browser(config.build_path.join("index.html"))?;
+        let path = if config.delete {
+            config.build_path.join("index.html")
         } else {
-            opener::open_browser(book_path.join("index.html"))?;
-        }
+            book_path.join("index.html")
+        };
+
+        info!("Open file: `{}`", path.display());
+        opener::open_browser(path)?;
     }
 
     Ok(())
