@@ -1,8 +1,8 @@
-use std::{env, path::PathBuf};
-
 use anyhow::Result;
 use assert_cmd::Command;
 use fs_extra::dir::CopyOptions;
+
+mod utils;
 
 #[test]
 fn build_pandoc() -> Result<()> {
@@ -27,7 +27,7 @@ fn build_mdbook_delete() -> Result<()> {
 fn do_build_pandoc(delete: bool) -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
 
-    let test_data_path = test_data_path()?.join("pandoc");
+    let test_data_path = utils::test_data_path()?.join("pandoc");
 
     let mut options = CopyOptions::new();
     options.copy_inside = true;
@@ -66,7 +66,7 @@ fn do_build_pandoc(delete: bool) -> Result<()> {
 fn do_build_mdbook(delete: bool) -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
 
-    let test_data_path = test_data_path()?.join("mdbook");
+    let test_data_path = utils::test_data_path()?.join("mdbook");
 
     let mut options = CopyOptions::new();
     options.copy_inside = true;
@@ -106,10 +106,4 @@ fn do_build_mdbook(delete: bool) -> Result<()> {
     }
 
     Ok(())
-}
-
-fn test_data_path() -> Result<PathBuf> {
-    Ok(PathBuf::from(env::var("CARGO_MANIFEST_DIR")?)
-        .join("tests")
-        .join("data"))
 }
