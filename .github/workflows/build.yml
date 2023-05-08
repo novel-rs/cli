@@ -65,9 +65,7 @@ jobs:
 
       - name: Install pandoc
         if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.2/pandoc-3.1.2-windows-x86_64.msi -o pandoc.msi
-          msiexec /i pandoc.msi /qn
+        run: choco install pandoc
 
       - name: Install pandoc
         if: ${{ matrix.os == 'macos-latest' }}
