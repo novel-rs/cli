@@ -52,6 +52,13 @@ mod tests {
 
         #[cfg(target_os = "windows")]
         verify_line_break("12345\n\r\n").unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn line_break_failed2() {
+        #[cfg(not(target_os = "windows"))]
+        verify_line_break("12345\r\n").unwrap();
 
         #[cfg(target_os = "windows")]
         verify_line_break("12345\n\n").unwrap();
