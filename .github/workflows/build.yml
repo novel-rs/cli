@@ -58,11 +58,17 @@ jobs:
         uses: ilammy/setup-nasm@v1
 
       - name: Install pandoc
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.2/pandoc-3.1.2-1-amd64.deb -o pandoc.deb
+          sudo dpkg -i pandoc.deb
+
+      - name: Install pandoc
         if: ${{ matrix.os == 'windows-latest' }}
         run: choco install pandoc
 
       - name: Install pandoc
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ matrix.os == 'macos-latest' }}
         run: brew install pandoc
 
       - name: Run cargo build

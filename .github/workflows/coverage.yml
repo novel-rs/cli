@@ -42,7 +42,9 @@ jobs:
           components: llvm-tools-preview
 
       - name: Install pandoc
-        run: brew install pandoc
+        run: |
+          curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.2/pandoc-3.1.2-1-amd64.deb -o pandoc.deb
+          sudo dpkg -i pandoc.deb
 
       - name: Run cargo test
         run: cargo test --workspace --all-targets
