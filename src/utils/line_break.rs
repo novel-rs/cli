@@ -14,11 +14,12 @@ where
 {
     let text = text.as_ref();
 
-    if cfg!(target_os = "windows")
-        && text.contains(UNIX_LINE_BREAK)
-        && !text.contains(WINDOWS_LINE_BREAK)
-    {
-        bail!(r"The line break under Windows should be `\r\n`");
+    if cfg!(target_os = "windows") {
+        for (first, second) in text.chars().zip(text.chars().skip(1)) {
+            if second == '\n' && first != '\r' {
+                bail!(r"The line break under Windows should be `\r\n`");
+            }
+        }
     } else if cfg!(not(target_os = "windows")) && text.contains(WINDOWS_LINE_BREAK) {
         bail!(r"The line break under Unix should be `\n`");
     }
@@ -49,5 +50,8 @@ mod tests {
 
         #[cfg(target_os = "windows")]
         verify_line_break("12345\n\r\n").unwrap();
+
+        #[cfg(target_os = "windows")]
+        verify_line_break("12345\n\n").unwrap();
     }
 }
