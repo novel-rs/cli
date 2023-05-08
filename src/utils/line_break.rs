@@ -1,6 +1,8 @@
 use anyhow::{bail, Result};
 
+#[allow(dead_code)]
 const WINDOWS_LINE_BREAK: &str = "\r\n";
+#[allow(dead_code)]
 const UNIX_LINE_BREAK: &str = "\n";
 
 #[cfg(not(target_os = "windows"))]
