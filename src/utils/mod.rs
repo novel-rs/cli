@@ -1,5 +1,6 @@
 mod convert;
 mod current_dir;
+mod line_break;
 mod login;
 mod markdown;
 mod novel;
@@ -10,6 +11,7 @@ mod writer;
 
 pub(crate) use convert::*;
 pub(crate) use current_dir::*;
+pub(crate) use line_break::*;
 pub(crate) use login::*;
 pub(crate) use markdown::*;
 pub(crate) use novel::*;

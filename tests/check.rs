@@ -7,7 +7,7 @@ use fs_extra::dir::CopyOptions;
 mod utils;
 
 #[test]
-fn check_pandoc() -> Result<()> {
+fn check() -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
 
     let test_data_path = utils::test_data_path()?.join("pandoc");

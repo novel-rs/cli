@@ -43,17 +43,18 @@ where
 
     let bytes = fs::read(markdown_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
+    utils::verify_line_break(markdown)?;
 
     ensure!(
         markdown.starts_with("---"),
         "The markdown format is incorrect, it should start with `---`"
     );
 
-    if let Some(index) = markdown.find("\n...\n") {
-        let yaml = &markdown[4..index];
+    if let Some(index) = markdown.find(format!("{0}...{0}", utils::LINE_BREAK).as_str()) {
+        let yaml = &markdown[3 + utils::LINE_BREAK.len()..index];
 
         let meta_data: MetaData = serde_yaml::from_str(yaml)?;
-        let markdown = markdown[index + 5..].to_string();
+        let markdown = markdown[index + 3 + utils::LINE_BREAK.len() * 2..].to_string();
 
         Ok((meta_data, markdown))
     } else {
@@ -65,9 +66,7 @@ pub(crate) fn to_events<T>(markdown: &str, converts: T) -> Result<Vec<Event>>
 where
     T: AsRef<[Convert]> + Sync,
 {
-    let mut options = Options::all();
-    options.remove(Options::ENABLE_SMART_PUNCTUATION);
-    let parser = Parser::new_ext(markdown, options);
+    let parser = Parser::new_ext(markdown, Options::empty());
 
     let events = parser.collect::<Vec<_>>();
     let iter = events.into_par_iter().map(|event| match event {
