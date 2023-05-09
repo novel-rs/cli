@@ -1,0 +1,2697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+  <head>
+    <meta name="dtb:uid" content="urn:uuid:5f323f9e-8692-4eb7-bcda-7838ce2b02d7" />
+    <meta name="dtb:depth" content="1" />
+    <meta name="dtb:totalPageCount" content="0" />
+    <meta name="dtb:maxPageNumber" content="0" />
+    <meta name="cover" content="cover_webp" />
+  </head>
+  <docTitle>
+    <text>转生精灵公主可以备受宠爱吗？</text>
+  </docTitle>
+  <navMap>
+    <navPoint id="navPoint-1">
+      <navLabel>
+        <text>简介</text>
+      </navLabel>
+      <content src="text/ch001.xhtml" />
+    </navPoint>
+    <navPoint id="navPoint-2">
+      <navLabel>
+        <text>第一卷 不沉之月与已故的精灵公主</text>
+      </navLabel>
+      <content src="text/ch002.xhtml" />
+      <navPoint id="navPoint-3">
+        <navLabel>
+          <text>第一章 宇宙热寂之后</text>
+        </navLabel>
+        <content src="text/ch003.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-4">
+        <navLabel>
+          <text>第二章 诞生，精灵公主</text>
+        </navLabel>
+        <content src="text/ch004.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-5">
+        <navLabel>
+          <text>第三章 从手搓核弹开始的异世界生活</text>
+        </navLabel>
+        <content src="text/ch005.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-6">
+        <navLabel>
+          <text>第四章 绿洲，以及尸骸</text>
+        </navLabel>
+        <content src="text/ch006.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-7">
+        <navLabel>
+          <text>第五章 米尔坎迪斯大森林——城市就在前方？</text>
+        </navLabel>
+        <content src="text/ch007.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-8">
+        <navLabel>
+          <text>第六章 意外遭遇</text>
+        </navLabel>
+        <content src="text/ch008.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-9">
+        <navLabel>
+          <text>第七章 公主殿下的仆人？</text>
+        </navLabel>
+        <content src="text/ch009.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-10">
+        <navLabel>
+          <text>第八章 安娜塔西雅</text>
+        </navLabel>
+        <content src="text/ch010.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-11">
+        <navLabel>
+          <text>第九章 承认与解释</text>
+        </navLabel>
+        <content src="text/ch011.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-12">
+        <navLabel>
+          <text>第十章 月之妖精</text>
+        </navLabel>
+        <content src="text/ch012.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-13">
+        <navLabel>
+          <text>第十一章 克蕾雅</text>
+        </navLabel>
+        <content src="text/ch013.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-14">
+        <navLabel>
+          <text>第十二章 今晚月色真美</text>
+        </navLabel>
+        <content src="text/ch014.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-15">
+        <navLabel>
+          <text>第十三章 夜色下的遭遇战？</text>
+        </navLabel>
+        <content src="text/ch015.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-16">
+        <navLabel>
+          <text>第十四章 绽放于身的诅咒</text>
+        </navLabel>
+        <content src="text/ch016.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-17">
+        <navLabel>
+          <text>第十五章 奴隶与骑士</text>
+        </navLabel>
+        <content src="text/ch017.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-18">
+        <navLabel>
+          <text>第十六章 决意</text>
+        </navLabel>
+        <content src="text/ch018.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-19">
+        <navLabel>
+          <text>第十七章 新生</text>
+        </navLabel>
+        <content src="text/ch019.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-20">
+        <navLabel>
+          <text>第十八章 今后的道路</text>
+        </navLabel>
+        <content src="text/ch020.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-21">
+        <navLabel>
+          <text>第十九章 意料之外的冲突</text>
+        </navLabel>
+        <content src="text/ch021.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-22">
+        <navLabel>
+          <text>第二十章 袭击</text>
+        </navLabel>
+        <content src="text/ch022.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-23">
+        <navLabel>
+          <text>第二十一章 突围</text>
+        </navLabel>
+        <content src="text/ch023.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-24">
+        <navLabel>
+          <text>第二十二章 火焰风暴</text>
+        </navLabel>
+        <content src="text/ch024.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-25">
+        <navLabel>
+          <text>第二十三章 击溃之后</text>
+        </navLabel>
+        <content src="text/ch025.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-26">
+        <navLabel>
+          <text>第二十四章 奥罗拉城的清晨</text>
+        </navLabel>
+        <content src="text/ch026.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-27">
+        <navLabel>
+          <text>第二十五章 菲娅的“未来计划”</text>
+        </navLabel>
+        <content src="text/ch027.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-28">
+        <navLabel>
+          <text>第二十六章 世界树大陆与禁咒魔法</text>
+        </navLabel>
+        <content src="text/ch028.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-29">
+        <navLabel>
+          <text>第二十七章 去路</text>
+        </navLabel>
+        <content src="text/ch029.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-30">
+        <navLabel>
+          <text>第二十八章 非常时刻？</text>
+        </navLabel>
+        <content src="text/ch030.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-31">
+        <navLabel>
+          <text>第二十九章 密谈</text>
+        </navLabel>
+        <content src="text/ch031.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-32">
+        <navLabel>
+          <text>第三十章 菲娅的魔法</text>
+        </navLabel>
+        <content src="text/ch032.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-33">
+        <navLabel>
+          <text>第三十一章 继承自另一世界的能力</text>
+        </navLabel>
+        <content src="text/ch033.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-34">
+        <navLabel>
+          <text>第三十二章 超演算</text>
+        </navLabel>
+        <content src="text/ch034.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-35">
+        <navLabel>
+          <text>第三十三章 夜之妖精与月之精灵</text>
+        </navLabel>
+        <content src="text/ch035.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-36">
+        <navLabel>
+          <text>第三十四章 蝴蝶效应的误会</text>
+        </navLabel>
+        <content src="text/ch036.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-37">
+        <navLabel>
+          <text>第三十五章 更大的误会</text>
+        </navLabel>
+        <content src="text/ch037.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-38">
+        <navLabel>
+          <text>第三十六章 贫民窟</text>
+        </navLabel>
+        <content src="text/ch038.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-39">
+        <navLabel>
+          <text>第三十七章 其名为命运</text>
+        </navLabel>
+        <content src="text/ch039.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-40">
+        <navLabel>
+          <text>第三十八章 “魔法”</text>
+        </navLabel>
+        <content src="text/ch040.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-41">
+        <navLabel>
+          <text>第三十九章 暗裔病</text>
+        </navLabel>
+        <content src="text/ch041.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-42">
+        <navLabel>
+          <text>第四十章 变数</text>
+        </navLabel>
+        <content src="text/ch042.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-43">
+        <navLabel>
+          <text>第四十一章 来自暗裔的魔物</text>
+        </navLabel>
+        <content src="text/ch043.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-44">
+        <navLabel>
+          <text>第四十二章 火焰免疫？</text>
+        </navLabel>
+        <content src="text/ch044.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-45">
+        <navLabel>
+          <text>第四十三章 奥罗拉城的圣骑士</text>
+        </navLabel>
+        <content src="text/ch045.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-46">
+        <navLabel>
+          <text>第四十四章 诅咒</text>
+        </navLabel>
+        <content src="text/ch046.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-47">
+        <navLabel>
+          <text>第四十五章 哨声</text>
+        </navLabel>
+        <content src="text/ch047.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-48">
+        <navLabel>
+          <text>第四十六章 解决之法</text>
+        </navLabel>
+        <content src="text/ch048.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-49">
+        <navLabel>
+          <text>第四十七章 界限、模糊</text>
+        </navLabel>
+        <content src="text/ch049.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-50">
+        <navLabel>
+          <text>第四十八章 无眠之夜</text>
+        </navLabel>
+        <content src="text/ch050.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-51">
+        <navLabel>
+          <text>第四十九章 开端</text>
+        </navLabel>
+        <content src="text/ch051.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-52">
+        <navLabel>
+          <text>第五十章 毁灭不沉之月的计划</text>
+        </navLabel>
+        <content src="text/ch052.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-53">
+        <navLabel>
+          <text>第五十一章 天使</text>
+        </navLabel>
+        <content src="text/ch053.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-54">
+        <navLabel>
+          <text>第五十二章 选购魔法吧！</text>
+        </navLabel>
+        <content src="text/ch054.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-55">
+        <navLabel>
+          <text>第五十三章 极昼魔法</text>
+        </navLabel>
+        <content src="text/ch055.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-56">
+        <navLabel>
+          <text>第五十四章 突袭</text>
+        </navLabel>
+        <content src="text/ch056.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-57">
+        <navLabel>
+          <text>第五十五章 暗中相助者</text>
+        </navLabel>
+        <content src="text/ch057.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-58">
+        <navLabel>
+          <text>第五十六章 结局</text>
+        </navLabel>
+        <content src="text/ch058.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-59">
+        <navLabel>
+          <text>第五十七章 幻海的云月</text>
+        </navLabel>
+        <content src="text/ch059.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-60">
+        <navLabel>
+          <text>第五十八章 鲁莽之人</text>
+        </navLabel>
+        <content src="text/ch060.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-61">
+        <navLabel>
+          <text>第五十九章 支援</text>
+        </navLabel>
+        <content src="text/ch061.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-62">
+        <navLabel>
+          <text>第六十章 魔法师协会</text>
+        </navLabel>
+        <content src="text/ch062.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-63">
+        <navLabel>
+          <text>第六十一章 新的魔法</text>
+        </navLabel>
+        <content src="text/ch063.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-64">
+        <navLabel>
+          <text>第六十二章 只可意会</text>
+        </navLabel>
+        <content src="text/ch064.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-65">
+        <navLabel>
+          <text>上架感言</text>
+        </navLabel>
+        <content src="text/ch065.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-66">
+        <navLabel>
+          <text>第六十三章 约会</text>
+        </navLabel>
+        <content src="text/ch066.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-67">
+        <navLabel>
+          <text>第六十四章 投食play？</text>
+        </navLabel>
+        <content src="text/ch067.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-68">
+        <navLabel>
+          <text>第六十五章 愿望</text>
+        </navLabel>
+        <content src="text/ch068.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-69">
+        <navLabel>
+          <text>第六十六章 魔法破坏</text>
+        </navLabel>
+        <content src="text/ch069.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-70">
+        <navLabel>
+          <text>第六十七章 混沌</text>
+        </navLabel>
+        <content src="text/ch070.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-71">
+        <navLabel>
+          <text>第六十八章 遭遇战</text>
+        </navLabel>
+        <content src="text/ch071.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-72">
+        <navLabel>
+          <text>第六十九章 精神冲击</text>
+        </navLabel>
+        <content src="text/ch072.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-73">
+        <navLabel>
+          <text>第七十章 妹妹</text>
+        </navLabel>
+        <content src="text/ch073.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-74">
+        <navLabel>
+          <text>第七十一章 月龙</text>
+        </navLabel>
+        <content src="text/ch074.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-75">
+        <navLabel>
+          <text>第七十二章 不沉之月的沉没</text>
+        </navLabel>
+        <content src="text/ch075.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-76">
+        <navLabel>
+          <text>第七十三章 暂歇</text>
+        </navLabel>
+        <content src="text/ch076.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-77">
+        <navLabel>
+          <text>第七十四章 救赎</text>
+        </navLabel>
+        <content src="text/ch077.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-78">
+        <navLabel>
+          <text>第七十五章 朔月之夜</text>
+        </navLabel>
+        <content src="text/ch078.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-79">
+        <navLabel>
+          <text>第七十六章 平和的清晨</text>
+        </navLabel>
+        <content src="text/ch079.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-80">
+        <navLabel>
+          <text>第七十七章 谈判</text>
+        </navLabel>
+        <content src="text/ch080.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-81">
+        <navLabel>
+          <text>第七十八章 天启</text>
+        </navLabel>
+        <content src="text/ch081.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-82">
+        <navLabel>
+          <text>第七十九章 尾声</text>
+        </navLabel>
+        <content src="text/ch082.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-83">
+        <navLabel>
+          <text>后记</text>
+        </navLabel>
+        <content src="text/ch083.xhtml" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint-84">
+      <navLabel>
+        <text>人设卷</text>
+      </navLabel>
+      <content src="text/ch084.xhtml" />
+      <navPoint id="navPoint-85">
+        <navLabel>
+          <text>人设章·多菲莉娅</text>
+        </navLabel>
+        <content src="text/ch085.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-86">
+        <navLabel>
+          <text>人设章·克蕾雅</text>
+        </navLabel>
+        <content src="text/ch086.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-87">
+        <navLabel>
+          <text>人设章·安娜塔西雅</text>
+        </navLabel>
+        <content src="text/ch087.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-88">
+        <navLabel>
+          <text>人设章·莉提</text>
+        </navLabel>
+        <content src="text/ch088.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-89">
+        <navLabel>
+          <text>人设章·尤菲米露</text>
+        </navLabel>
+        <content src="text/ch089.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-90">
+        <navLabel>
+          <text>人设章·爱琳丝蕾特</text>
+        </navLabel>
+        <content src="text/ch090.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-91">
+        <navLabel>
+          <text>人设章·诺菈</text>
+        </navLabel>
+        <content src="text/ch091.xhtml" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint-92">
+      <navLabel>
+        <text>第二卷 世界树之钥与灭族的吸血姬</text>
+      </navLabel>
+      <content src="text/ch092.xhtml" />
+      <navPoint id="navPoint-93">
+        <navLabel>
+          <text>第一章 阴晴不定的开场</text>
+        </navLabel>
+        <content src="text/ch093.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-94">
+        <navLabel>
+          <text>第二章 世界树之钥</text>
+        </navLabel>
+        <content src="text/ch094.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-95">
+        <navLabel>
+          <text>第三章 贵族与难民</text>
+        </navLabel>
+        <content src="text/ch095.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-96">
+        <navLabel>
+          <text>第四章 不为人知的秘密</text>
+        </navLabel>
+        <content src="text/ch096.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-97">
+        <navLabel>
+          <text>第五章 拉进的距离</text>
+        </navLabel>
+        <content src="text/ch097.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-98">
+        <navLabel>
+          <text>第六章 深渊</text>
+        </navLabel>
+        <content src="text/ch098.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-99">
+        <navLabel>
+          <text>第七章 旅途</text>
+        </navLabel>
+        <content src="text/ch099.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-100">
+        <navLabel>
+          <text>第八章 魔法极限</text>
+        </navLabel>
+        <content src="text/ch100.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-101">
+        <navLabel>
+          <text>第八章 飞行魔法！</text>
+        </navLabel>
+        <content src="text/ch101.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-102">
+        <navLabel>
+          <text>第十章 纯种吸血姬</text>
+        </navLabel>
+        <content src="text/ch102.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-103">
+        <navLabel>
+          <text>第十一章 诺尔顿</text>
+        </navLabel>
+        <content src="text/ch103.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-104">
+        <navLabel>
+          <text>第十二章 误会</text>
+        </navLabel>
+        <content src="text/ch104.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-105">
+        <navLabel>
+          <text>第十三章 潜在的崩溃</text>
+        </navLabel>
+        <content src="text/ch105.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-106">
+        <navLabel>
+          <text>第十四章 表象与内核</text>
+        </navLabel>
+        <content src="text/ch106.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-107">
+        <navLabel>
+          <text>第十五章 吸血姬与精灵公主的协议</text>
+        </navLabel>
+        <content src="text/ch107.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-108">
+        <navLabel>
+          <text>第十六章 绝望魔将</text>
+        </navLabel>
+        <content src="text/ch108.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-109">
+        <navLabel>
+          <text>第十七章 力量悬殊</text>
+        </navLabel>
+        <content src="text/ch109.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-110">
+        <navLabel>
+          <text>第十八章 圣子、神使、魔女与绝对恶</text>
+        </navLabel>
+        <content src="text/ch110.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-111">
+        <navLabel>
+          <text>第十九章 埋伏</text>
+        </navLabel>
+        <content src="text/ch111.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-112">
+        <navLabel>
+          <text>第二十章 蹊跷之始</text>
+        </navLabel>
+        <content src="text/ch112.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-113">
+        <navLabel>
+          <text>第二十一章 陡变</text>
+        </navLabel>
+        <content src="text/ch113.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-114">
+        <navLabel>
+          <text>第二十二章 不明正体的暗杀者</text>
+        </navLabel>
+        <content src="text/ch114.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-115">
+        <navLabel>
+          <text>第二十三章 猜疑</text>
+        </navLabel>
+        <content src="text/ch115.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-116">
+        <navLabel>
+          <text>第二十四章 往事</text>
+        </navLabel>
+        <content src="text/ch116.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-117">
+        <navLabel>
+          <text>第二十五章 线索与渴望</text>
+        </navLabel>
+        <content src="text/ch117.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-118">
+        <navLabel>
+          <text>第二十六章 少女的悸动</text>
+        </navLabel>
+        <content src="text/ch118.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-119">
+        <navLabel>
+          <text>第二十七章 潜藏之物</text>
+        </navLabel>
+        <content src="text/ch119.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-120">
+        <navLabel>
+          <text>第二十八章 暂且的平和</text>
+        </navLabel>
+        <content src="text/ch120.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-121">
+        <navLabel>
+          <text>第二十九章 残垣断壁</text>
+        </navLabel>
+        <content src="text/ch121.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-122">
+        <navLabel>
+          <text>第三十章 剧变</text>
+        </navLabel>
+        <content src="text/ch122.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-123">
+        <navLabel>
+          <text>第三十一章 决心</text>
+        </navLabel>
+        <content src="text/ch123.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-124">
+        <navLabel>
+          <text>第三十二章 诱饵</text>
+        </navLabel>
+        <content src="text/ch124.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-125">
+        <navLabel>
+          <text>第三十三章 诺琳</text>
+        </navLabel>
+        <content src="text/ch125.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-126">
+        <navLabel>
+          <text>第三十四章 绝望之种</text>
+        </navLabel>
+        <content src="text/ch126.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-127">
+        <navLabel>
+          <text>第三十五章 报复</text>
+        </navLabel>
+        <content src="text/ch127.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-128">
+        <navLabel>
+          <text>第三十六章 飘忽不定的黎明</text>
+        </navLabel>
+        <content src="text/ch128.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-129">
+        <navLabel>
+          <text>空章</text>
+        </navLabel>
+        <content src="text/ch129.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-130">
+        <navLabel>
+          <text>第三十七章 残留、温存</text>
+        </navLabel>
+        <content src="text/ch130.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-131">
+        <navLabel>
+          <text>第三十八章 所希望与所不希望</text>
+        </navLabel>
+        <content src="text/ch131.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-132">
+        <navLabel>
+          <text>第三十九章 脸红~心跳~？</text>
+        </navLabel>
+        <content src="text/ch132.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-133">
+        <navLabel>
+          <text>第四十章 灾难之后</text>
+        </navLabel>
+        <content src="text/ch133.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-134">
+        <navLabel>
+          <text>第四十一章 尾声</text>
+        </navLabel>
+        <content src="text/ch134.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-135">
+        <navLabel>
+          <text>后记</text>
+        </navLabel>
+        <content src="text/ch135.xhtml" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint-136">
+      <navLabel>
+        <text>第三卷 魔女之心核与为人恐惧的少女</text>
+      </navLabel>
+      <content src="text/ch136.xhtml" />
+      <navPoint id="navPoint-137">
+        <navLabel>
+          <text>第一章 遗忘诅咒</text>
+        </navLabel>
+        <content src="text/ch137.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-138">
+        <navLabel>
+          <text>第二章 猫耳修女与空间切裂</text>
+        </navLabel>
+        <content src="text/ch138.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-139">
+        <navLabel>
+          <text>第三章 炎王的追随者</text>
+        </navLabel>
+        <content src="text/ch139.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-140">
+        <navLabel>
+          <text>第四章 姐姐~魔力~</text>
+        </navLabel>
+        <content src="text/ch140.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-141">
+        <navLabel>
+          <text>第五章 魔法药水与增加魔力之法</text>
+        </navLabel>
+        <content src="text/ch141.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-142">
+        <navLabel>
+          <text>第六章 蕾妮</text>
+        </navLabel>
+        <content src="text/ch142.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-143">
+        <navLabel>
+          <text>第七章 微妙的晚宴</text>
+        </navLabel>
+        <content src="text/ch143.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-144">
+        <navLabel>
+          <text>第八章 出人意料的变化</text>
+        </navLabel>
+        <content src="text/ch144.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-145">
+        <navLabel>
+          <text>第九章 令人疑惑的答案</text>
+        </navLabel>
+        <content src="text/ch145.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-146">
+        <navLabel>
+          <text>第十章 抵达边境</text>
+        </navLabel>
+        <content src="text/ch146.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-147">
+        <navLabel>
+          <text>第十一章 魔女交汇</text>
+        </navLabel>
+        <content src="text/ch147.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-148">
+        <navLabel>
+          <text>第十二章 魔剑莱瓦汀</text>
+        </navLabel>
+        <content src="text/ch148.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-149">
+        <navLabel>
+          <text>第十三章 数以千计的魔核</text>
+        </navLabel>
+        <content src="text/ch149.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-150">
+        <navLabel>
+          <text>第十四章 血色猫眼</text>
+        </navLabel>
+        <content src="text/ch150.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-151">
+        <navLabel>
+          <text>第十五章 尤菲米露</text>
+        </navLabel>
+        <content src="text/ch151.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-152">
+        <navLabel>
+          <text>第十六章 相识与监视</text>
+        </navLabel>
+        <content src="text/ch152.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-153">
+        <navLabel>
+          <text>第十七章 接触</text>
+        </navLabel>
+        <content src="text/ch153.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-154">
+        <navLabel>
+          <text>第十七章 受引导者</text>
+        </navLabel>
+        <content src="text/ch154.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-155">
+        <navLabel>
+          <text>第十八章 魔女之心核与包围战</text>
+        </navLabel>
+        <content src="text/ch155.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-156">
+        <navLabel>
+          <text>第二十章 深入</text>
+        </navLabel>
+        <content src="text/ch156.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-157">
+        <navLabel>
+          <text>第二十一章 另一个米露？</text>
+        </navLabel>
+        <content src="text/ch157.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-158">
+        <navLabel>
+          <text>第二十二章 夜谈</text>
+        </navLabel>
+        <content src="text/ch158.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-159">
+        <navLabel>
+          <text>第二十三章 米露的主人</text>
+        </navLabel>
+        <content src="text/ch159.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-160">
+        <navLabel>
+          <text>第二十四章 低阶鉴定术</text>
+        </navLabel>
+        <content src="text/ch160.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-161">
+        <navLabel>
+          <text>第二十五章 品质最上级的最下级魔力恢复药</text>
+        </navLabel>
+        <content src="text/ch161.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-162">
+        <navLabel>
+          <text>第二十六章 庆典</text>
+        </navLabel>
+        <content src="text/ch162.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-163">
+        <navLabel>
+          <text>第二十七章 花束与冒险者</text>
+        </navLabel>
+        <content src="text/ch163.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-164">
+        <navLabel>
+          <text>第二十八章 魔法药与意外遭遇</text>
+        </navLabel>
+        <content src="text/ch164.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-165">
+        <navLabel>
+          <text>第二十九章 不死姬的憎恶与吸血鬼的祝福</text>
+        </navLabel>
+        <content src="text/ch165.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-166">
+        <navLabel>
+          <text>第三十章 魔女殿堂</text>
+        </navLabel>
+        <content src="text/ch166.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-167">
+        <navLabel>
+          <text>第三十一章 敌人，还是友人？</text>
+        </navLabel>
+        <content src="text/ch167.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-168">
+        <navLabel>
+          <text>第三十二章 错综复杂的地下</text>
+        </navLabel>
+        <content src="text/ch168.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-169">
+        <navLabel>
+          <text>第三十三章 星宿魔女</text>
+        </navLabel>
+        <content src="text/ch169.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-170">
+        <navLabel>
+          <text>第三十四章 进退与证明</text>
+        </navLabel>
+        <content src="text/ch170.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-171">
+        <navLabel>
+          <text>第三十五章 求知魔将</text>
+        </navLabel>
+        <content src="text/ch171.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-172">
+        <navLabel>
+          <text>第三十六章 戏剧性的内讧？</text>
+        </navLabel>
+        <content src="text/ch172.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-173">
+        <navLabel>
+          <text>第三十七章 你好，请问你来自哪个时代？</text>
+        </navLabel>
+        <content src="text/ch173.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-174">
+        <navLabel>
+          <text>第三十八章 没有回应的呼叫</text>
+        </navLabel>
+        <content src="text/ch174.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-175">
+        <navLabel>
+          <text>第三十九章 孤儿院与为莉提准备的礼物</text>
+        </navLabel>
+        <content src="text/ch175.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-176">
+        <navLabel>
+          <text>第四十章 提升实力</text>
+        </navLabel>
+        <content src="text/ch176.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-177">
+        <navLabel>
+          <text>第四十一章 罪人烙印与安娜塔西雅的父亲</text>
+        </navLabel>
+        <content src="text/ch177.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-178">
+        <navLabel>
+          <text>第四十二章 内应与圈套</text>
+        </navLabel>
+        <content src="text/ch178.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-179">
+        <navLabel>
+          <text>第四十三章 联络</text>
+        </navLabel>
+        <content src="text/ch179.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-180">
+        <navLabel>
+          <text>第四十四章 混乱的市内</text>
+        </navLabel>
+        <content src="text/ch180.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-181">
+        <navLabel>
+          <text>第四十五章 超乎寻常的力量</text>
+        </navLabel>
+        <content src="text/ch181.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-182">
+        <navLabel>
+          <text>第四十四章 再遇巴罗尔</text>
+        </navLabel>
+        <content src="text/ch182.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-183">
+        <navLabel>
+          <text>第四十五章 光束魔法</text>
+        </navLabel>
+        <content src="text/ch183.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-184">
+        <navLabel>
+          <text>第四十八章 灵魂再现</text>
+        </navLabel>
+        <content src="text/ch184.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-185">
+        <navLabel>
+          <text>第四十九章 革新派的力量</text>
+        </navLabel>
+        <content src="text/ch185.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-186">
+        <navLabel>
+          <text>第五十章 第二太阳！</text>
+        </navLabel>
+        <content src="text/ch186.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-187">
+        <navLabel>
+          <text>第五十一章 真正的魔女</text>
+        </navLabel>
+        <content src="text/ch187.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-188">
+        <navLabel>
+          <text>第五十二章 克萨男爵的谢礼</text>
+        </navLabel>
+        <content src="text/ch188.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-189">
+        <navLabel>
+          <text>第五十三章 莉提，偷袭！</text>
+        </navLabel>
+        <content src="text/ch189.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-190">
+        <navLabel>
+          <text>第五十四章 出发之前</text>
+        </navLabel>
+        <content src="text/ch190.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-191">
+        <navLabel>
+          <text>第五十五章 不死之身的理由</text>
+        </navLabel>
+        <content src="text/ch191.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-192">
+        <navLabel>
+          <text>第五十六章 魔女圣堂</text>
+        </navLabel>
+        <content src="text/ch192.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-193">
+        <navLabel>
+          <text>第五十七章 魔女殿堂的将来</text>
+        </navLabel>
+        <content src="text/ch193.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-194">
+        <navLabel>
+          <text>第五十八章 尾声</text>
+        </navLabel>
+        <content src="text/ch194.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-195">
+        <navLabel>
+          <text>后记</text>
+        </navLabel>
+        <content src="text/ch195.xhtml" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint-196">
+      <navLabel>
+        <text>第四卷 凋零之树与圣树的巫女</text>
+      </navLabel>
+      <content src="text/ch196.xhtml" />
+      <navPoint id="navPoint-197">
+        <navLabel>
+          <text>第一章 100.5</text>
+        </navLabel>
+        <content src="text/ch197.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-198">
+        <navLabel>
+          <text>第二章 远程讯息魔法</text>
+        </navLabel>
+        <content src="text/ch198.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-199">
+        <navLabel>
+          <text>第三章 偶然与必然</text>
+        </navLabel>
+        <content src="text/ch199.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-200">
+        <navLabel>
+          <text>第四章 王族辛密</text>
+        </navLabel>
+        <content src="text/ch200.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-201">
+        <navLabel>
+          <text>第五章 传送信标</text>
+        </navLabel>
+        <content src="text/ch201.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-202">
+        <navLabel>
+          <text>第六章 令人不安的遗忘</text>
+        </navLabel>
+        <content src="text/ch202.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-203">
+        <navLabel>
+          <text>第七章 异变</text>
+        </navLabel>
+        <content src="text/ch203.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-204">
+        <navLabel>
+          <text>第八章 崩裂、深渊</text>
+        </navLabel>
+        <content src="text/ch204.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-205">
+        <navLabel>
+          <text>第九章 碎发男人</text>
+        </navLabel>
+        <content src="text/ch205.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-206">
+        <navLabel>
+          <text>第十章 北境亲王的秘密</text>
+        </navLabel>
+        <content src="text/ch206.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-207">
+        <navLabel>
+          <text>第十一章 安娜塔西雅的父亲</text>
+        </navLabel>
+        <content src="text/ch207.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-208">
+        <navLabel>
+          <text>第十二章 父女之争</text>
+        </navLabel>
+        <content src="text/ch208.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-209">
+        <navLabel>
+          <text>第十三章 没有回应的忏悔</text>
+        </navLabel>
+        <content src="text/ch209.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-210">
+        <navLabel>
+          <text>第十四章 布洛瑟姆</text>
+        </navLabel>
+        <content src="text/ch210.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-211">
+        <navLabel>
+          <text>第十五章 王城</text>
+        </navLabel>
+        <content src="text/ch211.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-212">
+        <navLabel>
+          <text>第十六章 遗言&amp;预言</text>
+        </navLabel>
+        <content src="text/ch212.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-213">
+        <navLabel>
+          <text>用AI捏的一些角色</text>
+        </navLabel>
+        <content src="text/ch213.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-214">
+        <navLabel>
+          <text>第十七章 神乐与巫女</text>
+        </navLabel>
+        <content src="text/ch214.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-215">
+        <navLabel>
+          <text>第十八章 第十七王妃</text>
+        </navLabel>
+        <content src="text/ch215.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-216">
+        <navLabel>
+          <text>第十九章 帝国贵族与长公主的众多母亲</text>
+        </navLabel>
+        <content src="text/ch216.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-217">
+        <navLabel>
+          <text>第二十章 六位王妃母亲</text>
+        </navLabel>
+        <content src="text/ch217.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-218">
+        <navLabel>
+          <text>第二十一章 过去、现在与将来的公主生活</text>
+        </navLabel>
+        <content src="text/ch218.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-219">
+        <navLabel>
+          <text>第二十二章 往事与打算</text>
+        </navLabel>
+        <content src="text/ch219.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-220">
+        <navLabel>
+          <text>第二十三章 圣树的加护与世界树的愿望</text>
+        </navLabel>
+        <content src="text/ch220.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-221">
+        <navLabel>
+          <text>第二十四章 克蕾雅的吊坠</text>
+        </navLabel>
+        <content src="text/ch221.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-222">
+        <navLabel>
+          <text>第二十五章 有惊无险的开端</text>
+        </navLabel>
+        <content src="text/ch222.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-223">
+        <navLabel>
+          <text>第二十六章 决裂</text>
+        </navLabel>
+        <content src="text/ch223.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-224">
+        <navLabel>
+          <text>第二十七章 一瞬</text>
+        </navLabel>
+        <content src="text/ch224.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-225">
+        <navLabel>
+          <text>第二十八章 压倒性的力量</text>
+        </navLabel>
+        <content src="text/ch225.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-226">
+        <navLabel>
+          <text>第二十九章 庆祝之宴</text>
+        </navLabel>
+        <content src="text/ch226.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-227">
+        <navLabel>
+          <text>第三十章 试探的心意</text>
+        </navLabel>
+        <content src="text/ch227.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-228">
+        <navLabel>
+          <text>第三十一章 双重误会</text>
+        </navLabel>
+        <content src="text/ch228.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-229">
+        <navLabel>
+          <text>第三十二章 爱琳丝蕾特</text>
+        </navLabel>
+        <content src="text/ch229.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-230">
+        <navLabel>
+          <text>第三十三章 喜悦与怅然</text>
+        </navLabel>
+        <content src="text/ch230.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-231">
+        <navLabel>
+          <text>第三十四章 格雷安之变</text>
+        </navLabel>
+        <content src="text/ch231.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-232">
+        <navLabel>
+          <text>第三十五章 蹊跷之死</text>
+        </navLabel>
+        <content src="text/ch232.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-233">
+        <navLabel>
+          <text>第三十六章 短暂休憩</text>
+        </navLabel>
+        <content src="text/ch233.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-234">
+        <navLabel>
+          <text>第三十七章 传送</text>
+        </navLabel>
+        <content src="text/ch234.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-235">
+        <navLabel>
+          <text>第三十八章 过去的痕迹</text>
+        </navLabel>
+        <content src="text/ch235.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-236">
+        <navLabel>
+          <text>第三十九章 毁灭性的魔法</text>
+        </navLabel>
+        <content src="text/ch236.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-237">
+        <navLabel>
+          <text>第四十章 清算</text>
+        </navLabel>
+        <content src="text/ch237.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-238">
+        <navLabel>
+          <text>第四十一章 诡谲之梦</text>
+        </navLabel>
+        <content src="text/ch238.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-239">
+        <navLabel>
+          <text>第四十二章 近在咫尺的圣树</text>
+        </navLabel>
+        <content src="text/ch239.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-240">
+        <navLabel>
+          <text>第四十三章 玲珑而成熟的巫女</text>
+        </navLabel>
+        <content src="text/ch240.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-241">
+        <navLabel>
+          <text>第四十四章 不该存在的黑焰魔物</text>
+        </navLabel>
+        <content src="text/ch241.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-242">
+        <navLabel>
+          <text>第四十五章 萌芽</text>
+        </navLabel>
+        <content src="text/ch242.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-243">
+        <navLabel>
+          <text>第四十六章 月之精灵</text>
+        </navLabel>
+        <content src="text/ch243.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-244">
+        <navLabel>
+          <text>第四十七章 味道古怪的清晨</text>
+        </navLabel>
+        <content src="text/ch244.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-245">
+        <navLabel>
+          <text>第四十八章 过场</text>
+        </navLabel>
+        <content src="text/ch245.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-246">
+        <navLabel>
+          <text>第四十九章 夏因亲王的麻烦</text>
+        </navLabel>
+        <content src="text/ch246.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-247">
+        <navLabel>
+          <text>第五十章 蛛网</text>
+        </navLabel>
+        <content src="text/ch247.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-248">
+        <navLabel>
+          <text>第五十一章 揣测与试探</text>
+        </navLabel>
+        <content src="text/ch248.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-249">
+        <navLabel>
+          <text>第五十二章 涌动前夜</text>
+        </navLabel>
+        <content src="text/ch249.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-250">
+        <navLabel>
+          <text>第五十三章 谋逆进行时</text>
+        </navLabel>
+        <content src="text/ch250.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-251">
+        <navLabel>
+          <text>第五十四章 近在眼前的希望</text>
+        </navLabel>
+        <content src="text/ch251.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-252">
+        <navLabel>
+          <text>第五十五章 求而不得与歇斯底里</text>
+        </navLabel>
+        <content src="text/ch252.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-253">
+        <navLabel>
+          <text>第五十六章 平静又不平静的清晨</text>
+        </navLabel>
+        <content src="text/ch253.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-254">
+        <navLabel>
+          <text>第五十七章 新的开始</text>
+        </navLabel>
+        <content src="text/ch254.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-255">
+        <navLabel>
+          <text>第五十八章 考验</text>
+        </navLabel>
+        <content src="text/ch255.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-256">
+        <navLabel>
+          <text>第五十九章 萝卡</text>
+        </navLabel>
+        <content src="text/ch256.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-257">
+        <navLabel>
+          <text>第六十章 不受关注之人</text>
+        </navLabel>
+        <content src="text/ch257.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-258">
+        <navLabel>
+          <text>请假一天</text>
+        </navLabel>
+        <content src="text/ch258.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-259">
+        <navLabel>
+          <text>第六十一章 维拉妮卡的忠告</text>
+        </navLabel>
+        <content src="text/ch259.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-260">
+        <navLabel>
+          <text>第六十二章 精灵王的回归</text>
+        </navLabel>
+        <content src="text/ch260.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-261">
+        <navLabel>
+          <text>第六十三章 父女</text>
+        </navLabel>
+        <content src="text/ch261.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-262">
+        <navLabel>
+          <text>第六十四章 水雾之中</text>
+        </navLabel>
+        <content src="text/ch262.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-263">
+        <navLabel>
+          <text>第六十五章 浴场中的精灵公主们</text>
+        </navLabel>
+        <content src="text/ch263.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-264">
+        <navLabel>
+          <text>第六十六章 迷醉而苦涩之味</text>
+        </navLabel>
+        <content src="text/ch264.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-265">
+        <navLabel>
+          <text>第六十七章 悔过、期盼与不容退让</text>
+        </navLabel>
+        <content src="text/ch265.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-266">
+        <navLabel>
+          <text>第六十八章 矛盾</text>
+        </navLabel>
+        <content src="text/ch266.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-267">
+        <navLabel>
+          <text>第六十九章 实力之差</text>
+        </navLabel>
+        <content src="text/ch267.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-268">
+        <navLabel>
+          <text>第七十章 悄然改变的事物</text>
+        </navLabel>
+        <content src="text/ch268.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-269">
+        <navLabel>
+          <text>第七十一章 神性与婚约</text>
+        </navLabel>
+        <content src="text/ch269.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-270">
+        <navLabel>
+          <text>第七十二章 亚莉克希亚家族</text>
+        </navLabel>
+        <content src="text/ch270.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-271">
+        <navLabel>
+          <text>第七十三章 降灵与尝试</text>
+        </navLabel>
+        <content src="text/ch271.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-272">
+        <navLabel>
+          <text>第七十四章 排斥与监视</text>
+        </navLabel>
+        <content src="text/ch272.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-273">
+        <navLabel>
+          <text>第七十五章 潜在的敌人</text>
+        </navLabel>
+        <content src="text/ch273.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-274">
+        <navLabel>
+          <text>第七十六章 大雪将至</text>
+        </navLabel>
+        <content src="text/ch274.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-275">
+        <navLabel>
+          <text>第七十七章 对支配者的策略</text>
+        </navLabel>
+        <content src="text/ch275.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-276">
+        <navLabel>
+          <text>第七十八章 海妖之镜</text>
+        </navLabel>
+        <content src="text/ch276.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-277">
+        <navLabel>
+          <text>莉提的人设~</text>
+        </navLabel>
+        <content src="text/ch277.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-278">
+        <navLabel>
+          <text>第七十九章 风雪之行</text>
+        </navLabel>
+        <content src="text/ch278.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-279">
+        <navLabel>
+          <text>第八十章 两位父亲的恩怨</text>
+        </navLabel>
+        <content src="text/ch279.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-280">
+        <navLabel>
+          <text>第八十一章 枯竭之命</text>
+        </navLabel>
+        <content src="text/ch280.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-281">
+        <navLabel>
+          <text>第八十二章 克蕾雅的变化</text>
+        </navLabel>
+        <content src="text/ch281.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-282">
+        <navLabel>
+          <text>第八十三章 荒芜与死寂之地</text>
+        </navLabel>
+        <content src="text/ch282.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-283">
+        <navLabel>
+          <text>第八十四章 深渊之下</text>
+        </navLabel>
+        <content src="text/ch283.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-284">
+        <navLabel>
+          <text>第八十五章 国王与皇后</text>
+        </navLabel>
+        <content src="text/ch284.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-285">
+        <navLabel>
+          <text>第八十六章 混乱前夕</text>
+        </navLabel>
+        <content src="text/ch285.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-286">
+        <navLabel>
+          <text>第八十七章 暗中敲定的计划</text>
+        </navLabel>
+        <content src="text/ch286.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-287">
+        <navLabel>
+          <text>第八十八章 圣树之舞</text>
+        </navLabel>
+        <content src="text/ch287.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-288">
+        <navLabel>
+          <text>第八十九章 不堪一击的巫女</text>
+        </navLabel>
+        <content src="text/ch288.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-289">
+        <navLabel>
+          <text>第九十章 崩坏之树</text>
+        </navLabel>
+        <content src="text/ch289.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-290">
+        <navLabel>
+          <text>第九十一章 过去之怨</text>
+        </navLabel>
+        <content src="text/ch290.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-291">
+        <navLabel>
+          <text>第九十二章 精灵神</text>
+        </navLabel>
+        <content src="text/ch291.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-292">
+        <navLabel>
+          <text>补一张精灵神的图</text>
+        </navLabel>
+        <content src="text/ch292.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-293">
+        <navLabel>
+          <text>第九十三章 超越凡人的对决</text>
+        </navLabel>
+        <content src="text/ch293.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-294">
+        <navLabel>
+          <text>第九十四章 未熄之火</text>
+        </navLabel>
+        <content src="text/ch294.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-295">
+        <navLabel>
+          <text>第九十五章 时隔百年的句点</text>
+        </navLabel>
+        <content src="text/ch295.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-296">
+        <navLabel>
+          <text>第九十六章 尾声</text>
+        </navLabel>
+        <content src="text/ch296.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-297">
+        <navLabel>
+          <text>后记</text>
+        </navLabel>
+        <content src="text/ch297.xhtml" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint-298">
+      <navLabel>
+        <text>第五卷 灾焰的魔女（上）</text>
+      </navLabel>
+      <content src="text/ch298.xhtml" />
+      <navPoint id="navPoint-299">
+        <navLabel>
+          <text>第一章 羞于见人的开始</text>
+        </navLabel>
+        <content src="text/ch299.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-300">
+        <navLabel>
+          <text>第二章 圣亚莉克希亚节</text>
+        </navLabel>
+        <content src="text/ch300.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-301">
+        <navLabel>
+          <text>第三章 灾焰的魔女</text>
+        </navLabel>
+        <content src="text/ch301.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-302">
+        <navLabel>
+          <text>第四章 混沌之海与突入其来的联合宣战</text>
+        </navLabel>
+        <content src="text/ch302.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-303">
+        <navLabel>
+          <text>第五章 克蕾雅的熟人？</text>
+        </navLabel>
+        <content src="text/ch303.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-304">
+        <navLabel>
+          <text>第六章 战争之始</text>
+        </navLabel>
+        <content src="text/ch304.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-305">
+        <navLabel>
+          <text>第七章 二人的订婚</text>
+        </navLabel>
+        <content src="text/ch305.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-306">
+        <navLabel>
+          <text>第八章 尤莱顿领的光雨</text>
+        </navLabel>
+        <content src="text/ch306.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-307">
+        <navLabel>
+          <text>第九章 灰发女孩与火猫的圣子</text>
+        </navLabel>
+        <content src="text/ch307.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-308">
+        <navLabel>
+          <text>第十章 风雨飘摇的冷夜王室</text>
+        </navLabel>
+        <content src="text/ch308.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-309">
+        <navLabel>
+          <text>第十一章 援助</text>
+        </navLabel>
+        <content src="text/ch309.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-310">
+        <navLabel>
+          <text>第十二章 谋逆者与投机者</text>
+        </navLabel>
+        <content src="text/ch310.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-311">
+        <navLabel>
+          <text>第十三章 意料之外的相遇</text>
+        </navLabel>
+        <content src="text/ch311.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-312">
+        <navLabel>
+          <text>第十四章 情敌见面，分外眼红？</text>
+        </navLabel>
+        <content src="text/ch312.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-313">
+        <navLabel>
+          <text>第十五章 针锋相对的少女</text>
+        </navLabel>
+        <content src="text/ch313.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-314">
+        <navLabel>
+          <text>第十六章 冷静之后</text>
+        </navLabel>
+        <content src="text/ch314.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-315">
+        <navLabel>
+          <text>第十七章 七年的旅途</text>
+        </navLabel>
+        <content src="text/ch315.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-316">
+        <navLabel>
+          <text>第十八章 惩罚与铭刻恐惧</text>
+        </navLabel>
+        <content src="text/ch316.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-317">
+        <navLabel>
+          <text>第十九章 复国之始</text>
+        </navLabel>
+        <content src="text/ch317.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-318">
+        <navLabel>
+          <text>第二十章 猎龙的冒险者</text>
+        </navLabel>
+        <content src="text/ch318.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-319">
+        <navLabel>
+          <text>第二十一章 菲娅的心事</text>
+        </navLabel>
+        <content src="text/ch319.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-320">
+        <navLabel>
+          <text>第二十二章 破碎之夜</text>
+        </navLabel>
+        <content src="text/ch320.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-321">
+        <navLabel>
+          <text>第二十三章 变故</text>
+        </navLabel>
+        <content src="text/ch321.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-322">
+        <navLabel>
+          <text>第二十四章 对策与婚配</text>
+        </navLabel>
+        <content src="text/ch322.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-323">
+        <navLabel>
+          <text>第二十五章 雪夜之友</text>
+        </navLabel>
+        <content src="text/ch323.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-324">
+        <navLabel>
+          <text>第二十六章 试探与配合</text>
+        </navLabel>
+        <content src="text/ch324.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-325">
+        <navLabel>
+          <text>米露的人设~</text>
+        </navLabel>
+        <content src="text/ch325.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-326">
+        <navLabel>
+          <text>第二十七章 铸造魔法</text>
+        </navLabel>
+        <content src="text/ch326.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-327">
+        <navLabel>
+          <text>第二十八章 射石法杖·改</text>
+        </navLabel>
+        <content src="text/ch327.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-328">
+        <navLabel>
+          <text>第二十九章 磨合</text>
+        </navLabel>
+        <content src="text/ch328.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-329">
+        <navLabel>
+          <text>第三十章 跨越</text>
+        </navLabel>
+        <content src="text/ch329.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-330">
+        <navLabel>
+          <text>第三十一章 女王之心</text>
+        </navLabel>
+        <content src="text/ch330.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-331">
+        <navLabel>
+          <text>第三十二章 缇露露·亚莉克希亚·露裘</text>
+        </navLabel>
+        <content src="text/ch331.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-332">
+        <navLabel>
+          <text>第三十三章 诡计</text>
+        </navLabel>
+        <content src="text/ch332.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-333">
+        <navLabel>
+          <text>第三十四章 兵临城下</text>
+        </navLabel>
+        <content src="text/ch333.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-334">
+        <navLabel>
+          <text>第三十五章 交战</text>
+        </navLabel>
+        <content src="text/ch334.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-335">
+        <navLabel>
+          <text>第三十六章 色欲的魔将</text>
+        </navLabel>
+        <content src="text/ch335.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-336">
+        <navLabel>
+          <text>第三十七章 久违的平和</text>
+        </navLabel>
+        <content src="text/ch336.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-337">
+        <navLabel>
+          <text>第三十八章 来客</text>
+        </navLabel>
+        <content src="text/ch337.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-338">
+        <navLabel>
+          <text>第三十九章 不合时宜的坠落</text>
+        </navLabel>
+        <content src="text/ch338.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-339">
+        <navLabel>
+          <text>第四十章 幼龙与幼虎</text>
+        </navLabel>
+        <content src="text/ch339.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-340">
+        <navLabel>
+          <text>更新计划~</text>
+        </navLabel>
+        <content src="text/ch340.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-341">
+        <navLabel>
+          <text>第四十一章 另一侧</text>
+        </navLabel>
+        <content src="text/ch341.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-342">
+        <navLabel>
+          <text>第四十二章 不安的前奏</text>
+        </navLabel>
+        <content src="text/ch342.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-343">
+        <navLabel>
+          <text>第四十三章 火猫族的城市</text>
+        </navLabel>
+        <content src="text/ch343.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-344">
+        <navLabel>
+          <text>第四十四章 独处时光</text>
+        </navLabel>
+        <content src="text/ch344.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-345">
+        <navLabel>
+          <text>第四十五章 密谋？</text>
+        </navLabel>
+        <content src="text/ch345.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-346">
+        <navLabel>
+          <text>第四十六章 鲜血的流浪骑士</text>
+        </navLabel>
+        <content src="text/ch346.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-347">
+        <navLabel>
+          <text>第四十七章 缇露露的心事</text>
+        </navLabel>
+        <content src="text/ch347.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-348">
+        <navLabel>
+          <text>第四十八章 来自克蕾雅的提醒</text>
+        </navLabel>
+        <content src="text/ch348.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-349">
+        <navLabel>
+          <text>第四十九章 试探</text>
+        </navLabel>
+        <content src="text/ch349.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-350">
+        <navLabel>
+          <text>第五十章 埋下的引子</text>
+        </navLabel>
+        <content src="text/ch350.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-351">
+        <navLabel>
+          <text>第五十一章 生长</text>
+        </navLabel>
+        <content src="text/ch351.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-352">
+        <navLabel>
+          <text>第五十二章 蔓延</text>
+        </navLabel>
+        <content src="text/ch352.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-353">
+        <navLabel>
+          <text>第五十三章 意外的相遇</text>
+        </navLabel>
+        <content src="text/ch353.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-354">
+        <navLabel>
+          <text>第五十四章 愈发向下的变化</text>
+        </navLabel>
+        <content src="text/ch354.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-355">
+        <navLabel>
+          <text>第五十五章 疯长</text>
+        </navLabel>
+        <content src="text/ch355.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-356">
+        <navLabel>
+          <text>第五十六章 爆发</text>
+        </navLabel>
+        <content src="text/ch356.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-357">
+        <navLabel>
+          <text>第五十七章 死斗</text>
+        </navLabel>
+        <content src="text/ch357.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-358">
+        <navLabel>
+          <text>第五十八章 圣子的绝境</text>
+        </navLabel>
+        <content src="text/ch358.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-359">
+        <navLabel>
+          <text>第五十九章 一起上吧！</text>
+        </navLabel>
+        <content src="text/ch359.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-360">
+        <navLabel>
+          <text>第六十章 七魔将之陨</text>
+        </navLabel>
+        <content src="text/ch360.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-361">
+        <navLabel>
+          <text>第六十一章 两位妖精少女</text>
+        </navLabel>
+        <content src="text/ch361.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-362">
+        <navLabel>
+          <text>第六十二章 依恋之心</text>
+        </navLabel>
+        <content src="text/ch362.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-363">
+        <navLabel>
+          <text>第六十三章 尾声</text>
+        </navLabel>
+        <content src="text/ch363.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-364">
+        <navLabel>
+          <text>后记</text>
+        </navLabel>
+        <content src="text/ch364.xhtml" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint-365">
+      <navLabel>
+        <text>第六卷 灾焰的魔女（下）</text>
+      </navLabel>
+      <content src="text/ch365.xhtml" />
+      <navPoint id="navPoint-366">
+        <navLabel>
+          <text>第一章 幼女的守望者</text>
+        </navLabel>
+        <content src="text/ch366.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-367">
+        <navLabel>
+          <text>第二章 拉普拉斯的大玩具</text>
+        </navLabel>
+        <content src="text/ch367.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-368">
+        <navLabel>
+          <text>第三章 热闹的再会</text>
+        </navLabel>
+        <content src="text/ch368.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-369">
+        <navLabel>
+          <text>第四章 坠落的荒芜之地与四处碰壁的圣子</text>
+        </navLabel>
+        <content src="text/ch369.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-370">
+        <navLabel>
+          <text>第五章 来自尤琳莎的赠礼</text>
+        </navLabel>
+        <content src="text/ch370.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-371">
+        <navLabel>
+          <text>第六章 女仆火猫猫</text>
+        </navLabel>
+        <content src="text/ch371.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-372">
+        <navLabel>
+          <text>第七章 开幕</text>
+        </navLabel>
+        <content src="text/ch372.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-373">
+        <navLabel>
+          <text>第八章 浴场与吸血姬的甜蜜</text>
+        </navLabel>
+        <content src="text/ch373.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-374">
+        <navLabel>
+          <text>第九章 借酒消愁的火猫猫</text>
+        </navLabel>
+        <content src="text/ch374.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-375">
+        <navLabel>
+          <text>第十章 神志不清的火猫猫</text>
+        </navLabel>
+        <content src="text/ch375.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-376">
+        <navLabel>
+          <text>第十一章 被秋后算账的火猫猫</text>
+        </navLabel>
+        <content src="text/ch376.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-377">
+        <navLabel>
+          <text>第十二章 苦涩的回路</text>
+        </navLabel>
+        <content src="text/ch377.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-378">
+        <navLabel>
+          <text>第十三章 契机</text>
+        </navLabel>
+        <content src="text/ch378.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-379">
+        <navLabel>
+          <text>第十四章 悲泣山脉</text>
+        </navLabel>
+        <content src="text/ch379.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-380">
+        <navLabel>
+          <text>第十五章 看似友善的神明</text>
+        </navLabel>
+        <content src="text/ch380.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-381">
+        <navLabel>
+          <text>第十六章 令人担忧的发现</text>
+        </navLabel>
+        <content src="text/ch381.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-382">
+        <navLabel>
+          <text>第十七章 女神的诀别？</text>
+        </navLabel>
+        <content src="text/ch382.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-383">
+        <navLabel>
+          <text>第十八章 第八位阶亡灵</text>
+        </navLabel>
+        <content src="text/ch383.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-384">
+        <navLabel>
+          <text>第十九章 堕为亡灵的圣子</text>
+        </navLabel>
+        <content src="text/ch384.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-385">
+        <navLabel>
+          <text>第二十章 神所保留的秘密</text>
+        </navLabel>
+        <content src="text/ch385.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-386">
+        <navLabel>
+          <text>第二十一章 敬重之心</text>
+        </navLabel>
+        <content src="text/ch386.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-387">
+        <navLabel>
+          <text>第二十二章 惊为天人的一击</text>
+        </navLabel>
+        <content src="text/ch387.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-388">
+        <navLabel>
+          <text>第二十三章 藏匿于光幕之下</text>
+        </navLabel>
+        <content src="text/ch388.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-389">
+        <navLabel>
+          <text>第二十四章 拉近</text>
+        </navLabel>
+        <content src="text/ch389.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-390">
+        <navLabel>
+          <text>第二十五章 对质</text>
+        </navLabel>
+        <content src="text/ch390.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-391">
+        <navLabel>
+          <text>第二十六章 兽人的尴尬时期</text>
+        </navLabel>
+        <content src="text/ch391.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-392">
+        <navLabel>
+          <text>状态不佳，休息一天</text>
+        </navLabel>
+        <content src="text/ch392.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-393">
+        <navLabel>
+          <text>第二十七章 宵之花的管理人</text>
+        </navLabel>
+        <content src="text/ch393.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-394">
+        <navLabel>
+          <text>第二十八章 躁动的清晨</text>
+        </navLabel>
+        <content src="text/ch394.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-395">
+        <navLabel>
+          <text>第二十九章 浑身发光的火猫猫</text>
+        </navLabel>
+        <content src="text/ch395.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-396">
+        <navLabel>
+          <text>第三十章 察觉现于玩笑之中</text>
+        </navLabel>
+        <content src="text/ch396.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-397">
+        <navLabel>
+          <text>菲娅睡衣！</text>
+        </navLabel>
+        <content src="text/ch397.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-398">
+        <navLabel>
+          <text>第三十一章 旧友</text>
+        </navLabel>
+        <content src="text/ch398.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-399">
+        <navLabel>
+          <text>第三十二章 进退两难的神谕</text>
+        </navLabel>
+        <content src="text/ch399.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-400">
+        <navLabel>
+          <text>第三十三章 引诱女神的陷阱</text>
+        </navLabel>
+        <content src="text/ch400.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-401">
+        <navLabel>
+          <text>双人插图·菲娅&amp;克蕾雅</text>
+        </navLabel>
+        <content src="text/ch401.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-402">
+        <navLabel>
+          <text>第三十三章 开始加深的感情</text>
+        </navLabel>
+        <content src="text/ch402.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-403">
+        <navLabel>
+          <text>第三十四章 情理之中的质疑</text>
+        </navLabel>
+        <content src="text/ch403.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-404">
+        <navLabel>
+          <text>第三十五章 接二连三的空间切裂</text>
+        </navLabel>
+        <content src="text/ch404.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-405">
+        <navLabel>
+          <text>第三十六章 小巷里的火猫</text>
+        </navLabel>
+        <content src="text/ch405.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-406">
+        <navLabel>
+          <text>第三十七章 怦然心动的火猫猫</text>
+        </navLabel>
+        <content src="text/ch406.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-407">
+        <navLabel>
+          <text>第三十九章 非同寻常的木头——两棵</text>
+        </navLabel>
+        <content src="text/ch407.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-408">
+        <navLabel>
+          <text>第四十章 不自知的蠢蛋</text>
+        </navLabel>
+        <content src="text/ch408.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-409">
+        <navLabel>
+          <text>第四十一章 猫猫戒指与精灵公主</text>
+        </navLabel>
+        <content src="text/ch409.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-410">
+        <navLabel>
+          <text>第四十二章 诺菈的担忧</text>
+        </navLabel>
+        <content src="text/ch410.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-411">
+        <navLabel>
+          <text>第四十三章 主与仆</text>
+        </navLabel>
+        <content src="text/ch411.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-412">
+        <navLabel>
+          <text>第四十四章 没有默契的配合</text>
+        </navLabel>
+        <content src="text/ch412.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-413">
+        <navLabel>
+          <text>第四十五章 巧合也可被称为不幸</text>
+        </navLabel>
+        <content src="text/ch413.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-414">
+        <navLabel>
+          <text>第四十六章 不该出现的魔物</text>
+        </navLabel>
+        <content src="text/ch414.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-415">
+        <navLabel>
+          <text>第四十七章 过去之魇</text>
+        </navLabel>
+        <content src="text/ch415.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-416">
+        <navLabel>
+          <text>第四十八章 无法克制的潜意识</text>
+        </navLabel>
+        <content src="text/ch416.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-417">
+        <navLabel>
+          <text>第四十九章 梅开二度</text>
+        </navLabel>
+        <content src="text/ch417.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-418">
+        <navLabel>
+          <text>第五十章 重叠的梦</text>
+        </navLabel>
+        <content src="text/ch418.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-419">
+        <navLabel>
+          <text>第五十一章 疯狂之物</text>
+        </navLabel>
+        <content src="text/ch419.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-420">
+        <navLabel>
+          <text>第五十二章 一个人的军队</text>
+        </navLabel>
+        <content src="text/ch420.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-421">
+        <navLabel>
+          <text>第五十三章 被察觉的真相</text>
+        </navLabel>
+        <content src="text/ch421.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-422">
+        <navLabel>
+          <text>第五十四章 探求光幕</text>
+        </navLabel>
+        <content src="text/ch422.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-423">
+        <navLabel>
+          <text>火猫猫插图~</text>
+        </navLabel>
+        <content src="text/ch423.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-424">
+        <navLabel>
+          <text>第五十五章 光幕之后</text>
+        </navLabel>
+        <content src="text/ch424.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-425">
+        <navLabel>
+          <text>第五十六章 禁咒·空间禁锢！</text>
+        </navLabel>
+        <content src="text/ch425.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-426">
+        <navLabel>
+          <text>第五十七章 繁星之下</text>
+        </navLabel>
+        <content src="text/ch426.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-427">
+        <navLabel>
+          <text>第五十八章 可能存在的第三个诅咒</text>
+        </navLabel>
+        <content src="text/ch427.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-428">
+        <navLabel>
+          <text>第五十九章 声东击西的伎俩</text>
+        </navLabel>
+        <content src="text/ch428.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-429">
+        <navLabel>
+          <text>第六十章 歼灭之后</text>
+        </navLabel>
+        <content src="text/ch429.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-430">
+        <navLabel>
+          <text>第六十一章 无法逃避的责任</text>
+        </navLabel>
+        <content src="text/ch430.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-431">
+        <navLabel>
+          <text>第六十二章 过于受欢迎的公主大人</text>
+        </navLabel>
+        <content src="text/ch431.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-432">
+        <navLabel>
+          <text>第六十三章 热闹的过场</text>
+        </navLabel>
+        <content src="text/ch432.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-433">
+        <navLabel>
+          <text>第六十四章 再度醉酒的火猫</text>
+        </navLabel>
+        <content src="text/ch433.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-434">
+        <navLabel>
+          <text>第六十五章 不安与焦躁</text>
+        </navLabel>
+        <content src="text/ch434.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-435">
+        <navLabel>
+          <text>第六十六章 鬼迷心窍的妄想</text>
+        </navLabel>
+        <content src="text/ch435.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-436">
+        <navLabel>
+          <text>空章</text>
+        </navLabel>
+        <content src="text/ch436.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-437">
+        <navLabel>
+          <text>第六十七章 悄然变化的心</text>
+        </navLabel>
+        <content src="text/ch437.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-438">
+        <navLabel>
+          <text>第六十八章 同样变化的其他角色</text>
+        </navLabel>
+        <content src="text/ch438.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-439">
+        <navLabel>
+          <text>第六十九章 察觉的心意</text>
+        </navLabel>
+        <content src="text/ch439.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-440">
+        <navLabel>
+          <text>第七十章 暗精灵与半精灵</text>
+        </navLabel>
+        <content src="text/ch440.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-441">
+        <navLabel>
+          <text>第七十一章 异变前奏</text>
+        </navLabel>
+        <content src="text/ch441.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-442">
+        <navLabel>
+          <text>第七十二章 坠入爱河的火猫猫</text>
+        </navLabel>
+        <content src="text/ch442.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-443">
+        <navLabel>
+          <text>第七十三章 偶然撮合的必然</text>
+        </navLabel>
+        <content src="text/ch443.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-444">
+        <navLabel>
+          <text>第七十四章 死亡浪潮</text>
+        </navLabel>
+        <content src="text/ch444.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-445">
+        <navLabel>
+          <text>第七十五章 再度发光的烈焰大剑</text>
+        </navLabel>
+        <content src="text/ch445.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-446">
+        <navLabel>
+          <text>第七十六章 会飞的太阳</text>
+        </navLabel>
+        <content src="text/ch446.xhtml" />
+      </navPoint>
+      <navPoint id="navPoint-447">
+        <navLabel>
+          <text>第七十七章 忘却恐惧的绚烂之火</text>
+        </navLabel>
+        <content src="text/ch447.xhtml" />
+      </navPoint>
+    </navPoint>
+  </navMap>
+</ncx>
