@@ -72,10 +72,12 @@ pub fn execute(config: Transform) -> Result<()> {
 
     let mut markdown_buf = String::with_capacity(markdown.len());
     pulldown_cmark_to_cmark::cmark(events.iter(), &mut markdown_buf)?;
-    #[cfg(target_os = "windows")]
-    markdown_buf.replace("\n", utils::LINE_BREAK);
 
+    #[cfg(target_os = "windows")]
+    buf.push_str(markdown_buf.replace('\n', utils::LINE_BREAK).as_str());
+    #[cfg(not(target_os = "windows"))]
     buf.push_str(&markdown_buf);
+
     buf.push_str(utils::LINE_BREAK);
 
     if config.delete {
