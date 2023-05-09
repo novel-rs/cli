@@ -1176,18 +1176,18 @@ dependencies = [
 
 [[package]]
 name = "enumset"
-version = "1.0.13"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59b025475ad197bd8b4a9bdce339216b6cf3bd568bf2e107c286b51613f0b3cf"
+checksum = "27f1d44683938f1f2dbb59932a7e164a21928b0a4b23ca6f9059649ae4725b2e"
 dependencies = [
  "enumset_derive",
 ]
 
 [[package]]
 name = "enumset_derive"
-version = "0.7.0"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14c2852ff17a4c9a2bb2abbca3074737919cb05dc24b0a8ca9498081a7033dd6"
+checksum = "93b15496585fddd368466056b314fbb7e826a9ef1cf17b563d30dd2665846be2"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -2145,9 +2145,9 @@ checksum = "03087c2bad5e1034e8cace5926dec053fb3790248370865f5117a7d0213354c8"
 
 [[package]]
 name = "libc"
-version = "0.2.143"
+version = "0.2.144"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "edc207893e85c5d6be840e969b496b53d94cec8be2d501b214f50daa97fa8024"
+checksum = "2b00cc1c228a6782d0f076e7b232802e0c5689d41bb5df366f2a6b6621cfdfe1"
 
 [[package]]
 name = "libloading"
@@ -3262,9 +3262,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.26"
+version = "1.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4424af4bf778aae2051a77b60283332f386554255d722233d09fbfc7e30da2fc"
+checksum = "8f4f29d145265ec1c483c7c654450edde0bfe043d3938d6972630663356d9500"
 dependencies = [
  "proc-macro2",
 ]
