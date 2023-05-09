@@ -1,8 +1,8 @@
 mod mdbook;
 mod pandoc;
 
-pub(crate) use self::mdbook::*;
-pub(crate) use self::pandoc::*;
+pub use self::mdbook::*;
+pub use self::pandoc::*;
 
 use std::path::Path;
 

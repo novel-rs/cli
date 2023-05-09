@@ -6,7 +6,7 @@ use tracing::info;
 
 use crate::cmd::Source;
 
-pub(crate) async fn login<T>(
+pub async fn login<T>(
     client: &T,
     source: &Source,
     ignore_keyring: bool,

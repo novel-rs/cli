@@ -14,7 +14,7 @@ use crate::{
     utils::{self, Content, MetaData, Novel},
 };
 
-pub(crate) async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
+pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
     let mut timing = Timing::new();
 
     let images_path = images_path(&novel.name)?;
@@ -174,5 +174,5 @@ where
     T: AsRef<str>,
 {
     static IMAGE_PATH: OnceCell<PathBuf> = OnceCell::new();
-    IMAGE_PATH.get_or_try_init(|| Ok(utils::to_mdbook_dir_name(novel_name)))
+    IMAGE_PATH.get_or_try_init(|| Ok(utils::to_novel_dir_name(novel_name)))
 }

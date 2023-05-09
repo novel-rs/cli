@@ -8,7 +8,7 @@ use crate::cmd::Convert;
 
 use super::{Content, Novel};
 
-pub(crate) async fn convert<T>(novel: &mut Novel, converts: T) -> Result<()>
+pub async fn convert<T>(novel: &mut Novel, converts: T) -> Result<()>
 where
     T: AsRef<[Convert]>,
 {
@@ -47,7 +47,7 @@ where
     Ok(())
 }
 
-pub(crate) fn convert_str<T, E>(str: T, converts: E) -> Result<String>
+pub fn convert_str<T, E>(str: T, converts: E) -> Result<String>
 where
     T: AsRef<str>,
     E: AsRef<[Convert]>,
@@ -57,7 +57,7 @@ where
     if converts.is_empty() {
         return Ok(str.as_ref().to_string());
     } else {
-        let mut result;
+        let mut result = String::new();
 
         static OPENCC_S2T: OnceCell<OpenCC> = OnceCell::new();
         static OPENCC_T2S: OnceCell<OpenCC> = OnceCell::new();
@@ -75,8 +75,6 @@ where
             result = OPENCC_S2T
                 .get_or_try_init(|| OpenCC::new(vec![Config::S2T]))?
                 .convert(&str)?;
-        } else {
-            unreachable!("OpenCC config can only be JP2T2S, T2S or S2T");
         }
 
         if converts.contains(&Convert::CUSTOM) {
@@ -126,9 +124,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
     let space = ' ';
     let last = result.chars().last();
 
-    if c == '\n' {
-        result.push(c);
-    } else if
+    if
     // https://en.wikipedia.org/wiki/Zero-width_space
     c == '\u{200B}'
         // https://en.wikipedia.org/wiki/Zero-width_non-joiner

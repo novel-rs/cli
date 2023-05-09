@@ -9,16 +9,16 @@ mod progress;
 mod unicode;
 mod writer;
 
-pub(crate) use convert::*;
-pub(crate) use current_dir::*;
-pub(crate) use line_break::*;
-pub(crate) use login::*;
-pub(crate) use markdown::*;
-pub(crate) use novel::*;
-pub(crate) use novel_info::*;
-pub(crate) use progress::*;
-pub(crate) use unicode::*;
-pub(crate) use writer::*;
+pub use convert::*;
+pub use current_dir::*;
+pub use line_break::*;
+pub use login::*;
+pub use markdown::*;
+pub use novel::*;
+pub use novel_info::*;
+pub use progress::*;
+pub use unicode::*;
+pub use writer::*;
 
 use std::{
     collections::HashMap,
@@ -35,16 +35,7 @@ use tracing::{info, warn};
 use crate::{cmd::Convert, LANG_ID, LOCALES};
 
 #[must_use]
-pub(crate) fn is_markdown<T>(path: T) -> bool
-where
-    T: AsRef<Path>,
-{
-    let path = path.as_ref();
-    path.is_file() && novel_api::is_some_and(path.extension(), |ext| ext == "md")
-}
-
-#[must_use]
-pub(crate) fn num_to_str(num: u16) -> String {
+pub fn num_to_str(num: u16) -> String {
     if num < 10 {
         format!("00{num}")
     } else if num < 100 {
@@ -54,7 +45,7 @@ pub(crate) fn num_to_str(num: u16) -> String {
     }
 }
 
-pub(crate) fn remove_file_or_dir<T>(path: T) -> Result<()>
+pub fn remove_file_or_dir<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
 {
@@ -94,7 +85,7 @@ where
 }
 
 #[must_use]
-pub(crate) fn lang(convert: &[Convert]) -> String {
+pub fn lang(convert: &[Convert]) -> String {
     if convert.contains(&Convert::S2T) {
         String::from("zh-Hant")
     } else {
@@ -103,14 +94,14 @@ pub(crate) fn lang(convert: &[Convert]) -> String {
 }
 
 #[must_use]
-pub(crate) fn image_ext(image: &DynamicImage) -> String {
+pub fn image_ext(image: &DynamicImage) -> String {
     match image.color() {
         ColorType::Rgb8 | ColorType::Rgba8 => String::from("webp"),
         _ => String::from("png"),
     }
 }
 
-pub(crate) fn emoji<T>(str: T) -> String
+pub fn emoji<T>(str: T) -> String
 where
     T: AsRef<str>,
 {
@@ -118,7 +109,7 @@ where
     console::pad_str(&emoji, 2, Alignment::Left, None).to_string()
 }
 
-pub(crate) fn locales<T, E>(name: T, emoji: E) -> String
+pub fn locales<T, E>(name: T, emoji: E) -> String
 where
     T: AsRef<str>,
     E: AsRef<str>,
@@ -134,7 +125,7 @@ where
         .unwrap()
 }
 
-pub(crate) fn locales_with_arg<T, E, F>(name: T, emoji: E, arg: F) -> String
+pub fn locales_with_arg<T, E, F>(name: T, emoji: E, arg: F) -> String
 where
     T: AsRef<str>,
     E: AsRef<str>,
@@ -152,7 +143,7 @@ where
         .unwrap()
 }
 
-pub(crate) fn to_mdbook_dir_name<T>(novel_name: T) -> PathBuf
+pub fn to_novel_dir_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
@@ -165,11 +156,11 @@ where
     PathBuf::from(sanitize_filename::sanitize(novel_name))
 }
 
-pub(crate) fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
+pub fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
-    let mut path = to_mdbook_dir_name(novel_name);
+    let mut path = to_novel_dir_name(novel_name);
     path.set_extension("md");
 
     path

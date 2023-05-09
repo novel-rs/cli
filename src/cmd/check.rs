@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use ahash::AHashSet;
-use anyhow::Result;
+use anyhow::{ensure, Result};
 use clap::Args;
 use fluent_templates::Loader;
 use novel_api::Timing;
@@ -31,18 +31,16 @@ pub fn execute(config: Check) -> Result<()> {
 
     let current_dir = CurrentDir::new(config.markdown_path.parent().unwrap())?;
 
-    if !meta_data.lang_is_ok() {
-        println(format!(
-            "The lang field must be zh-Hant or zh-Hans: `{}`",
-            meta_data.lang
-        ));
-    }
-    if !meta_data.cover_image_is_ok() {
-        println(format!(
-            "Cover image does not exist: `{}`",
-            meta_data.cover_image.unwrap().display()
-        ));
-    }
+    ensure!(
+        meta_data.lang_is_ok(),
+        "The lang field must be zh-Hant or zh-Hans: `{}`",
+        meta_data.lang
+    );
+    ensure!(
+        meta_data.cover_image_is_ok(),
+        "Cover image does not exist: `{}`",
+        meta_data.cover_image.unwrap().display()
+    );
 
     let parser = Parser::new_ext(&markdown, Options::empty());
     let events = parser.into_offset_iter().collect::<Vec<(_, _)>>();

@@ -4,7 +4,7 @@ use image::DynamicImage;
 use tokio::sync::RwLock;
 
 #[must_use]
-pub(crate) struct Novel {
+pub struct Novel {
     pub name: String,
     pub author_name: String,
     pub introduction: Option<Vec<String>>,
@@ -13,25 +13,25 @@ pub(crate) struct Novel {
 }
 
 #[must_use]
-pub(crate) struct Volume {
+pub struct Volume {
     pub title: String,
     pub chapters: Vec<Chapter>,
 }
 
 #[must_use]
-pub(crate) struct Chapter {
+pub struct Chapter {
     pub title: String,
     pub contents: Arc<RwLock<Vec<Content>>>,
 }
 
 #[must_use]
-pub(crate) enum Content {
+pub enum Content {
     Text(String),
     Image(Image),
 }
 
 #[must_use]
-pub(crate) struct Image {
+pub struct Image {
     pub file_name: String,
     pub content: DynamicImage,
 }

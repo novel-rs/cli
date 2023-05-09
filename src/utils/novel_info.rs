@@ -12,7 +12,7 @@ use viuer::{Config, KittySupport};
 
 use crate::{cmd::Convert, utils};
 
-pub(crate) async fn novel_info<T>(client: &Arc<T>, novel_id: u32) -> Result<NovelInfo>
+pub async fn novel_info<T>(client: &Arc<T>, novel_id: u32) -> Result<NovelInfo>
 where
     T: Client + Send + Sync + 'static,
 {
@@ -22,7 +22,7 @@ where
     Ok(novel_info.unwrap())
 }
 
-pub(crate) fn print_novel_info(
+pub fn print_novel_info(
     image: Option<DynamicImage>,
     novel_info: NovelInfo,
     converts: &Vec<Convert>,
@@ -101,7 +101,7 @@ pub(crate) fn print_novel_info(
     Ok(())
 }
 
-pub(crate) fn print_novel_infos(
+pub fn print_novel_infos(
     novel_infos: Vec<NovelInfo>,
     converts: &Vec<Convert>,
 ) -> Result<()> {

@@ -44,10 +44,10 @@ struct Html {
     no_section_label: bool,
 }
 
-pub(crate) async fn generate_mdbook(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
+pub async fn generate_mdbook(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
     let mut timing = Timing::new();
 
-    let base_path = utils::to_mdbook_dir_name(&novel.name);
+    let base_path = utils::to_novel_dir_name(&novel.name);
     if base_path.is_dir() {
         warn!("The mdBook output folder already exists and will be deleted");
         utils::remove_file_or_dir(&base_path)?;

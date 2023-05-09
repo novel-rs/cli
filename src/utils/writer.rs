@@ -7,12 +7,12 @@ use tokio::{
 };
 
 #[must_use]
-pub(crate) struct Writer {
+pub struct Writer {
     writer: BufWriter<File>,
 }
 
 impl Writer {
-    pub(crate) async fn new<T>(path: T) -> Result<Self>
+    pub async fn new<T>(path: T) -> Result<Self>
     where
         T: AsRef<Path>,
     {
@@ -22,7 +22,7 @@ impl Writer {
     }
 
     #[inline]
-    pub(crate) async fn write<T>(&mut self, text: T) -> Result<()>
+    pub async fn write<T>(&mut self, text: T) -> Result<()>
     where
         T: AsRef<str>,
     {
@@ -32,13 +32,13 @@ impl Writer {
     }
 
     #[inline]
-    pub(crate) async fn ln(&mut self) -> Result<()> {
+    pub async fn ln(&mut self) -> Result<()> {
         self.writer.write_all(b"\n").await?;
         Ok(())
     }
 
     #[inline]
-    pub(crate) async fn writeln<T>(&mut self, text: T) -> Result<()>
+    pub async fn writeln<T>(&mut self, text: T) -> Result<()>
     where
         T: AsRef<str>,
     {
@@ -48,7 +48,7 @@ impl Writer {
     }
 
     #[inline]
-    pub(crate) async fn flush(&mut self) -> Result<()> {
+    pub async fn flush(&mut self) -> Result<()> {
         self.writer.flush().await?;
         Ok(())
     }
