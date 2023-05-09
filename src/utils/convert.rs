@@ -222,7 +222,7 @@ mod tests {
         assert_eq!(convert_str("安裝後?", &config)?, "安装后？");
         assert_eq!(convert_str("，，，", &config)?, "，");
         assert_eq!(convert_str("安　装", &config)?, "安 装");
-        assert_eq!(convert_str("你\n好", &config)?, "你\n好");
+        assert_eq!(convert_str("你\n好", &config)?, "你好");
         assert_eq!(convert_str("08:00", &config)?, "08:00");
 
         Ok(())
