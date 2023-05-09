@@ -53,7 +53,7 @@ where
         "File `{}` does not exist",
         path.display()
     );
-    ensure!(path.try_exists()?, "`{}` is not file", path.display());
+    ensure!(path.is_file(), "`{}` is not file", path.display());
     ensure!(
         novel_api::is_some_and(path.extension(), |extension| extension == "epub"),
         "File `{}` is not epub file",
@@ -69,10 +69,10 @@ where
 {
     let path = path.as_ref();
 
-    let output_directory = utils::file_stem(path)?;
-    if output_directory.try_exists()? {
+    let output_dir = fs::canonicalize(path)?.with_extension("");
+    if output_dir.try_exists()? {
         warn!("The output directory already exists and will be deleted");
-        utils::remove_file_or_dir(&output_directory)?;
+        utils::remove_file_or_dir(&output_dir)?;
     }
 
     let file = File::open(path)?;
@@ -84,7 +84,7 @@ where
             Some(path) => path.to_owned(),
             None => continue,
         };
-        let outpath = output_directory.join(outpath);
+        let outpath = output_dir.join(outpath);
 
         if (*file.name()).ends_with('/') {
             fs::create_dir_all(&outpath)?;

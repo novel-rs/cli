@@ -26,26 +26,13 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{bail, Result};
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
 use image::{ColorType, DynamicImage};
 use tracing::{info, warn};
 
 use crate::{cmd::Convert, LANG_ID, LOCALES};
-
-pub(crate) fn file_stem<T>(path: T) -> Result<PathBuf>
-where
-    T: AsRef<Path>,
-{
-    let file_stem = PathBuf::from(
-        path.as_ref()
-            .file_stem()
-            .ok_or_else(|| anyhow!("Can not get file_stem"))?,
-    );
-
-    Ok(file_stem)
-}
 
 #[must_use]
 pub(crate) fn is_markdown<T>(path: T) -> bool
