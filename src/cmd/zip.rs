@@ -1,5 +1,5 @@
 use std::{
-    fs::File,
+    fs::{self, File},
     io::{Read, Seek, Write},
     path::{Path, PathBuf},
 };
@@ -32,19 +32,19 @@ pub fn execute(config: Zip) -> Result<()> {
 
     ensure_epub_dir(&config.epub_dir_path)?;
 
-    let mut epub_file_path = utils::file_stem(&config.epub_dir_path)?;
-    epub_file_path.set_extension("epub");
-
+    let epub_file_path = fs::canonicalize(&config.epub_dir_path)?.with_extension("epub");
     if epub_file_path.try_exists()? {
-        warn!("The epub output file already exists and will be overwritten");
+        warn!("The epub output file already exists and will be deleted");
+        utils::remove_file_or_dir(&epub_file_path)?;
     }
 
     let file = File::create(epub_file_path)?;
-
     let walkdir = WalkDir::new(&config.epub_dir_path);
-    let it = walkdir.into_iter();
-
-    zip_dir(&mut it.filter_map(|e| e.ok()), &config.epub_dir_path, file)?;
+    zip_dir(
+        &mut walkdir.into_iter().filter_map(|e| e.ok()),
+        &config.epub_dir_path,
+        file,
+    )?;
 
     if config.delete {
         utils::remove_file_or_dir(&config.epub_dir_path)?;
@@ -63,15 +63,15 @@ where
 
     ensure!(
         path.try_exists()?,
-        "Dir `{}` does not exist",
+        "Directory `{}` does not exist",
         path.display()
     );
-    ensure!(path.is_dir(), "`{}` is not dir", path.display());
+    ensure!(path.is_dir(), "`{}` is not directory", path.display());
 
     Ok(())
 }
 
-fn zip_dir<T, E>(it: &mut dyn Iterator<Item = DirEntry>, prefix: T, writer: E) -> Result<()>
+fn zip_dir<T, E>(iter: &mut dyn Iterator<Item = DirEntry>, prefix: T, writer: E) -> Result<()>
 where
     T: AsRef<Path>,
     E: Write + Seek,
@@ -80,7 +80,7 @@ where
     let options = FileOptions::default().compression_method(CompressionMethod::Deflated);
 
     let mut buffer = Vec::new();
-    for entry in it {
+    for entry in iter {
         let path = entry.path();
         let name = path.strip_prefix(prefix.as_ref())?;
 
