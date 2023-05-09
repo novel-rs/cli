@@ -6,11 +6,7 @@ use tracing::info;
 
 use crate::cmd::Source;
 
-pub async fn login<T>(
-    client: &T,
-    source: &Source,
-    ignore_keyring: bool,
-) -> Result<Option<UserInfo>>
+pub async fn login<T>(client: &T, source: &Source, ignore_keyring: bool) -> Result<Option<UserInfo>>
 where
     T: Client,
 {

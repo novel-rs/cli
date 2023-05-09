@@ -101,10 +101,7 @@ pub fn print_novel_info(
     Ok(())
 }
 
-pub fn print_novel_infos(
-    novel_infos: Vec<NovelInfo>,
-    converts: &Vec<Convert>,
-) -> Result<()> {
+pub fn print_novel_infos(novel_infos: Vec<NovelInfo>, converts: &Vec<Convert>) -> Result<()> {
     let mut row = vec![
         utils::convert_str("序号", converts)?,
         utils::convert_str("编号", converts)?,
