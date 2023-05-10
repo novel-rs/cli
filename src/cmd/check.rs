@@ -46,6 +46,7 @@ pub fn execute(config: Check) -> Result<()> {
     let events = parser.into_offset_iter().collect::<Vec<(_, _)>>();
     let char_set = RwLock::new(AHashSet::new());
 
+    // TODO i18n output
     events
         .into_par_iter()
         .for_each(|(event, range)| match event {

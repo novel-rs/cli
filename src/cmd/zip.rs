@@ -1,10 +1,11 @@
 use std::{
-    fs::{self, File},
+    env,
+    fs::File,
     io::{Read, Seek, Write},
     path::{Path, PathBuf},
 };
 
-use anyhow::{ensure, Result};
+use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
 use novel_api::Timing;
@@ -30,9 +31,11 @@ pub struct Zip {
 pub fn execute(config: Zip) -> Result<()> {
     let mut timing = Timing::new();
 
-    ensure_epub_dir(&config.epub_dir_path)?;
+    utils::ensure_epub_dir(&config.epub_dir_path)?;
 
-    let epub_file_path = fs::canonicalize(&config.epub_dir_path)?.with_extension("epub");
+    let epub_file_path = env::current_dir()?
+        .join(config.epub_dir_path.file_stem().unwrap())
+        .with_extension("epub");
     if epub_file_path.try_exists()? {
         warn!("The epub output file already exists and will be deleted");
         utils::remove_file_or_dir(&epub_file_path)?;
@@ -51,22 +54,6 @@ pub fn execute(config: Zip) -> Result<()> {
     }
 
     info!("Time spent on `check`: {}", timing.elapsed()?);
-
-    Ok(())
-}
-
-fn ensure_epub_dir<T>(path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    let path = path.as_ref();
-
-    ensure!(
-        path.try_exists()?,
-        "Directory `{}` does not exist",
-        path.display()
-    );
-    ensure!(path.is_dir(), "`{}` is not directory", path.display());
 
     Ok(())
 }

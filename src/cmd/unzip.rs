@@ -1,10 +1,11 @@
 use std::{
+    env,
     fs::{self, File},
     io,
     path::{Path, PathBuf},
 };
 
-use anyhow::{ensure, Result};
+use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
 use novel_api::Timing;
@@ -29,7 +30,7 @@ pub struct Unzip {
 pub fn execute(config: Unzip) -> Result<()> {
     let mut timing = Timing::new();
 
-    ensure_epub(&config.epub_path)?;
+    utils::ensure_epub_file(&config.epub_path)?;
 
     unzip(&config.epub_path)?;
 
@@ -42,34 +43,13 @@ pub fn execute(config: Unzip) -> Result<()> {
     Ok(())
 }
 
-fn ensure_epub<T>(path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    let path = path.as_ref();
-
-    ensure!(
-        path.try_exists()?,
-        "File `{}` does not exist",
-        path.display()
-    );
-    ensure!(path.is_file(), "`{}` is not file", path.display());
-    ensure!(
-        novel_api::is_some_and(path.extension(), |extension| extension == "epub"),
-        "File `{}` is not epub file",
-        path.display()
-    );
-
-    Ok(())
-}
-
 fn unzip<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
 {
     let path = path.as_ref();
 
-    let output_dir = fs::canonicalize(path)?.with_extension("");
+    let output_dir = env::current_dir()?.join(path.file_stem().unwrap());
     if output_dir.try_exists()? {
         warn!("The output directory already exists and will be deleted");
         utils::remove_file_or_dir(&output_dir)?;

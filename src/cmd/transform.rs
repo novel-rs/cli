@@ -55,30 +55,26 @@ pub fn execute(config: Transform) -> Result<()> {
             .description
             .as_ref()
             .unwrap()
-            .split(utils::LINE_BREAK)
+            .split(utils::UNIX_LINE_BREAK)
         {
             description.push(utils::convert_str(line, &config.converts)?);
         }
 
-        meta_data.description = Some(description.join(utils::LINE_BREAK));
+        meta_data.description = Some(description.join(utils::UNIX_LINE_BREAK));
     }
 
     let events = utils::to_events(&markdown, &config.converts)?;
 
     let mut buf = String::with_capacity(4096);
-    buf.push_str(format!("---{}", utils::LINE_BREAK).as_str());
+    buf.push_str(format!("---{}", utils::UNIX_LINE_BREAK).as_str());
     buf.push_str(&serde_yaml::to_string(&meta_data)?);
-    buf.push_str(format!("...{0}{0}", utils::LINE_BREAK).as_str());
+    buf.push_str(format!("...{0}{0}", utils::UNIX_LINE_BREAK).as_str());
 
     let mut markdown_buf = String::with_capacity(markdown.len());
     pulldown_cmark_to_cmark::cmark(events.iter(), &mut markdown_buf)?;
 
-    #[cfg(target_os = "windows")]
-    buf.push_str(markdown_buf.replace('\n', utils::LINE_BREAK).as_str());
-    #[cfg(not(target_os = "windows"))]
     buf.push_str(&markdown_buf);
-
-    buf.push_str(utils::LINE_BREAK);
+    buf.push_str(utils::UNIX_LINE_BREAK);
 
     if config.delete {
         utils::remove_file_or_dir(input_markdown_file_path)?;
@@ -100,6 +96,10 @@ pub fn execute(config: Transform) -> Result<()> {
         output_markdown_file_path.display()
     );
 
+    #[cfg(target_os = "windows")]
+    {
+        buf = markdown_buf.replace(utils::UNIX_LINE_BREAK, utils::WINDOWS_LINE_BREAK);
+    }
     fs::write(output_markdown_file_path, buf)?;
 
     info!("Time spent on `transform`: {}", timing.elapsed()?);

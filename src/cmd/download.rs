@@ -100,7 +100,7 @@ where
         handle.await??;
     }
 
-    println!("{}", utils::locales("download_complete_msg", "✔️"));
+    println!("{}", utils::locales("download_complete_msg", "👌"));
 
     utils::convert(&mut novel, &config.converts).await?;
 

@@ -1,3 +1,4 @@
+mod check;
 mod convert;
 mod current_dir;
 mod line_break;
@@ -9,6 +10,7 @@ mod progress;
 mod unicode;
 mod writer;
 
+pub use check::*;
 pub use convert::*;
 pub use current_dir::*;
 pub use line_break::*;
@@ -52,13 +54,14 @@ where
     let path = path.as_ref();
 
     if !path.try_exists()? {
-        bail!("The item does not exist: {}", path.display());
+        bail!("The item does not exist: `{}`", path.display());
     }
 
+    let path = fs::canonicalize(path)?;
     if path.is_file() {
         info!("File `{}` will be deleted", path.display());
 
-        if let Err(error) = trash::delete(path) {
+        if let Err(error) = trash::delete(&path) {
             warn!(
                 "Failed to move file `{}` to trash, the file will be permanently deleted: {}",
                 path.display(),
@@ -69,7 +72,7 @@ where
     } else if path.is_dir() {
         info!("Directory `{}` will be deleted", path.display());
 
-        if let Err(error) = trash::delete(path) {
+        if let Err(error) = trash::delete(&path) {
             warn!(
                 "Failed to move directory `{}` to trash, the directory will be permanently deleted: {}",
                 path.display(),
@@ -164,4 +167,30 @@ where
     path.set_extension("md");
 
     path
+}
+
+pub fn to_epub_file_name<T>(novel_name: T) -> PathBuf
+where
+    T: AsRef<str>,
+{
+    let mut path = to_novel_dir_name(novel_name);
+    path.set_extension("epub");
+
+    path
+}
+
+pub fn read_markdown_to_markdown_file_name<T>(markdown_path: T) -> Result<PathBuf>
+where
+    T: AsRef<Path>,
+{
+    let (meta_data, _) = read_markdown(markdown_path)?;
+    Ok(to_markdown_file_name(meta_data.title))
+}
+
+pub fn read_markdown_to_epub_file_name<T>(markdown_path: T) -> Result<PathBuf>
+where
+    T: AsRef<Path>,
+{
+    let (meta_data, _) = read_markdown(markdown_path)?;
+    Ok(to_epub_file_name(meta_data.title))
 }

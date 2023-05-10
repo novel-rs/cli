@@ -41,8 +41,10 @@ pub struct RealCugan {
 pub async fn execute(config: RealCugan) -> Result<()> {
     let mut timing = Timing::new();
 
+    utils::ensure_executable_exists("realcugan-ncnn-vulkan")?;
+
     let mut handles = Vec::new();
-    let mut to_remove = Vec::new();
+    let mut to_delete = Vec::new();
 
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
     let image_paths = image_paths(config).await?;
@@ -54,15 +56,14 @@ pub async fn execute(config: RealCugan) -> Result<()> {
         let image = Reader::open(&input_path)?.decode()?;
         let scale = calc_scale(image.width(), image.height());
 
-        let mut output_path = input_path.clone();
-        output_path.set_extension(utils::image_ext(&image));
+        let output_path = input_path.with_extension(utils::image_ext(&image));
 
         if input_path != output_path {
-            to_remove.push(input_path.clone());
+            to_delete.push(input_path.clone());
         }
 
         info!(
-            "Run realcugan-ncnn-vulkan with `{}`, {}x{}, scale: {}",
+            "Run realcugan-ncnn-vulkan with {}, {}x{}, scale: {}",
             input_path.display(),
             image.width(),
             image.height(),
@@ -91,7 +92,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
 
     pb.write().finish();
 
-    for path in to_remove {
+    for path in to_delete {
         utils::remove_file_or_dir(path)?;
     }
 

@@ -2,31 +2,15 @@ use std::fs;
 
 use anyhow::Result;
 use assert_cmd::Command;
-use fs_extra::dir::CopyOptions;
+use ntest::test_case;
 
 mod utils;
 
-#[test]
-fn transform() -> Result<()> {
-    do_transform(false)
-}
-
-#[test]
-fn transform_delete() -> Result<()> {
-    do_transform(true)
-}
-
+#[test_case(true)]
+#[test_case(false)]
 fn do_transform(delete: bool) -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
-
-    let test_data_path = utils::test_data_path()?.join("pandoc");
-
-    let mut options = CopyOptions::new();
-    options.copy_inside = true;
-    fs_extra::dir::copy(test_data_path, temp_dir.path(), &options)?;
-
-    let input_path = temp_dir.path().join("pandoc").join("pandoc.md");
-    assert!(input_path.is_file());
+    let input_path = utils::copy_to_temp_dir("pandoc", temp_dir.path())?.join("pandoc.md");
 
     let output_path_old = temp_dir.path().join("pandoc").join("pandoc.old.md");
     let (meta_data, _) = novel_cli::utils::read_markdown(&input_path)?;

@@ -5,7 +5,8 @@ use std::{
 };
 
 use anyhow::{bail, ensure, Result};
-use pulldown_cmark::{Event, Options, Parser};
+use parking_lot::Mutex;
+use pulldown_cmark::{Event, Options, Parser, Tag};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -30,27 +31,6 @@ impl MetaData {
     pub fn cover_image_is_ok(&self) -> bool {
         !novel_api::is_some_and(self.cover_image.as_ref(), |path| !path.is_file())
     }
-}
-
-pub fn ensure_markdown_file<T>(path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    let path = path.as_ref();
-
-    ensure!(
-        path.try_exists()?,
-        "File `{}` does not exist",
-        path.display()
-    );
-    ensure!(path.is_file(), "`{}` is not file", path.display());
-    ensure!(
-        novel_api::is_some_and(path.extension(), |extension| extension == "md"),
-        "File `{}` is not markdown file",
-        path.display()
-    );
-
-    Ok(())
 }
 
 pub fn read_markdown<T>(markdown_path: T) -> Result<(MetaData, String)>
@@ -103,4 +83,29 @@ where
     } else {
         Ok(result.unwrap())
     }
+}
+
+pub fn read_markdown_to_images<T>(markdown_path: T) -> Result<Vec<PathBuf>>
+where
+    T: AsRef<Path>,
+{
+    let (metadata, markdown) = read_markdown(markdown_path)?;
+
+    let parser = Parser::new_ext(&markdown, Options::empty());
+    let events = parser.collect::<Vec<_>>();
+
+    let result = Mutex::new(Vec::new());
+
+    events.into_par_iter().for_each(|event| {
+        if let Event::Start(Tag::Image(_, path, _)) = event {
+            result.lock().push(PathBuf::from(&path.to_string()));
+        }
+    });
+
+    let mut result = result.lock().to_vec();
+    if metadata.cover_image.is_some() {
+        result.push(metadata.cover_image.unwrap())
+    }
+
+    Ok(result)
 }

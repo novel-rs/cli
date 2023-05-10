@@ -1,4 +1,4 @@
-use std::fs;
+use std::{env, fs};
 
 use anyhow::Result;
 use assert_cmd::Command;
@@ -7,22 +7,15 @@ mod utils;
 
 #[test]
 fn unzip() -> Result<()> {
-    do_unzip(false)
-}
+    do_unzip(false)?;
+    do_unzip(true)?;
 
-#[test]
-fn unzip_delete() -> Result<()> {
-    do_unzip(true)
+    Ok(())
 }
 
 fn do_unzip(delete: bool) -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
-
-    let test_data_path = utils::test_data_path()?.join("pandoc-epub.epub");
-    let input_path = temp_dir.path().join("pandoc-epub.epub");
-
-    fs::copy(test_data_path, &input_path)?;
-    assert!(input_path.is_file());
+    let input_path = utils::copy_to_temp_dir("pandoc-epub.epub", temp_dir.path())?;
 
     let mut cmd = Command::cargo_bin("novel-cli")?;
     if delete {
@@ -40,8 +33,10 @@ fn do_unzip(delete: bool) -> Result<()> {
 
         assert!(input_path.is_file());
     }
-    let epub_dir_path = temp_dir.path().join("pandoc-epub");
-    assert!(epub_dir_path.is_dir());
+    let epub_dir_path = env::current_dir()?.join("pandoc-epub");
+    novel_cli::utils::ensure_epub_dir(&epub_dir_path)?;
+
+    fs::remove_dir_all(epub_dir_path)?;
 
     Ok(())
 }

@@ -1,30 +1,22 @@
+use std::{env, fs};
+
 use anyhow::Result;
 use assert_cmd::Command;
-use fs_extra::dir::CopyOptions;
 
 mod utils;
 
 #[test]
 fn zip() -> Result<()> {
-    do_zip(false)
-}
+    do_zip(false)?;
+    do_zip(true)?;
 
-#[test]
-fn zip_delete() -> Result<()> {
-    do_zip(true)
+    Ok(())
 }
 
 fn do_zip(delete: bool) -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
-
-    let test_data_path = utils::test_data_path()?.join("pandoc-epub");
-
-    let mut options = CopyOptions::new();
-    options.copy_inside = true;
-    fs_extra::dir::copy(test_data_path, temp_dir.path(), &options)?;
-
-    let input_path = temp_dir.path().join("pandoc-epub");
-    assert!(input_path.is_dir());
+    let input_path = utils::copy_to_temp_dir("pandoc-epub", temp_dir.path())?;
+    novel_cli::utils::ensure_epub_dir(&input_path)?;
 
     let mut cmd = Command::cargo_bin("novel-cli")?;
     if delete {
@@ -38,8 +30,10 @@ fn do_zip(delete: bool) -> Result<()> {
 
         assert!(input_path.is_dir());
     }
-    let epub_path = temp_dir.path().join("pandoc-epub.epub");
+    let epub_path = env::current_dir()?.join("pandoc-epub.epub");
     assert!(epub_path.is_file());
+
+    fs::remove_file(epub_path)?;
 
     Ok(())
 }

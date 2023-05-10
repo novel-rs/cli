@@ -2,22 +2,13 @@ use std::io::{self, Write};
 
 use anyhow::Result;
 use assert_cmd::Command;
-use fs_extra::dir::CopyOptions;
 
 mod utils;
 
 #[test]
 fn check() -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
-
-    let test_data_path = utils::test_data_path()?.join("pandoc");
-
-    let mut options = CopyOptions::new();
-    options.copy_inside = true;
-    fs_extra::dir::copy(test_data_path, temp_dir.path(), &options)?;
-
-    let input_path = temp_dir.path().join("pandoc").join("pandoc.md");
-    assert!(input_path.is_file());
+    let input_path = utils::copy_to_temp_dir("pandoc", temp_dir.path())?.join("pandoc.md");
 
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd

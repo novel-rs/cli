@@ -26,7 +26,7 @@ serde = { version = "1.0.162", default-features = false, features = [
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.28.0", default-features = false, features = [
+tokio = { version = "1.28.1", default-features = false, features = [
   "macros",
   "io-std",
   "fs",
@@ -201,6 +201,8 @@ futures = { version = "0.3.28", default-features = false, features = [
 ] }
 # https://github.com/zkat/supports-color
 supports-color = { version = "2.0.0", default-features = false }
+# https://github.com/harryfei/which-rs
+which = { version = "4.4.0", default-features = false }
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions
@@ -213,6 +215,8 @@ assert_cmd = { version = "2.0.11", default-features = false, features = [
 ] }
 # https://github.com/Stebalien/tempfile
 tempfile = { version = "3.5.0", default-features = false }
+# https://github.com/becheran/ntest
+ntest = { version = "0.9.0", default-features = false }
 
 [profile.release]
 strip = true
