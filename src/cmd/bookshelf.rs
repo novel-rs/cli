@@ -14,8 +14,8 @@ use crate::{utils, LANG_ID, LOCALES};
 
 #[must_use]
 #[derive(Args)]
-#[command(about = LOCALES.lookup(&LANG_ID, "favorites_command").unwrap())]
-pub struct Favorites {
+#[command(about = LOCALES.lookup(&LANG_ID, "bookshelf_command").unwrap())]
+pub struct Bookshelf {
     #[arg(short, long,
         help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
     pub source: Source,
@@ -45,7 +45,7 @@ pub struct Favorites {
     pub cert: Option<PathBuf>,
 }
 
-pub async fn execute(config: Favorites) -> Result<()> {
+pub async fn execute(config: Bookshelf) -> Result<()> {
     let mut timing = Timing::new();
 
     match config.source {
@@ -61,16 +61,17 @@ pub async fn execute(config: Favorites) -> Result<()> {
         }
     }
 
-    info!("Time spent on `favorites`: {}", timing.elapsed()?);
+    info!("Time spent on `bookshelf`: {}", timing.elapsed()?);
 
     Ok(())
 }
 
-async fn do_execute<T>(client: T, config: Favorites) -> Result<()>
+async fn do_execute<T>(client: T, config: Bookshelf) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
     utils::login(&client, &config.source, config.ignore_keyring).await?;
+    // TODO Rename favorite to bookshelf
     let novel_ids = client.favorite_infos().await?;
 
     let mut novel_infos = Vec::new();

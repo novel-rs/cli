@@ -70,7 +70,7 @@ novel-cli search --source <SOURCE> <KEYWORD>
 - `search`: Search for novels on various sources.
 - `info`: Print information about a novel on various sources.
 - `read`: Read novel from various sources.
-- `favorites`: Show saved favorite novels on various sources.
+- `bookshelf`: Show saved favorite novels on various sources.
 - `transform`: Convert markdown files to pandoc style.
 - `check`: Check the format and content of pandoc style markdown files.
 - `build`: Build a novel from pandoc style markdown files or an mdBook folder.

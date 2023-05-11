@@ -6,7 +6,7 @@ use fluent_templates::Loader;
 use crate::{
     cmd::{
         build::Build, check::Check, completions::Completions, download::Download,
-        favorites::Favorites, info::Info, read::Read, real_cugan::RealCugan, search::Search,
+        bookshelf::Bookshelf, info::Info, read::Read, real_cugan::RealCugan, search::Search,
         transform::Transform, unzip::Unzip, update::Update, zip::Zip,
     },
     LANG_ID, LOCALES,
@@ -36,7 +36,7 @@ pub enum Commands {
     Search(Search),
     Info(Info),
     Read(Read),
-    Favorites(Favorites),
+    Bookshelf(Bookshelf),
     Transform(Transform),
     Check(Check),
     Build(Build),
