@@ -57,22 +57,24 @@ mod tests {
     #[test]
     fn line_break_failed() -> Result<()> {
         #[cfg(not(target_os = "windows"))]
-        assert_panics!({
-            verify_line_break("12345\r\n\n123").unwrap();
-        });
-        #[cfg(not(target_os = "windows"))]
-        assert_panics!({
-            verify_line_break("12345\r\n").unwrap();
-        });
+        {
+            assert_panics!({
+                verify_line_break("12345\r\n\n123").unwrap();
+            });
+            assert_panics!({
+                verify_line_break("12345\r\n").unwrap();
+            });
+        }
 
         #[cfg(target_os = "windows")]
-        assert_panics!({
-            verify_line_break("12345\n\r\n").unwrap();
-        });
-        #[cfg(target_os = "windows")]
-        assert_panics!({
-            verify_line_break("12345\n\n").unwrap();
-        });
+        {
+            assert_panics!({
+                verify_line_break("12345\n\r\n").unwrap();
+            });
+            assert_panics!({
+                verify_line_break("12345\n\n").unwrap();
+            });
+        }
 
         Ok(())
     }
