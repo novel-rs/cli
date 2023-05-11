@@ -103,6 +103,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
 
     if config.delete {
         if in_directory {
+            current_dir.restore()?;
             utils::remove_file_or_dir(markdown_file_parent_path)?;
         } else {
             let images = utils::read_markdown_to_images(&input_markdown_file_path)?;
@@ -113,14 +114,14 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
             });
 
             utils::remove_file_or_dir(input_markdown_file_path)?;
+
+            current_dir.restore()?;
         }
     }
 
     if config.open {
         opener::open(output_epub_file_path)?;
     }
-
-    current_dir.restore()?;
 
     Ok(())
 }

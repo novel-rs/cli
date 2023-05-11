@@ -67,6 +67,10 @@ where
                 path.display(),
                 error
             );
+        }
+
+        // `trash::delete` may fail without error
+        if path.exists() {
             fs::remove_file(path)?;
         }
     } else if path.is_dir() {
@@ -78,6 +82,9 @@ where
                 path.display(),
                 error
             );
+        }
+
+        if path.exists() {
             fs::remove_dir_all(path)?;
         }
     } else {
