@@ -1,11 +1,11 @@
-use std::{path::PathBuf, process, sync::Arc};
+use std::{path::PathBuf, sync::Arc};
 
-use anyhow::{Ok, Result};
+use anyhow::{bail, Ok, Result};
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Tag, Timing, WordCountRange};
 use tokio::sync::Semaphore;
-use tracing::{error, info};
+use tracing::info;
 use url::Url;
 
 use crate::{
@@ -122,10 +122,10 @@ where
 {
     if config.show_categories {
         let categories = client.categories().await?;
-        println!("{}", vec_to_string(categories, &config.converts)?);
+        println!("{}", vec_to_string(categories)?);
     } else if config.show_tags {
         let tags = client.tags().await?;
-        println!("{}", vec_to_string(tags, &config.converts)?);
+        println!("{}", vec_to_string(tags)?);
     } else {
         let client = Arc::new(client);
         super::handle_ctrl_c(&client);
@@ -133,6 +133,7 @@ where
         let mut page = 0;
         let size = 10;
         let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
+        // TODO Display options
         let options = create_options(&client, &config).await?;
 
         let mut novel_infos = Vec::new();
@@ -183,20 +184,6 @@ where
     Ok(())
 }
 
-fn vec_to_string<T, E>(vec: &[T], convert: E) -> Result<String>
-where
-    T: ToString,
-    E: AsRef<[Convert]>,
-{
-    let result = vec
-        .iter()
-        .map(|item| item.to_string())
-        .collect::<Vec<String>>()
-        .join("、");
-
-    Ok(utils::convert_str(result, convert)?)
-}
-
 async fn create_options<T>(client: &Arc<T>, config: &Search) -> Result<Options>
 where
     T: Client,
@@ -215,21 +202,20 @@ where
         match categories.iter().find(|category| category.name == *name) {
             Some(category) => options.category = Some(category.clone()),
             None => {
-                error!(
+                bail!(
                     "The category was not found: `{name}`, all available categories are: `{}`",
-                    vec_to_string(categories, &config.converts)?
+                    vec_to_string(categories)?
                 );
-                process::exit(exitcode::DATAERR)
             }
         }
     }
 
-    let tags = to_tags(client, &config.tags, &config.converts).await?;
+    let tags = to_tags(client, &config.tags).await?;
     if tags.is_some() {
         options.tags = Some(tags.unwrap());
     }
 
-    let tags = to_tags(client, &config.excluded_tags, &config.converts).await?;
+    let tags = to_tags(client, &config.excluded_tags).await?;
     if tags.is_some() {
         options.excluded_tags = Some(tags.unwrap());
     }
@@ -247,10 +233,9 @@ where
     Ok(options)
 }
 
-async fn to_tags<T, E>(client: &Arc<T>, str: &Vec<String>, converts: E) -> Result<Option<Vec<Tag>>>
+async fn to_tags<T>(client: &Arc<T>, str: &Vec<String>) -> Result<Option<Vec<Tag>>>
 where
     T: Client,
-    E: AsRef<[Convert]>,
 {
     let mut result = Vec::new();
 
@@ -259,11 +244,10 @@ where
         match tags.iter().find(|tag| tag.name == *name) {
             Some(tag) => result.push(tag.clone()),
             None => {
-                error!(
+                bail!(
                     "The tag was not found: `{name}`, all available tags are: `{}`",
-                    vec_to_string(tags, converts)?
+                    vec_to_string(tags)?
                 );
-                process::exit(exitcode::DATAERR)
             }
         }
     }
@@ -273,4 +257,17 @@ where
     } else {
         Ok(None)
     }
+}
+
+fn vec_to_string<T>(vec: &[T]) -> Result<String>
+where
+    T: ToString,
+{
+    let result = vec
+        .iter()
+        .map(|item| item.to_string())
+        .collect::<Vec<String>>()
+        .join("、");
+
+    Ok(result)
 }

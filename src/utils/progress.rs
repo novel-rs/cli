@@ -25,8 +25,10 @@ impl ProgressBar {
     where
         T: AsRef<str>,
     {
-        self.pb
-            .set_message(console::truncate_str(msg.as_ref(), 40, "...").to_string());
+        self.pb.set_message(
+            console::truncate_str(msg.as_ref(), (viuer::terminal_size().0 / 3) as usize, "...")
+                .to_string(),
+        );
         self.pb.inc(1);
     }
 
