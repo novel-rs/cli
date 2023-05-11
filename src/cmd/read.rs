@@ -86,16 +86,23 @@ where
     set_shortcut_keys(&mut siv);
 
     let mut select = SelectView::new();
+    let select_width = (viuer::terminal_size().0 / 3) as usize;
 
     for volume in client.volume_infos(config.novel_id).await? {
-        select.add_item(utils::convert_str(volume.title, &config.converts)?, None);
+        let volume_title = utils::convert_str(volume.title, &config.converts)?;
+        select.add_item(
+            console::truncate_str(&volume_title, select_width, "..."),
+            None,
+        );
 
         for chapter in volume.chapter_infos {
+            let chapter_title = format!(
+                "  {}",
+                utils::convert_str(&chapter.title, &config.converts)?
+            );
+
             select.add_item(
-                format!(
-                    "  {}",
-                    utils::convert_str(&chapter.title, &config.converts)?
-                ),
+                console::truncate_str(&chapter_title, select_width, "..."),
                 Some(chapter),
             );
         }
@@ -109,9 +116,7 @@ where
 
             // TODO Distinguish between chapters not purchased and inaccessible
             if info.can_download() {
-                let content = download(&client_copy, info, &convert_copy);
-
-                if let Ok(content) = content {
+                if let Ok(content) = download(&client_copy, info, &convert_copy) {
                     s.call_on_name("scrollable_text", |view: &mut ScrollableTextView| {
                         view.scroll_to_top();
                     });
@@ -250,7 +255,9 @@ where
     T: Client + Send + Sync + 'static,
     E: AsRef<[Convert]>,
 {
-    let mut result = utils::convert_str(&chapter_info.title, &converts)? + "\n\n";
+    let mut result = String::with_capacity(8192);
+    result.push_str(&utils::convert_str(&chapter_info.title, &converts)?);
+    result.push_str("\n\n");
 
     for info in executor::block_on(client.content_infos(chapter_info))? {
         if let ContentInfo::Text(text) = info {
@@ -274,7 +281,7 @@ where
 {
     let novel_info = utils::novel_info(client, novel_id).await?;
 
-    let mut introduction = String::new();
+    let mut introduction = String::with_capacity(4096);
     if let Some(lines) = novel_info.introduction {
         for line in lines {
             introduction.push_str(&utils::convert_str(&line, &converts)?);
