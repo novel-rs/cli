@@ -17,16 +17,23 @@ where
     T: Client + Send + Sync + 'static,
 {
     let novel_info = client.novel_info(novel_id).await?;
-    ensure!(novel_info.is_some(), "The novel does not exist");
+    ensure!(
+        novel_info.is_some(),
+        "The novel does not exist: `{}`",
+        novel_id
+    );
 
     Ok(novel_info.unwrap())
 }
 
-pub fn print_novel_info(
+pub fn print_novel_info<T>(
     image: Option<DynamicImage>,
     novel_info: NovelInfo,
-    converts: &Vec<Convert>,
-) -> Result<()> {
+    converts: T,
+) -> Result<()>
+where
+    T: AsRef<[Convert]>,
+{
     if io::stdout().is_terminal()
         && (viuer::is_iterm_supported() || viuer::get_kitty_support() != KittySupport::None)
     {
@@ -43,6 +50,8 @@ pub fn print_novel_info(
             viuer::print(&image, &config)?;
         }
     }
+
+    let converts = converts.as_ref();
 
     println!(
         "{}：{}",
@@ -101,7 +110,12 @@ pub fn print_novel_info(
     Ok(())
 }
 
-pub fn print_novel_infos(novel_infos: Vec<NovelInfo>, converts: &Vec<Convert>) -> Result<()> {
+pub fn print_novel_infos<T>(novel_infos: Vec<NovelInfo>, converts: T) -> Result<()>
+where
+    T: AsRef<[Convert]>,
+{
+    let converts = converts.as_ref();
+
     let mut row = vec![
         utils::convert_str("序号", converts)?,
         utils::convert_str("编号", converts)?,

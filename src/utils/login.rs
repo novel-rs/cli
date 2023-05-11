@@ -2,7 +2,7 @@ use std::io::{self, Write};
 
 use anyhow::Result;
 use novel_api::{Client, Keyring, UserInfo};
-use tracing::info;
+use tracing::{info, warn};
 
 use crate::cmd::Source;
 
@@ -27,7 +27,7 @@ where
 
                 client.login(username, password.unwrap()).await?;
             } else {
-                info!("Unable to get password from Keyring");
+                warn!("Unable to get password from Keyring");
 
                 let password = get_password()?;
                 client.login(username, &password).await?;
@@ -40,6 +40,7 @@ where
     Ok(user_info)
 }
 
+// TODO i18n output
 fn get_username() -> Result<String> {
     print!("Username: ");
     io::stdout().flush()?;
@@ -57,6 +58,7 @@ fn get_username() -> Result<String> {
     Ok(buffer.to_string())
 }
 
+// TODO i18n output
 fn get_password() -> Result<String> {
     let password = rpassword::prompt_password("Password: ")?;
     Ok(password)
