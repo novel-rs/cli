@@ -36,6 +36,10 @@ pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> R
 
     let handles = save_image(novel).await?;
 
+    #[cfg(target_os = "windows")]
+    {
+        buf = buf.replace(utils::UNIX_LINE_BREAK, utils::WINDOWS_LINE_BREAK);
+    }
     fs::write(file_path, &buf).await?;
 
     for handle in handles {

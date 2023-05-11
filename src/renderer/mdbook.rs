@@ -80,7 +80,10 @@ where
     let config = Config {
         book: Book {
             title: novel.name.clone(),
-            description: novel.introduction.clone().map(|v| v.join("\n")),
+            description: novel
+                .introduction
+                .clone()
+                .map(|v| v.join(utils::LINE_BREAK)),
             authors: vec![novel.author_name.clone()],
             language: utils::lang(convert),
         },
