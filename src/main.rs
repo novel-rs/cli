@@ -12,7 +12,7 @@ use tracing_subscriber::EnvFilter;
 
 use novel_cli::{
     cmd::{
-        self, build, check, completions, download, bookshelf, info, read, real_cugan, search,
+        self, bookshelf, build, check, completions, download, info, read, real_cugan, search,
         transform, unzip, update,
     },
     config::{Commands, Config},

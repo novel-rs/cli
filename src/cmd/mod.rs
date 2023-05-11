@@ -1,8 +1,8 @@
+pub mod bookshelf;
 pub mod build;
 pub mod check;
 pub mod completions;
 pub mod download;
-pub mod bookshelf;
 pub mod info;
 pub mod read;
 pub mod real_cugan;
