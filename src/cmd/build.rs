@@ -6,8 +6,7 @@ use fluent_templates::Loader;
 use fs_extra::dir::CopyOptions;
 use mdbook::MDBook;
 use novel_api::Timing;
-use rayon::prelude::*;
-use tracing::{error, info, warn};
+use tracing::{info, warn};
 use walkdir::WalkDir;
 
 use crate::{
@@ -107,11 +106,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
             utils::remove_file_or_dir(markdown_file_parent_path)?;
         } else {
             let images = utils::read_markdown_to_images(&input_markdown_file_path)?;
-            images.par_iter().for_each(|image| {
-                if let Err(error) = utils::remove_file_or_dir(image) {
-                    error!("File deletion failed: `{}`, {}", image.display(), error);
-                }
-            });
+            utils::remove_file_or_dir_all(&images)?;
 
             utils::remove_file_or_dir(input_markdown_file_path)?;
 

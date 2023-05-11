@@ -32,7 +32,7 @@ use anyhow::{bail, Result};
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
 use image::{ColorType, DynamicImage};
-use tracing::{info, warn};
+use tracing::{error, info, warn};
 
 use crate::{cmd::Convert, LANG_ID, LOCALES};
 
@@ -51,44 +51,45 @@ pub fn remove_file_or_dir<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
 {
-    let path = path.as_ref();
+    remove_file_or_dir_all(&[path])
+}
 
-    if !path.try_exists()? {
-        bail!("The item does not exist: `{}`", path.display());
+pub fn remove_file_or_dir_all<T>(paths: &[T]) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    for path in paths {
+        let path = path.as_ref();
+
+        if !path.try_exists()? {
+            bail!("The item does not exist: `{}`", path.display());
+        }
+
+        let path = dunce::canonicalize(path)?;
+        if path.is_file() {
+            info!("File `{}` will be deleted", path.display());
+        } else if path.is_dir() {
+            info!("Directory `{}` will be deleted", path.display());
+        } else {
+            bail!("The item is neither a file nor a folder");
+        }
     }
 
-    let path = dunce::canonicalize(path)?;
-    if path.is_file() {
-        info!("File `{}` will be deleted", path.display());
+    if let Err(error) = trash::delete_all(paths) {
+        error!("Failed to put file or folder into Trash: {}", error);
+    }
 
-        if let Err(error) = trash::delete(&path) {
-            warn!(
-                "Failed to move file `{}` to trash, the file will be permanently deleted: {}",
-                path.display(),
-                error
-            );
-        }
+    // `trash::delete_all` may fail without error
+    for path in paths {
+        let path = path.as_ref();
 
-        // `trash::delete` may fail without error
-        if path.exists() {
-            fs::remove_file(path)?;
+        if path.try_exists()? {
+            if path.is_file() {
+                fs::remove_file(path)?;
+            } else {
+                fs::remove_dir_all(path)?;
+            }
         }
-    } else if path.is_dir() {
-        info!("Directory `{}` will be deleted", path.display());
-
-        if let Err(error) = trash::delete(&path) {
-            warn!(
-                "Failed to move directory `{}` to trash, the directory will be permanently deleted: {}",
-                path.display(),
-                error
-            );
-        }
-
-        if path.exists() {
-            fs::remove_dir_all(path)?;
-        }
-    } else {
-        bail!("The item is neither a file nor a folder");
     }
 
     Ok(())
