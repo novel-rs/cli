@@ -56,6 +56,8 @@ jobs:
       - name: Install NASM
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/setup-nasm@v1
+        with:
+          version: 2.16.01
 
       - name: Install pandoc
         if: ${{ matrix.os == 'ubuntu-latest' }}
