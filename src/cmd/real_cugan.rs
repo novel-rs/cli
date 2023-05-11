@@ -13,7 +13,7 @@ use image::io::Reader;
 use novel_api::Timing;
 use parking_lot::RwLock;
 use tokio::{
-    fs::{self, File},
+    fs::File,
     io::{AsyncReadExt, BufReader},
     process::{Child, Command},
     sync::Semaphore,
@@ -73,7 +73,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
         let permit = semaphore.clone().acquire_owned().await.unwrap();
         let pb = Arc::clone(&pb);
 
-        let absolute_path = fs::canonicalize(&input_path).await?;
+        let absolute_path = dunce::canonicalize(&input_path)?;
         let diff_path = pathdiff::diff_paths(absolute_path, &curr_path).unwrap();
 
         handles.push(tokio::spawn(async move {

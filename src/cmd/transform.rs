@@ -30,7 +30,7 @@ pub fn execute(config: Transform) -> Result<()> {
 
     utils::ensure_markdown_file(&config.markdown_path)?;
 
-    let input_markdown_file_path = fs::canonicalize(&config.markdown_path)?;
+    let input_markdown_file_path = dunce::canonicalize(&config.markdown_path)?;
     let input_dir = input_markdown_file_path.parent().unwrap().to_path_buf();
     let input_file_stem = input_markdown_file_path
         .file_stem()

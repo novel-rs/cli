@@ -57,7 +57,7 @@ where
         bail!("The item does not exist: `{}`", path.display());
     }
 
-    let path = fs::canonicalize(path)?;
+    let path = dunce::canonicalize(path)?;
     if path.is_file() {
         info!("File `{}` will be deleted", path.display());
 

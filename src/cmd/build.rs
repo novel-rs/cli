@@ -1,4 +1,4 @@
-use std::{env, fs, path::PathBuf, process::Command};
+use std::{env, path::PathBuf, process::Command};
 
 use anyhow::{bail, Result};
 use clap::Args;
@@ -55,10 +55,10 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
     let mut in_directory = false;
 
     if utils::is_markdown_file(&config.build_path)? {
-        input_markdown_file_path = fs::canonicalize(&config.build_path)?;
+        input_markdown_file_path = dunce::canonicalize(&config.build_path)?;
         markdown_file_parent_path = input_markdown_file_path.parent().unwrap().to_path_buf();
     } else if utils::is_markdown_dir(&config.build_path)? {
-        let markdown_dir_path = fs::canonicalize(&config.build_path)?;
+        let markdown_dir_path = dunce::canonicalize(&config.build_path)?;
         input_markdown_file_path = markdown_dir_path
             .join(markdown_dir_path.file_stem().unwrap())
             .with_extension("md");
@@ -128,7 +128,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
 pub fn execute_mdbook(config: Build) -> Result<()> {
     println!("{}", utils::locales_with_arg("build_msg", "📚", "mdBook"));
 
-    let input_mdbook_dir_path = fs::canonicalize(&config.build_path)?;
+    let input_mdbook_dir_path = dunce::canonicalize(&config.build_path)?;
     info!(
         "Input mdbook directory path: `{}`",
         input_mdbook_dir_path.display()
