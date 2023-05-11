@@ -205,6 +205,8 @@ supports-color = { version = "2.0.0", default-features = false }
 which = { version = "4.4.0", default-features = false }
 # https://gitlab.com/kornelski/dunce
 dunce = { version = "1.0.4", default-features = false }
+# https://github.com/BurntSushi/memchr
+memchr = { version = "2.5.0", default-features = false, features = ["std"] }
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions

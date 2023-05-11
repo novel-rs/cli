@@ -1,4 +1,6 @@
 use anyhow::{bail, Result};
+use memchr::memmem;
+use rayon::prelude::*;
 
 pub const WINDOWS_LINE_BREAK: &str = "\r\n";
 pub const UNIX_LINE_BREAK: &str = "\n";
@@ -12,16 +14,25 @@ pub fn verify_line_break<T>(text: T) -> Result<()>
 where
     T: AsRef<str>,
 {
-    let text = text.as_ref();
-
     if cfg!(target_os = "windows") {
-        for (first, second) in text.chars().zip(text.chars().skip(1)) {
-            if second == '\n' && first != '\r' {
-                bail!(r"The line break under Windows should be `\r\n`");
-            }
+        let text = text.as_ref();
+
+        text.chars()
+            .zip(text.chars().skip(1))
+            .par_bridge()
+            .try_for_each(|(first, second)| {
+                if second == '\n' && first != '\r' {
+                    bail!(r"The line break under Windows should be `\r\n`");
+                }
+
+                Ok(())
+            })?;
+    } else if cfg!(not(target_os = "windows")) {
+        let text = text.as_ref().as_bytes();
+
+        if memmem::find(text, WINDOWS_LINE_BREAK.as_bytes()).is_some() {
+            bail!(r"The line break under Unix should be `\n`");
         }
-    } else if cfg!(not(target_os = "windows")) && text.contains(WINDOWS_LINE_BREAK) {
-        bail!(r"The line break under Unix should be `\n`");
     }
 
     Ok(())

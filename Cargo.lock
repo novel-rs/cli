@@ -2535,6 +2535,7 @@ dependencies = [
  "is-terminal",
  "libc",
  "mdbook",
+ "memchr",
  "memory-stats",
  "novel-api",
  "ntest",
