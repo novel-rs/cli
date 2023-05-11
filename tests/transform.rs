@@ -1,5 +1,3 @@
-use std::fs;
-
 use anyhow::Result;
 use assert_cmd::Command;
 use ntest::test_case;
@@ -45,8 +43,10 @@ fn do_transform(delete: bool) -> Result<()> {
         .join(novel_cli::utils::to_markdown_file_name(novel_name));
     assert!(output_file_name.is_file());
 
-    let content = fs::read_to_string(output_file_name)?;
-    novel_cli::utils::verify_line_break(content)?;
+    assert!(utils::same_file_content(
+        output_file_name,
+        utils::test_data_path()?.join("transform.md")
+    ));
 
     Ok(())
 }

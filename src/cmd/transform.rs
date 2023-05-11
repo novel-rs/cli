@@ -98,7 +98,7 @@ pub fn execute(config: Transform) -> Result<()> {
 
     #[cfg(target_os = "windows")]
     {
-        buf = markdown_buf.replace(utils::UNIX_LINE_BREAK, utils::WINDOWS_LINE_BREAK);
+        buf = buf.replace(utils::UNIX_LINE_BREAK, utils::WINDOWS_LINE_BREAK);
     }
     fs::write(output_markdown_file_path, buf)?;
 

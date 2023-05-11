@@ -1,5 +1,7 @@
 use std::{
-    env, fs,
+    env,
+    fs::{self, File},
+    io::{BufReader, Read},
     path::{Path, PathBuf},
 };
 
@@ -36,7 +38,37 @@ where
     Ok(target)
 }
 
-fn test_data_path() -> Result<PathBuf> {
+#[allow(dead_code)]
+pub fn same_file_content<T, E>(lhs: T, rhs: E) -> bool
+where
+    T: AsRef<Path>,
+    E: AsRef<Path>,
+{
+    if let (Ok(file_lhs), Ok(file_rhs)) = (File::open(lhs), File::open(rhs)) {
+        let mut reader_lhs = BufReader::new(file_lhs);
+        let mut reader_rhs = BufReader::new(file_rhs);
+        let mut buf_lhs = [0; 256];
+        let mut buf_rhs = [0; 256];
+
+        while let (Ok(n_lhs), Ok(n_rhs)) =
+            (reader_lhs.read(&mut buf_lhs), reader_rhs.read(&mut buf_rhs))
+        {
+            if n_lhs != n_rhs {
+                return false;
+            }
+            if n_lhs == 0 {
+                return true;
+            }
+            if buf_lhs != buf_rhs {
+                return false;
+            }
+        }
+    }
+
+    false
+}
+
+pub fn test_data_path() -> Result<PathBuf> {
     if let Ok(path) = env::var("CARGO_MANIFEST_DIR") {
         Ok(PathBuf::from(path).join("tests").join("data"))
     } else {
