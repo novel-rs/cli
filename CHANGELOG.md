@@ -14,12 +14,31 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 1 -->🐛 Bug Fixes
 
+- Fix directory deletion failure on windows
+- Use dunce to avoid path error on windows
+- Wrong link break replace
+- Use windows line break to write file
+- Fix windows build failed
+- Windows link break verify
+- Handle Windows line breaks
 - Fixes #63
 - Strip extra characters on Windows terminal
 - Fixes #48
 
 ### <!-- 2 -->🚜 Refactor
 
+- Optimize code logic
+- Rename favorites to bookshelf
+- Optimize code logic
+- Use windows line break in windows output
+- Optimize code logic
+- Some minor modifications
+- Optimize code logic
+- Optimize code logic
+- Optimize code logic
+- Use try_exists
+- Optimize code logic
+- Optimize code logic
 - Fixes #77
 - Use commonmark_x input format
 - Some minor modifications
@@ -40,8 +59,45 @@ All notable changes to this project will be documented in this file.
 - Update README.md
 - Add changelog
 
+### <!-- 4 -->⚡ Performance
+
+- Optimize file deletion
+- Optimize the perf of verify_line_break
+
+### <!-- 5 -->🎨 Styling
+
+- Run rustfmt
+- Run rustfmt
+
+### <!-- 6 -->🧪 Testing
+
+- Add search test
+- Simplify the code
+- Better transform test
+- Add test
+- Fix wrong test
+- Add test
+- Add test
+- Add test
+- Better link break test
+- Add test
+- Add test
+- Add test
+
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Remove outdated action
+- Specify nasm version
+- Update deps
+- Update deps
+- Add .gitattributes file
+- Update deps
+- Update deps
+- Use brew install pandoc on ubuntu
+- Fix windows build CI
+- Fix CI windows install pandoc
+- Update deps
+- Change cliff.toml
 - Update deps
 - Add git-cliff to generate changelog
 - Ignore RUSTSEC-2022-0040

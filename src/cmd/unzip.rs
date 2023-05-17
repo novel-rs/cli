@@ -38,7 +38,7 @@ pub fn execute(config: Unzip) -> Result<()> {
         utils::remove_file_or_dir(&config.epub_path)?;
     }
 
-    info!("Time spent on `check`: {}", timing.elapsed()?);
+    info!("Time spent on `unzip`: {}", timing.elapsed()?);
 
     Ok(())
 }

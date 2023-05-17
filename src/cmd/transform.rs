@@ -6,7 +6,11 @@ use fluent_templates::Loader;
 use novel_api::Timing;
 use tracing::info;
 
-use crate::{cmd::Convert, utils, LANG_ID, LOCALES};
+use crate::{
+    cmd::Convert,
+    utils::{self, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
+    LANG_ID, LOCALES,
+};
 
 #[must_use]
 #[derive(Args)]
@@ -55,26 +59,26 @@ pub fn execute(config: Transform) -> Result<()> {
             .description
             .as_ref()
             .unwrap()
-            .split(utils::UNIX_LINE_BREAK)
+            .split(UNIX_LINE_BREAK)
         {
             description.push(utils::convert_str(line, &config.converts)?);
         }
 
-        meta_data.description = Some(description.join(utils::UNIX_LINE_BREAK));
+        meta_data.description = Some(description.join(UNIX_LINE_BREAK));
     }
 
     let events = utils::to_events(&markdown, &config.converts)?;
 
     let mut buf = String::with_capacity(4096);
-    buf.push_str(format!("---{}", utils::UNIX_LINE_BREAK).as_str());
+    buf.push_str(format!("---{}", UNIX_LINE_BREAK).as_str());
     buf.push_str(&serde_yaml::to_string(&meta_data)?);
-    buf.push_str(format!("...{0}{0}", utils::UNIX_LINE_BREAK).as_str());
+    buf.push_str(format!("...{0}{0}", UNIX_LINE_BREAK).as_str());
 
     let mut markdown_buf = String::with_capacity(markdown.len());
     pulldown_cmark_to_cmark::cmark(events.iter(), &mut markdown_buf)?;
 
     buf.push_str(&markdown_buf);
-    buf.push_str(utils::UNIX_LINE_BREAK);
+    buf.push_str(UNIX_LINE_BREAK);
 
     if config.delete {
         utils::remove_file_or_dir(input_markdown_file_path)?;
@@ -96,9 +100,8 @@ pub fn execute(config: Transform) -> Result<()> {
         output_markdown_file_path.display()
     );
 
-    #[cfg(target_os = "windows")]
-    {
-        buf = buf.replace(utils::UNIX_LINE_BREAK, utils::WINDOWS_LINE_BREAK);
+    if cfg!(windows) {
+        buf = buf.replace(UNIX_LINE_BREAK, WINDOWS_LINE_BREAK);
     }
     fs::write(output_markdown_file_path, buf)?;
 

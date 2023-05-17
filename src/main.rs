@@ -1,12 +1,13 @@
-use std::env;
+use std::{env, io, matches};
 
 use anyhow::Result;
 use bytesize::ByteSize;
 use clap::Parser;
+use is_terminal::IsTerminal;
 use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
 use supports_color::Stream;
-use tracing::{debug, info, subscriber, warn};
+use tracing::{debug, error, info, subscriber, warn};
 use tracing_log::LogTracer;
 use tracing_subscriber::EnvFilter;
 
@@ -28,6 +29,10 @@ async fn main() -> Result<()> {
     init_log(&config)?;
 
     debug!("{:#?}", sys_locale::get_locale());
+
+    if !matches!(&config.command, Commands::Completions(_)) && !io::stdout().is_terminal() {
+        error!("stdout must be a terminal");
+    }
 
     match config.command {
         Commands::Download(config) => download::execute(config).await?,

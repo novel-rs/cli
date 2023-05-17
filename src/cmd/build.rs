@@ -6,7 +6,7 @@ use fluent_templates::Loader;
 use fs_extra::dir::CopyOptions;
 use mdbook::MDBook;
 use novel_api::Timing;
-use tracing::{info, warn};
+use tracing::{error, info, warn};
 use walkdir::WalkDir;
 
 use crate::{
@@ -70,7 +70,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
         "Input markdown file path: `{}`",
         input_markdown_file_path.display()
     );
-    println!("{}", utils::locales_with_arg("build_msg", "📚", "pandoc"));
+    println!("{}", utils::locales_with_arg("build_msg", "📚", "Pandoc"));
 
     let output_epub_file_path = env::current_dir()?.join(utils::read_markdown_to_epub_file_name(
         &input_markdown_file_path,
@@ -87,21 +87,25 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
 
     let current_dir = CurrentDir::new(&markdown_file_parent_path)?;
     // TODO Could not determine image size for cover.webp: could not determine image type
-    let mut pandoc = Command::new("pandoc")
+    let output = Command::new("pandoc")
         .arg("--from=commonmark+yaml_metadata_block")
         .arg("--to=epub3")
         .arg("--split-level=2")
         .arg("--epub-title-page=false")
         .args(["-o", output_epub_file_path.to_str().unwrap()])
         .arg(&input_markdown_file_path)
-        .spawn()?;
-    let status = pandoc.wait()?;
-    if !status.success() {
+        .output()?;
+
+    info!("{}", simdutf8::basic::from_utf8(&output.stdout)?);
+
+    if !output.status.success() {
+        error!("{}", simdutf8::basic::from_utf8(&output.stderr)?);
         bail!("`pandoc` failed to execute");
     }
 
     if config.delete {
         if in_directory {
+            // On Windows, the current working directory will be occupied and cannot be deleted
             current_dir.restore()?;
             utils::remove_file_or_dir(markdown_file_parent_path)?;
         } else {
@@ -126,14 +130,14 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
 
     let input_mdbook_dir_path = dunce::canonicalize(&config.build_path)?;
     info!(
-        "Input mdbook directory path: `{}`",
+        "Input mdBook directory path: `{}`",
         input_mdbook_dir_path.display()
     );
 
     let book_path = input_mdbook_dir_path.join("book");
 
     if book_path.try_exists()? {
-        warn!("The output directory already exists and will be deleted");
+        warn!("The output mdBook build directory already exists and will be deleted");
         utils::remove_file_or_dir(&book_path)?;
     }
 
@@ -156,13 +160,13 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
     }
 
     if config.open {
-        let path = if config.delete {
+        let index_html_path = if config.delete {
             input_mdbook_dir_path.join("index.html")
         } else {
             book_path.join("index.html")
         };
 
-        opener::open_browser(path)?;
+        opener::open_browser(index_html_path)?;
     }
 
     Ok(())

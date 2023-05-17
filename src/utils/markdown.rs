@@ -10,7 +10,10 @@ use pulldown_cmark::{Event, Options, Parser, Tag};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{cmd::Convert, utils};
+use crate::{
+    cmd::Convert,
+    utils::{self, LINE_BREAK},
+};
 
 #[must_use]
 #[derive(Serialize, Deserialize)]
@@ -48,11 +51,11 @@ where
         "The markdown format is incorrect, it should start with `---`"
     );
 
-    if let Some(index) = markdown.find(format!("{0}...{0}", utils::LINE_BREAK).as_str()) {
-        let yaml = &markdown[3 + utils::LINE_BREAK.len()..index];
+    if let Some(index) = markdown.find(format!("{0}...{0}", LINE_BREAK).as_str()) {
+        let yaml = &markdown[3 + LINE_BREAK.len()..index];
 
         let meta_data: MetaData = serde_yaml::from_str(yaml)?;
-        let markdown = markdown[index + 3 + utils::LINE_BREAK.len() * 2..].to_string();
+        let markdown = markdown[index + 3 + LINE_BREAK.len() * 2..].to_string();
 
         Ok((meta_data, markdown))
     } else {

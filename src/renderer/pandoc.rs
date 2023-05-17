@@ -1,8 +1,11 @@
-use std::{fmt, path::PathBuf, sync::Arc};
+use std::{
+    fmt,
+    path::{Path, PathBuf},
+    sync::Arc,
+};
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use novel_api::Timing;
-use once_cell::sync::OnceCell;
 use tokio::{
     fs,
     task::{self, JoinHandle},
@@ -11,20 +14,22 @@ use tracing::{info, warn};
 
 use crate::{
     cmd::Convert,
-    utils::{self, Content, MetaData, Novel},
+    utils::{self, Content, MetaData, Novel, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
 };
 
 pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
     let mut timing = Timing::new();
 
-    let images_path = images_path(&novel.name)?;
-    if images_path.is_dir() {
-        warn!("The epub output file already exists and will be overwritten");
-        utils::remove_file_or_dir(images_path)?;
+    let output_dir_path = utils::to_novel_dir_name(&novel.name);
+    if output_dir_path.is_dir() {
+        warn!("The pandoc output directory already exists and will be overwritten");
+        utils::remove_file_or_dir(&output_dir_path)?;
     }
-    fs::create_dir(&images_path).await?;
 
-    let file_path = images_path.join(utils::to_markdown_file_name(&novel.name));
+    fs::create_dir(&output_dir_path).await?;
+    let output_dir_path = dunce::canonicalize(output_dir_path)?;
+
+    let markdown_file_path = output_dir_path.join(utils::to_markdown_file_name(&novel.name));
 
     let mut buf = String::with_capacity(4 * 1024 * 1024);
 
@@ -34,13 +39,12 @@ pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> R
     // last \n
     buf.pop();
 
-    let handles = save_image(novel).await?;
+    let handles = save_image(novel, output_dir_path).await?;
 
-    #[cfg(target_os = "windows")]
-    {
-        buf = buf.replace(utils::UNIX_LINE_BREAK, utils::WINDOWS_LINE_BREAK);
+    if cfg!(windows) {
+        buf = buf.replace(UNIX_LINE_BREAK, WINDOWS_LINE_BREAK);
     }
-    fs::write(file_path, &buf).await?;
+    fs::write(markdown_file_path, &buf).await?;
 
     for handle in handles {
         handle.await??;
@@ -67,10 +71,13 @@ where
 
     let mut cover_image = None;
     if novel.cover_image.read().await.is_some() {
-        cover_image = Some(PathBuf::from(format!(
-            "cover.{}",
-            utils::image_ext(novel.cover_image.read().await.as_ref().unwrap())
-        )));
+        let ext = utils::image_ext(novel.cover_image.read().await.as_ref().unwrap());
+
+        if ext.is_ok() {
+            cover_image = Some(PathBuf::from(format!("cover.{}", ext.unwrap())));
+        } else {
+            bail!("{}", ext.unwrap_err());
+        }
     }
 
     let meta_data = MetaData {
@@ -133,21 +140,23 @@ where
     Ok(())
 }
 
-async fn save_image(novel: Novel) -> Result<Vec<JoinHandle<Result<()>>>> {
-    let image_path = images_path(novel.name)?;
-
+async fn save_image<T>(novel: Novel, path: T) -> Result<Vec<JoinHandle<Result<()>>>>
+where
+    T: AsRef<Path>,
+{
+    let path = path.as_ref().to_path_buf();
     let mut handles = Vec::new();
 
     for volume in novel.volumes {
         for chapter in volume.chapters {
             for index in 0..chapter.contents.read().await.len() {
                 if let Content::Image(ref image) = chapter.contents.read().await[index] {
-                    let path = image_path.join(&image.file_name);
+                    let image_path = path.join(&image.file_name);
 
                     let contents = Arc::clone(&chapter.contents);
                     handles.push(task::spawn_blocking(move || {
                         if let Content::Image(ref image) = contents.blocking_read()[index] {
-                            image.content.save(path)?;
+                            image.content.save(image_path)?;
                         }
 
                         Ok(())
@@ -161,22 +170,22 @@ async fn save_image(novel: Novel) -> Result<Vec<JoinHandle<Result<()>>>> {
         let cover_image = Arc::clone(&novel.cover_image);
 
         handles.push(task::spawn_blocking(move || {
-            let path = image_path.join(format!(
-                "cover.{}",
-                utils::image_ext(cover_image.blocking_read().as_ref().unwrap())
-            ));
-            cover_image.blocking_read().as_ref().unwrap().save(path)?;
+            let ext = utils::image_ext(cover_image.blocking_read().as_ref().unwrap());
+
+            if ext.is_ok() {
+                let image_path = path.join(format!("cover.{}", ext.unwrap()));
+                cover_image
+                    .blocking_read()
+                    .as_ref()
+                    .unwrap()
+                    .save(image_path)?;
+            } else {
+                bail!("{}", ext.unwrap_err());
+            }
+
             Ok(())
         }));
     }
 
     Ok(handles)
-}
-
-fn images_path<T>(novel_name: T) -> Result<&'static PathBuf>
-where
-    T: AsRef<str>,
-{
-    static IMAGE_PATH: OnceCell<PathBuf> = OnceCell::new();
-    IMAGE_PATH.get_or_try_init(|| Ok(utils::to_novel_dir_name(novel_name)))
 }

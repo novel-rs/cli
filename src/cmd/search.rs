@@ -3,9 +3,8 @@ use std::{path::PathBuf, sync::Arc};
 use anyhow::{bail, Ok, Result};
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Tag, Timing, WordCountRange};
+use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Tag, WordCountRange};
 use tokio::sync::Semaphore;
-use tracing::info;
 use url::Url;
 
 use crate::{
@@ -77,11 +76,11 @@ pub struct Search {
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
-    #[arg(short, long, default_value_t = 8, value_parser = value_parser!(u8).range(1..=16),
+    #[arg(short, long, default_value_t = 8, value_parser = value_parser!(u8).range(1..=8),
     help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
     pub maximum_concurrency: u8,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
+    #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -95,8 +94,6 @@ pub struct Search {
 }
 
 pub async fn execute(config: Search) -> Result<()> {
-    let mut timing = Timing::new();
-
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -110,8 +107,6 @@ pub async fn execute(config: Search) -> Result<()> {
             do_execute(client, config).await?
         }
     }
-
-    info!("Time spent on `search`: {}", timing.elapsed()?);
 
     Ok(())
 }
@@ -133,8 +128,12 @@ where
         let mut page = 0;
         let size = 10;
         let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
-        // TODO Display options
-        let options = create_options(&client, &config).await?;
+
+        let mut options = None;
+        if config.keyword.is_none() {
+            // TODO Display options
+            options = Some(create_options(&client, &config).await?)
+        }
 
         let mut novel_infos = Vec::new();
         loop {
@@ -143,7 +142,7 @@ where
                     .search_infos(config.keyword.as_ref().unwrap(), page, size)
                     .await?
             } else {
-                client.novels(&options, page, size).await?
+                client.novels(options.as_ref().unwrap(), page, size).await?
             };
             if novel_ids.is_empty() {
                 break;
@@ -210,14 +209,12 @@ where
         }
     }
 
-    let tags = to_tags(client, &config.tags).await?;
-    if tags.is_some() {
-        options.tags = Some(tags.unwrap());
+    if !config.tags.is_empty() {
+        options.tags = Some(to_tags(client, &config.tags).await?)
     }
 
-    let tags = to_tags(client, &config.excluded_tags).await?;
-    if tags.is_some() {
-        options.excluded_tags = Some(tags.unwrap());
+    if !config.excluded_tags.is_empty() {
+        options.excluded_tags = Some(to_tags(client, &config.excluded_tags).await?)
     }
 
     if config.min_word_count.is_some() && config.max_word_count.is_none() {
@@ -233,7 +230,7 @@ where
     Ok(options)
 }
 
-async fn to_tags<T>(client: &Arc<T>, str: &Vec<String>) -> Result<Option<Vec<Tag>>>
+async fn to_tags<T>(client: &Arc<T>, str: &Vec<String>) -> Result<Vec<Tag>>
 where
     T: Client,
 {
@@ -252,11 +249,7 @@ where
         }
     }
 
-    if !result.is_empty() {
-        Ok(Some(result))
-    } else {
-        Ok(None)
-    }
+    Ok(result)
 }
 
 fn vec_to_string<T>(vec: &[T]) -> Result<String>

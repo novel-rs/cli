@@ -4,9 +4,9 @@ use std::sync::Arc;
 use anyhow::{Ok, Result};
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, SfacgClient, Timing};
+use novel_api::{CiweimaoClient, Client, SfacgClient};
 use tokio::sync::Semaphore;
-use tracing::{info, warn};
+use tracing::error;
 use url::Url;
 
 use crate::cmd::{Convert, Source};
@@ -28,11 +28,11 @@ pub struct Bookshelf {
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
-    #[arg(short, long, default_value_t = 8, value_parser = value_parser!(u8).range(1..=16),
+    #[arg(short, long, default_value_t = 8, value_parser = value_parser!(u8).range(1..=8),
         help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
     pub maximum_concurrency: u8,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
+    #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -46,8 +46,6 @@ pub struct Bookshelf {
 }
 
 pub async fn execute(config: Bookshelf) -> Result<()> {
-    let mut timing = Timing::new();
-
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -60,8 +58,6 @@ pub async fn execute(config: Bookshelf) -> Result<()> {
             do_execute(client, config).await?
         }
     }
-
-    info!("Time spent on `bookshelf`: {}", timing.elapsed()?);
 
     Ok(())
 }
@@ -97,7 +93,7 @@ where
         let novel_info = handle.await??;
 
         if novel_info.is_none() {
-            warn!("The novel does not exist, and it may have been taken down");
+            error!("The novel does not exist, and it may have been taken down");
         } else {
             novel_infos.push(novel_info.unwrap());
         }

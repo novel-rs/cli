@@ -36,6 +36,7 @@ use tracing::{error, info, warn};
 
 use crate::{cmd::Convert, LANG_ID, LOCALES};
 
+#[inline]
 #[must_use]
 pub fn num_to_str(num: u16) -> String {
     if num < 10 {
@@ -83,6 +84,11 @@ where
     for path in paths {
         let path = path.as_ref();
 
+        error!(
+            "Failed to put file or folder into Trash: {}",
+            path.display()
+        );
+
         if path.try_exists()? {
             if path.is_file() {
                 fs::remove_file(path)?;
@@ -96,22 +102,32 @@ where
 }
 
 #[must_use]
-pub fn lang(convert: &[Convert]) -> String {
-    if convert.contains(&Convert::S2T) {
+pub fn lang<T>(convert: T) -> String
+where
+    T: AsRef<[Convert]>,
+{
+    if convert.as_ref().contains(&Convert::S2T) {
         String::from("zh-Hant")
     } else {
         String::from("zh-Hans")
     }
 }
 
-#[must_use]
-pub fn image_ext(image: &DynamicImage) -> String {
+#[inline]
+pub fn image_ext(image: &DynamicImage) -> Result<String> {
     match image.color() {
-        ColorType::Rgb8 | ColorType::Rgba8 => String::from("webp"),
-        _ => String::from("png"),
+        ColorType::Rgb8 | ColorType::Rgba8 => Ok(String::from("webp")),
+        ColorType::L8
+        | ColorType::L16
+        | ColorType::La8
+        | ColorType::La16
+        | ColorType::Rgb16
+        | ColorType::Rgba16 => Ok(String::from("png")),
+        other => bail!("This color type is not supported: {:?}", other),
     }
 }
 
+#[must_use]
 pub fn emoji<T>(str: T) -> String
 where
     T: AsRef<str>,
@@ -120,6 +136,7 @@ where
     console::pad_str(&emoji, 2, Alignment::Left, None).to_string()
 }
 
+#[must_use]
 pub fn locales<T, E>(name: T, emoji: E) -> String
 where
     T: AsRef<str>,
@@ -136,6 +153,7 @@ where
         .unwrap()
 }
 
+#[must_use]
 pub fn locales_with_arg<T, E, F>(name: T, emoji: E, arg: F) -> String
 where
     T: AsRef<str>,
@@ -154,6 +172,7 @@ where
         .unwrap()
 }
 
+#[must_use]
 pub fn to_novel_dir_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
@@ -167,6 +186,7 @@ where
     PathBuf::from(sanitize_filename::sanitize(novel_name))
 }
 
+#[must_use]
 pub fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
@@ -177,6 +197,7 @@ where
     path
 }
 
+#[must_use]
 pub fn to_epub_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,

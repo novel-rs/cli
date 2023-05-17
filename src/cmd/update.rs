@@ -3,10 +3,8 @@ use std::env;
 use anyhow::{Ok, Result};
 use clap::Args;
 use fluent_templates::Loader;
-use novel_api::Timing;
 use self_update::{backends::github, cargo_crate_version};
 use tokio::task;
-use tracing::info;
 use url::Url;
 
 use crate::{LANG_ID, LOCALES};
@@ -15,14 +13,12 @@ use crate::{LANG_ID, LOCALES};
 #[derive(Args)]
 #[command(about = LOCALES.lookup(&LANG_ID, "update_command").unwrap())]
 pub struct Update {
-    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
+    #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 }
 
 pub async fn execute(config: Update) -> Result<()> {
-    let mut timing = Timing::new();
-
     if let Some(proxy) = config.proxy {
         env::set_var("HTTP_PROXY", proxy.to_string());
         env::set_var("HTTPS_PROXY", proxy.to_string());
@@ -41,8 +37,6 @@ pub async fn execute(config: Update) -> Result<()> {
         Ok(())
     })
     .await??;
-
-    info!("Time spent on `check`: {}", timing.elapsed()?);
 
     Ok(())
 }

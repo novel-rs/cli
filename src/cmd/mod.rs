@@ -24,7 +24,7 @@ use url::Url;
 
 use crate::{LANG_ID, LOCALES};
 
-const PROXY: &str = "http://127.0.0.1:8080";
+const DEFAULT_PROXY: &str = "http://127.0.0.1:8080";
 
 #[must_use]
 #[derive(Clone, PartialEq, ValueEnum, AsRefStr)]
@@ -51,13 +51,15 @@ pub enum Convert {
     CUSTOM,
 }
 
+#[inline]
 #[must_use]
 fn default_cert_path() -> String {
-    let mut home_path = novel_api::home_dir_path().unwrap();
-    home_path.push(".mitmproxy");
-    home_path.push("mitmproxy-ca-cert.pem");
-
-    home_path.display().to_string()
+    novel_api::home_dir_path()
+        .unwrap()
+        .join(".mitmproxy")
+        .join("mitmproxy-ca-cert.pem")
+        .display()
+        .to_string()
 }
 
 fn set_options<T, E>(client: &mut T, proxy: &Option<Url>, no_proxy: &bool, cert: &Option<E>)

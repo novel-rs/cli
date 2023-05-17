@@ -3,6 +3,7 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use clap::Args;
+use crossterm::terminal;
 use cursive::event::Key;
 use cursive::theme::{BorderStyle, Color::TerminalDefault, Palette, PaletteColor::*, Theme};
 use cursive::view::Nameable;
@@ -38,7 +39,7 @@ pub struct Read {
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
+    #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -86,7 +87,7 @@ where
     set_shortcut_keys(&mut siv);
 
     let mut select = SelectView::new();
-    let select_width = (viuer::terminal_size().0 / 3) as usize;
+    let select_width = (terminal::size()?.0 / 3) as usize;
 
     for volume in client.volume_infos(config.novel_id).await? {
         let volume_title = utils::convert_str(volume.title, &config.converts)?;
@@ -191,6 +192,7 @@ fn set_shortcut_keys(siv: &mut CursiveRunnable) {
         });
     });
 
+    // TODO Handle the situation where a non-downloadable chapter is encountered
     siv.add_global_callback(Key::Left, |s| {
         let callback = s
             .call_on_name("select", |view: &mut SelectView<Option<ChapterInfo>>| {

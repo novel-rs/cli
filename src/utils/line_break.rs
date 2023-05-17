@@ -5,16 +5,16 @@ use rayon::prelude::*;
 pub const WINDOWS_LINE_BREAK: &str = "\r\n";
 pub const UNIX_LINE_BREAK: &str = "\n";
 
-#[cfg(not(target_os = "windows"))]
+#[cfg(unix)]
 pub const LINE_BREAK: &str = UNIX_LINE_BREAK;
-#[cfg(target_os = "windows")]
+#[cfg(windows)]
 pub const LINE_BREAK: &str = WINDOWS_LINE_BREAK;
 
 pub fn verify_line_break<T>(text: T) -> Result<()>
 where
     T: AsRef<str>,
 {
-    if cfg!(target_os = "windows") {
+    if cfg!(windows) {
         let text = text.as_ref();
 
         text.chars()
@@ -27,7 +27,7 @@ where
 
                 Ok(())
             })?;
-    } else if cfg!(not(target_os = "windows")) {
+    } else {
         let text = text.as_ref().as_bytes();
 
         if memmem::find(text, WINDOWS_LINE_BREAK.as_bytes()).is_some() {
@@ -45,34 +45,30 @@ mod tests {
 
     #[test]
     fn line_break() -> Result<()> {
-        #[cfg(not(target_os = "windows"))]
-        verify_line_break("12345\n\n123")?;
-
-        #[cfg(target_os = "windows")]
-        verify_line_break("12345\r\n\r\n")?;
+        if cfg!(windows) {
+            verify_line_break("12345\r\n\r\n")?;
+        } else {
+            verify_line_break("12345\n\n123")?;
+        }
 
         Ok(())
     }
 
     #[test]
     fn line_break_failed() -> Result<()> {
-        #[cfg(not(target_os = "windows"))]
-        {
-            assert_panics!({
-                verify_line_break("12345\r\n\n123").unwrap();
-            });
-            assert_panics!({
-                verify_line_break("12345\r\n").unwrap();
-            });
-        }
-
-        #[cfg(target_os = "windows")]
-        {
+        if cfg!(windows) {
             assert_panics!({
                 verify_line_break("12345\n\r\n").unwrap();
             });
             assert_panics!({
                 verify_line_break("12345\n\n").unwrap();
+            });
+        } else {
+            assert_panics!({
+                verify_line_break("12345\r\n\n123").unwrap();
+            });
+            assert_panics!({
+                verify_line_break("12345\r\n").unwrap();
             });
         }
 

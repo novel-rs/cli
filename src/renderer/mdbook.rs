@@ -1,29 +1,25 @@
 use std::{path::Path, sync::Arc};
 
-use anyhow::{Ok, Result};
+use anyhow::{bail, Ok, Result};
 use novel_api::Timing;
 use serde::Serialize;
-use tokio::{
-    fs,
-    sync::Semaphore,
-    task::{self, JoinHandle},
-};
+use tokio::{fs, sync::Semaphore, task};
 use tracing::{info, warn};
 
 use crate::{
     cmd::Convert,
-    utils::{self, Content, Novel, Writer},
+    utils::{self, Content, Novel, Writer, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
 };
 
 #[must_use]
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
 struct Config {
     book: Book,
     output: Output,
 }
 
 #[must_use]
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
 struct Book {
     title: String,
     description: Option<String>,
@@ -32,58 +28,55 @@ struct Book {
 }
 
 #[must_use]
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
 struct Output {
     html: Html,
 }
 
 #[must_use]
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
 #[serde(rename_all = "kebab-case")]
 struct Html {
     no_section_label: bool,
 }
 
-pub async fn generate_mdbook(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
+pub async fn generate_mdbook<T>(novel: Novel, convert: T) -> Result<()>
+where
+    T: AsRef<[Convert]>,
+{
     let mut timing = Timing::new();
 
-    let base_path = utils::to_novel_dir_name(&novel.name);
-    if base_path.is_dir() {
+    let convert = convert.as_ref();
+
+    let output_dir_path = utils::to_novel_dir_name(&novel.name);
+    if output_dir_path.is_dir() {
         warn!("The mdBook output folder already exists and will be deleted");
-        utils::remove_file_or_dir(&base_path)?;
+        utils::remove_file_or_dir(&output_dir_path)?;
     }
 
-    fs::create_dir_all(&base_path).await?;
+    fs::create_dir_all(&output_dir_path).await?;
+    let base_path = dunce::canonicalize(output_dir_path)?;
 
     generate_book_toml(&novel, &base_path, convert).await?;
     generate_summary(&novel, &base_path, convert).await?;
     generate_introduction(&novel, &base_path, convert).await?;
     generate_chapters(&novel, &base_path).await?;
+    generate_image(novel, &base_path).await?;
 
-    let handles = save_image(novel, &base_path).await?;
-    for handle in handles {
-        handle.await??;
-    }
-
-    info!("Time spent on `generate mdbook`: {}", timing.elapsed()?);
+    info!("Time spent on `generate mdBook`: {}", timing.elapsed()?);
 
     Ok(())
 }
 
-async fn generate_book_toml<T>(novel: &Novel, base_path: T, convert: &[Convert]) -> Result<()>
+async fn generate_book_toml<T, E>(novel: &Novel, base_path: T, convert: E) -> Result<()>
 where
     T: AsRef<Path>,
+    E: AsRef<[Convert]>,
 {
-    let path = base_path.as_ref().join("book.toml");
-    let mut writer = Writer::new(path).await?;
-
     let config = Config {
         book: Book {
             title: novel.name.clone(),
-            description: novel
-                .introduction
-                .clone()
-                .map(|v| v.join(utils::LINE_BREAK)),
+            description: novel.introduction.clone().map(|v| v.join(UNIX_LINE_BREAK)),
             authors: vec![novel.author_name.clone()],
             language: utils::lang(convert),
         },
@@ -94,16 +87,27 @@ where
         },
     };
 
-    writer.write(toml::to_string(&config)?).await?;
+    let mut buf = toml::to_string(&config)?;
+    if cfg!(windows) {
+        buf = buf.replace(UNIX_LINE_BREAK, WINDOWS_LINE_BREAK);
+    }
+
+    let path = base_path.as_ref().join("book.toml");
+    let mut writer = Writer::new(path).await?;
+
+    writer.write(buf).await?;
     writer.flush().await?;
 
     Ok(())
 }
 
-async fn generate_summary<T>(novel: &Novel, base_path: T, convert: &Vec<Convert>) -> Result<()>
+async fn generate_summary<T, E>(novel: &Novel, base_path: T, convert: E) -> Result<()>
 where
     T: AsRef<Path>,
+    E: AsRef<[Convert]>,
 {
+    let convert = convert.as_ref();
+
     let mut path = base_path.as_ref().join("src");
     fs::create_dir_all(&path).await?;
     path.push("SUMMARY.md");
@@ -154,9 +158,10 @@ where
     Ok(())
 }
 
-async fn generate_introduction<T>(novel: &Novel, base_path: T, convert: &Vec<Convert>) -> Result<()>
+async fn generate_introduction<T, E>(novel: &Novel, base_path: T, convert: E) -> Result<()>
 where
     T: AsRef<Path>,
+    E: AsRef<[Convert]>,
 {
     if let Some(ref introduction) = novel.introduction {
         let mut path = base_path.as_ref().join("src");
@@ -194,7 +199,7 @@ where
     let mut chapter_count = 1;
 
     let mut handles = Vec::new();
-    let semaphore = Arc::new(Semaphore::new(8));
+    let semaphore = Arc::new(Semaphore::new(num_cpus::get()));
 
     for volume in &novel.volumes {
         let volume_path = src_path.join(format!("volume{}", utils::num_to_str(volume_count)));
@@ -208,22 +213,21 @@ where
             volume_writer.flush().await?;
 
             for chapter in &volume.chapters {
-                let mut chapter_path = volume_path
-                    .clone()
-                    .join(format!("chapter{}", utils::num_to_str(chapter_count)));
-                chapter_path.set_extension("md");
+                let chapter_path = volume_path
+                    .join(format!("chapter{}", utils::num_to_str(chapter_count)))
+                    .with_extension("md");
                 chapter_count += 1;
 
                 let image_path = image_path.clone();
                 let volume_path = volume_path.clone();
                 let contents = Arc::clone(&chapter.contents);
                 let permit = semaphore.clone().acquire_owned().await.unwrap();
-                let title = chapter.title.clone();
+                let title = format!("# {}", chapter.title);
 
                 handles.push(tokio::spawn(async move {
                     let mut chapter_writer = Writer::new(chapter_path).await?;
 
-                    chapter_writer.writeln(format!("# {title}")).await?;
+                    chapter_writer.writeln(title).await?;
                     chapter_writer.ln().await?;
 
                     for content in contents.read().await.iter() {
@@ -262,7 +266,7 @@ where
     Ok(())
 }
 
-async fn save_image<T>(novel: Novel, base_path: T) -> Result<Vec<JoinHandle<Result<()>>>>
+async fn generate_image<T>(novel: Novel, base_path: T) -> Result<()>
 where
     T: AsRef<Path>,
 {
@@ -270,7 +274,7 @@ where
     fs::create_dir_all(&image_path).await?;
 
     let mut handles = Vec::new();
-    let semaphore = Arc::new(Semaphore::new(32));
+    let semaphore = Arc::new(Semaphore::new(num_cpus::get()));
 
     for volume in novel.volumes {
         for chapter in volume.chapters {
@@ -278,8 +282,8 @@ where
                 if let Content::Image(ref image) = chapter.contents.read().await[index] {
                     let path = image_path.join(&image.file_name);
                     let permit = semaphore.clone().acquire_owned().await.unwrap();
-
                     let contents = Arc::clone(&chapter.contents);
+
                     handles.push(task::spawn_blocking(move || {
                         if let Content::Image(ref image) = contents.blocking_read()[index] {
                             image.content.save(path)?;
@@ -298,12 +302,15 @@ where
         let image_path = image_path.clone();
 
         handles.push(task::spawn_blocking(move || {
-            let path = image_path.join(format!(
-                "cover.{}",
-                utils::image_ext(cover_image.blocking_read().as_ref().unwrap())
-            ));
+            let ext = utils::image_ext(cover_image.blocking_read().as_ref().unwrap());
 
-            cover_image.blocking_read().as_ref().unwrap().save(path)?;
+            if ext.is_ok() {
+                let path = image_path.join(format!("cover.{}", ext.unwrap()));
+                cover_image.blocking_read().as_ref().unwrap().save(path)?;
+            } else {
+                bail!("{}", ext.unwrap_err());
+            }
+
             Ok(())
         }));
     }
@@ -312,5 +319,9 @@ where
         utils::remove_file_or_dir(image_path)?;
     }
 
-    Ok(handles)
+    for handle in handles {
+        handle.await??;
+    }
+
+    Ok(())
 }

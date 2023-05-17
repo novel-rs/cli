@@ -63,7 +63,7 @@ const fn about_msg() -> &'static str {
 #[must_use]
 fn version_msg() -> String {
     format!(
-        "{}\nExecutable Path: {}\nConfig Dir: {}\nData Dir: {}",
+        "{}\nExecutable path: {}\nConfig directory: {}\nData directory: {}",
         crate_version!(),
         env::current_exe()
             .unwrap_or_else(|_| {

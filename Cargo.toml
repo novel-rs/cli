@@ -107,7 +107,7 @@ clap = { version = "4.2.7", default-features = false, features = [
   "string",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.2.2", default-features = false }
+clap_complete = { version = "4.2.3", default-features = false }
 # https://github.com/console-rs/indicatif
 indicatif = { version = "0.17.3", default-features = false, features = [
   "improved_unicode",
@@ -151,7 +151,7 @@ pulldown-cmark = { version = "0.9.2", default-features = false, features = [
 # https://github.com/Byron/pulldown-cmark-to-cmark
 pulldown-cmark-to-cmark = { version = "10.0.4", default-features = false }
 # https://github.com/zip-rs/zip
-zip = { version = "0.6.5", default-features = false, features = [
+zip = { version = "0.6.6", default-features = false, features = [
   "deflate",
   "time",
 ] }
@@ -170,7 +170,7 @@ memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.2.0", default-features = false }
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.28", default-features = false }
+mdbook = { version = "0.4.29", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.4.0", default-features = false }
 # https://github.com/magiclen/html-escape
@@ -205,6 +205,10 @@ which = { version = "4.4.0", default-features = false }
 dunce = { version = "1.0.4", default-features = false }
 # https://github.com/BurntSushi/memchr
 memchr = { version = "2.5.0", default-features = false, features = ["std"] }
+# https://github.com/crossterm-rs/crossterm
+crossterm = { version = "0.26.1", default-features = false }
+# https://github.com/seanmonstar/num_cpus
+num_cpus = { version = "1.15.0", default-features = false }
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions

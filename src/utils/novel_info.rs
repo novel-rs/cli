@@ -1,12 +1,12 @@
-use std::{io, sync::Arc};
+use std::sync::Arc;
 
 use anyhow::{ensure, Result};
 use comfy_table::{
     modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL, Cell, CellAlignment, ContentArrangement,
     Table,
 };
+use crossterm::terminal;
 use image::DynamicImage;
-use is_terminal::IsTerminal;
 use novel_api::{Client, NovelInfo};
 use viuer::{Config, KittySupport};
 
@@ -34,11 +34,9 @@ pub fn print_novel_info<T>(
 where
     T: AsRef<[Convert]>,
 {
-    if io::stdout().is_terminal()
-        && (viuer::is_iterm_supported() || viuer::get_kitty_support() != KittySupport::None)
-    {
+    if viuer::is_iterm_supported() || viuer::get_kitty_support() != KittySupport::None {
         if let Some(image) = image {
-            let (width, height) = viuer::terminal_size();
+            let (width, height) = terminal::size()?;
 
             let config = Config {
                 absolute_offset: false,

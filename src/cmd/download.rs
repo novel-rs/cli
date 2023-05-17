@@ -3,12 +3,12 @@ use std::{path::PathBuf, sync::Arc};
 use anyhow::Result;
 use clap::{value_parser, Args};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, Timing, VolumeInfos};
+use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, VolumeInfos};
 use tokio::{
     sync::{RwLock, Semaphore},
     task::JoinHandle,
 };
-use tracing::{info, warn};
+use tracing::{error, info, warn};
 use url::Url;
 
 use crate::{
@@ -42,11 +42,11 @@ pub struct Download {
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
-    #[arg(short, long, default_value_t = 4, value_parser = value_parser!(u8).range(1..=16),
+    #[arg(short, long, default_value_t = 4, value_parser = value_parser!(u8).range(1..=8),
         help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
     pub maximum_concurrency: u8,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
+    #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -60,8 +60,6 @@ pub struct Download {
 }
 
 pub async fn execute(config: Download) -> Result<()> {
-    let mut timing = Timing::new();
-
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -74,8 +72,6 @@ pub async fn execute(config: Download) -> Result<()> {
             do_execute(client, config).await?
         }
     }
-
-    info!("Time spent on `search`: {}", timing.elapsed()?);
 
     Ok(())
 }
@@ -134,7 +130,11 @@ where
     };
 
     if novel_info.cover_url.is_some() {
-        handles.push(cover_image(&client, novel_info.cover_url.unwrap(), &novel)?);
+        handles.push(download_cover_image(
+            &client,
+            novel_info.cover_url.unwrap(),
+            &novel,
+        )?);
     }
 
     println!(
@@ -143,9 +143,7 @@ where
     );
     let volume_infos = client.volume_infos(config.novel_id).await?;
 
-    let pb = Arc::new(parking_lot::RwLock::new(ProgressBar::new(
-        chapter_count(&volume_infos) as usize,
-    )));
+    let pb = ProgressBar::new(chapter_count(&volume_infos))?;
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
     let image_count = Arc::new(RwLock::new(1));
 
@@ -166,12 +164,12 @@ where
 
                 let client = Arc::clone(&client);
                 let permit = semaphore.clone().acquire_owned().await.unwrap();
-                let pb = Arc::clone(&pb);
+                let mut pb = pb.clone();
                 let contents = Arc::clone(&chapter.contents);
                 let image_count = Arc::clone(&image_count);
 
                 handles.push(tokio::spawn(async move {
-                    pb.write().inc(&chapter_info.title);
+                    pb.inc(&chapter_info.title);
                     let content_infos = client.content_infos(&chapter_info).await?;
                     drop(permit);
 
@@ -182,22 +180,28 @@ where
                             }
                             ContentInfo::Image(url) => match client.image(&url).await {
                                 Ok(image) => {
-                                    let image_name = format!(
-                                        "{}.{}",
-                                        utils::num_to_str(*image_count.read().await),
-                                        utils::image_ext(&image)
-                                    );
-                                    *image_count.write().await += 1;
+                                    let ext = utils::image_ext(&image);
 
-                                    let image = Image {
-                                        file_name: image_name,
-                                        content: image,
-                                    };
+                                    if ext.is_ok() {
+                                        let image_name = format!(
+                                            "{}.{}",
+                                            utils::num_to_str(*image_count.read().await),
+                                            ext.unwrap()
+                                        );
+                                        *image_count.write().await += 1;
 
-                                    contents.write().await.push(Content::Image(image));
+                                        let image = Image {
+                                            file_name: image_name,
+                                            content: image,
+                                        };
+
+                                        contents.write().await.push(Content::Image(image));
+                                    } else {
+                                        error!("{}, url: {url}", ext.unwrap_err())
+                                    }
                                 }
                                 Err(error) => {
-                                    warn!("{error}");
+                                    error!("Image download failed: {error}, url: {url}");
                                 }
                             },
                         }
@@ -208,7 +212,10 @@ where
 
                 volume.chapters.push(chapter);
             } else {
-                info!("`{}` can not be downloaded", chapter_info.title);
+                info!(
+                    "`{}-{}` can not be downloaded",
+                    volume.title, chapter_info.title
+                );
                 exists_can_not_downloaded = true;
             }
         }
@@ -216,7 +223,7 @@ where
         novel.volumes.push(volume);
     }
 
-    pb.write().finish();
+    pb.finish();
 
     if exists_can_not_downloaded {
         warn!("There are chapters that cannot be downloaded");
@@ -225,7 +232,11 @@ where
     Ok(novel)
 }
 
-fn cover_image<T>(client: &Arc<T>, url: Url, novel: &Novel) -> Result<JoinHandle<Result<()>>>
+fn download_cover_image<T>(
+    client: &Arc<T>,
+    url: Url,
+    novel: &Novel,
+) -> Result<JoinHandle<Result<()>>>
 where
     T: Client + Sync + Send + 'static,
 {
@@ -236,7 +247,7 @@ where
         match client.image(&url).await {
             Ok(image) => *cover_image.write().await = Some(image),
             Err(error) => {
-                warn!("{error}");
+                error!("Image download failed: {error}, url: {url}");
             }
         };
 
@@ -245,7 +256,7 @@ where
 }
 
 #[must_use]
-fn chapter_count(volume_infos: &VolumeInfos) -> u16 {
+fn chapter_count(volume_infos: &VolumeInfos) -> u64 {
     let mut count = 0;
 
     for volume_info in volume_infos {

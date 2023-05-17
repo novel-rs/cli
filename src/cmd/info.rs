@@ -4,8 +4,8 @@ use std::sync::Arc;
 use anyhow::Result;
 use clap::Args;
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, SfacgClient, Timing};
-use tracing::{info, warn};
+use novel_api::{CiweimaoClient, Client, SfacgClient};
+use tracing::error;
 use url::Url;
 
 use crate::cmd::{Convert, Source};
@@ -31,7 +31,7 @@ pub struct Info {
         help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
     pub ignore_keyring: bool,
 
-    #[arg(long, num_args = 0..=1, default_missing_value = super::PROXY,
+    #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
         help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
     pub proxy: Option<Url>,
 
@@ -45,8 +45,6 @@ pub struct Info {
 }
 
 pub async fn execute(config: Info) -> Result<()> {
-    let mut timing = Timing::new();
-
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -60,8 +58,6 @@ pub async fn execute(config: Info) -> Result<()> {
             do_execute(client, config).await?
         }
     }
-
-    info!("Time spent on `info`: {}", timing.elapsed()?);
 
     Ok(())
 }
@@ -78,7 +74,7 @@ where
     if let Some(ref url) = novel_info.cover_url {
         match client.image(url).await {
             Ok(image) => utils::print_novel_info(Some(image), novel_info, &config.converts)?,
-            Err(error) => warn!("{error}"),
+            Err(error) => error!("Image download failed: {error}, url: {url}"),
         }
     } else {
         utils::print_novel_info(None, novel_info, &config.converts)?;
