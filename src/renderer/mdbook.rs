@@ -8,7 +8,7 @@ use tracing::{info, warn};
 
 use crate::{
     cmd::Convert,
-    utils::{self, Content, Novel, Writer, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
+    utils::{self, Content, Novel, Writer, LINE_BREAK, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
 };
 
 #[must_use]
@@ -50,7 +50,7 @@ where
 
     let output_dir_path = utils::to_novel_dir_name(&novel.name);
     if output_dir_path.is_dir() {
-        warn!("The mdBook output folder already exists and will be deleted");
+        warn!("The mdBook output directory already exists and will be deleted");
         utils::remove_file_or_dir(&output_dir_path)?;
     }
 
@@ -59,6 +59,7 @@ where
 
     generate_book_toml(&novel, &base_path, convert).await?;
     generate_summary(&novel, &base_path, convert).await?;
+    generate_cover(&novel, &base_path, convert).await?;
     generate_introduction(&novel, &base_path, convert).await?;
     generate_chapters(&novel, &base_path).await?;
     generate_image(novel, &base_path).await?;
@@ -119,6 +120,16 @@ where
         .await?;
     writer.ln().await?;
 
+    if novel.cover_image.read().await.is_some() {
+        writer
+            .writeln(format!(
+                "- [{}](cover.md)",
+                utils::convert_str("封面", convert)?
+            ))
+            .await?;
+        writer.ln().await?;
+    }
+
     if novel.introduction.is_some() {
         writer
             .writeln(format!(
@@ -158,6 +169,46 @@ where
     Ok(())
 }
 
+async fn generate_cover<T, E>(novel: &Novel, base_path: T, convert: E) -> Result<()>
+where
+    T: AsRef<Path>,
+    E: AsRef<[Convert]>,
+{
+    if novel.cover_image.read().await.is_some() {
+        let mut src_path = base_path.as_ref().join("src");
+        fs::create_dir_all(&src_path).await?;
+        src_path.push("cover.md");
+
+        let mut writer = Writer::new(&src_path).await?;
+
+        writer
+            .writeln(format!("# {}", utils::convert_str("封面", convert)?))
+            .await?;
+        writer.ln().await?;
+
+        let ext = utils::image_ext(novel.cover_image.read().await.as_ref().unwrap());
+
+        if ext.is_ok() {
+            let image_path = src_path
+                .join("images")
+                .join(format!("cover.{}", ext.unwrap()));
+
+            let image_path = pathdiff::diff_paths(image_path, &src_path).unwrap();
+            let image_path_str = image_path.display().to_string().replace('\\', "/");
+
+            writer
+                .writeln(&super::image_markdown_str(image_path_str))
+                .await?;
+        } else {
+            bail!("{}", ext.unwrap_err());
+        }
+
+        writer.flush().await?;
+    }
+
+    Ok(())
+}
+
 async fn generate_introduction<T, E>(novel: &Novel, base_path: T, convert: E) -> Result<()>
 where
     T: AsRef<Path>,
@@ -175,11 +226,19 @@ where
             .await?;
         writer.ln().await?;
 
+        let mut buf = String::with_capacity(4096);
         for line in introduction {
-            writer.writeln(line).await?;
-            writer.ln().await?;
+            buf.push_str(line);
+            buf.push_str(&format!("{0}{0}", LINE_BREAK));
+        }
+        // last '\n'
+        buf.pop();
+        if cfg!(windows) {
+            // last '\r'
+            buf.pop();
         }
 
+        writer.write(buf).await?;
         writer.flush().await?;
     }
 
@@ -230,25 +289,34 @@ where
                     chapter_writer.writeln(title).await?;
                     chapter_writer.ln().await?;
 
+                    let mut buf = String::with_capacity(8192);
                     for content in contents.read().await.iter() {
                         match content {
                             Content::Text(line) => {
-                                chapter_writer.writeln(line).await?;
-                                chapter_writer.ln().await?;
+                                buf.push_str(line);
+                                buf.push_str(&format!("{0}{0}", LINE_BREAK));
                             }
                             Content::Image(image) => {
                                 let image_path = image_path.join(&image.file_name);
                                 let image_path =
                                     pathdiff::diff_paths(image_path, &volume_path).unwrap();
+                                let image_path_str =
+                                    image_path.display().to_string().replace('\\', "/");
 
-                                chapter_writer
-                                    .writeln(super::image_markdown_str(image_path))
-                                    .await?;
-                                chapter_writer.ln().await?;
+                                buf.push_str(&super::image_markdown_str(image_path_str));
+                                buf.push_str(&format!("{0}{0}", LINE_BREAK));
                             }
                         }
                     }
 
+                    // last '\n'
+                    buf.pop();
+                    if cfg!(windows) {
+                        // last '\r'
+                        buf.pop();
+                    }
+
+                    chapter_writer.write(buf).await?;
                     chapter_writer.flush().await?;
 
                     drop(permit);

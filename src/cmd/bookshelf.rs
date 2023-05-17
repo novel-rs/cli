@@ -67,8 +67,7 @@ where
     T: Client + Send + Sync + 'static,
 {
     utils::login(&client, &config.source, config.ignore_keyring).await?;
-    // TODO Rename favorite to bookshelf
-    let novel_ids = client.favorite_infos().await?;
+    let novel_ids = client.bookshelf_infos().await?;
 
     let mut novel_infos = Vec::new();
 

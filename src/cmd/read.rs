@@ -8,7 +8,7 @@ use cursive::event::Key;
 use cursive::theme::{BorderStyle, Color::TerminalDefault, Palette, PaletteColor::*, Theme};
 use cursive::view::Nameable;
 use cursive::views::{
-    Dialog, HideableView, LinearLayout, NamedView, ScrollView, SelectView, TextView,
+    Dialog, DummyView, HideableView, LinearLayout, NamedView, ScrollView, SelectView, TextView,
 };
 use cursive::{Cursive, CursiveRunnable, With};
 use fluent_templates::Loader;
@@ -146,6 +146,7 @@ where
                 )
                 .with_name("hideable_select"),
             )
+            .child(DummyView)
             .child(
                 ScrollView::new(
                     TextView::new(introduction(&client, config.novel_id, &config.converts).await?)

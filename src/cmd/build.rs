@@ -86,7 +86,6 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
     }
 
     let current_dir = CurrentDir::new(&markdown_file_parent_path)?;
-    // TODO Could not determine image size for cover.webp: could not determine image type
     let output = Command::new("pandoc")
         .arg("--from=commonmark+yaml_metadata_block")
         .arg("--to=epub3")
@@ -137,7 +136,7 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
     let book_path = input_mdbook_dir_path.join("book");
 
     if book_path.try_exists()? {
-        warn!("The output mdBook build directory already exists and will be deleted");
+        warn!("The mdBook output directory already exists and will be deleted");
         utils::remove_file_or_dir(&book_path)?;
     }
 

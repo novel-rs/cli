@@ -6,7 +6,7 @@ use std::{
 
 use anyhow::{bail, Ok, Result};
 use bytes::BytesMut;
-use clap::{value_parser, Args};
+use clap::Args;
 use fluent_templates::Loader;
 use image::io::Reader;
 use novel_api::Timing;
@@ -31,9 +31,9 @@ pub struct RealCugan {
     #[arg(help = LOCALES.lookup(&LANG_ID, "image_path").unwrap())]
     pub image_path: Option<PathBuf>,
 
-    #[arg(short, long, default_value_t = 4, value_parser = value_parser!(u8).range(1..=8),
+    #[arg(short, long, default_value_t = num_cpus::get(),
         help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
-    pub maximum_concurrency: u8,
+    pub maximum_concurrency: usize,
 }
 
 pub async fn execute(config: RealCugan) -> Result<()> {
@@ -44,7 +44,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
     let mut handles = Vec::new();
     let mut to_delete = Vec::new();
 
-    let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
+    let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency));
     let image_paths = image_paths(config).await?;
     let pb = ProgressBar::new(image_paths.len() as u64)?;
 

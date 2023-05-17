@@ -195,20 +195,6 @@ dependencies = [
 
 [[package]]
 name = "async-compression"
-version = "0.3.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "942c7cd7ae39e91bde4820d74132e9862e62c2f386c3aa90ccf55949f5bad63a"
-dependencies = [
- "futures-core",
- "memchr",
- "pin-project-lite",
- "tokio",
- "zstd",
- "zstd-safe",
-]
-
-[[package]]
-name = "async-compression"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b0122885821398cc923ece939e24d1056a2384ee719432397fa9db87230ff11"
@@ -219,6 +205,8 @@ dependencies = [
  "memchr",
  "pin-project-lite",
  "tokio",
+ "zstd",
+ "zstd-safe",
 ]
 
 [[package]]
@@ -2444,11 +2432,11 @@ dependencies = [
 
 [[package]]
 name = "novel-api"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf818b07fb50a9aefb8e93a06c24d0df513352ea564f19ccf5400aa6d1638d1b"
+checksum = "2b0dc599bebb1ab04047c8c3b96a3e170ca4c3182534e9bd0f072dfef692da88"
 dependencies = [
- "async-compression 0.3.15",
+ "async-compression",
  "async-trait",
  "base64-simd",
  "boring",
@@ -3456,7 +3444,7 @@ version = "0.11.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cde824a14b7c14f85caff81225f411faacc04a2013f41670f41443742b1c1c55"
 dependencies = [
- "async-compression 0.4.0",
+ "async-compression",
  "base64 0.21.0",
  "bytes",
  "cookie",
@@ -4737,9 +4725,9 @@ dependencies = [
 
 [[package]]
 name = "trash"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a27b2a127810fceb959593bbc6c7b8e0282c2d318d76f0749252197c52a1dd0c"
+checksum = "6b782240476bca40f750a7f205510ac1449ab707d3ac3f451c4b356f557c0ecd"
 dependencies = [
  "libc",
  "log",
@@ -5539,18 +5527,18 @@ dependencies = [
 
 [[package]]
 name = "zstd"
-version = "0.11.2+zstd.1.5.2"
+version = "0.12.3+zstd.1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20cc960326ece64f010d2d2107537f26dc589a6573a316bd5b1dba685fa5fde4"
+checksum = "76eea132fb024e0e13fd9c2f5d5d595d8a967aa72382ac2f9d39fcc95afd0806"
 dependencies = [
  "zstd-safe",
 ]
 
 [[package]]
 name = "zstd-safe"
-version = "5.0.2+zstd.1.5.2"
+version = "6.0.5+zstd.1.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d2a5585e04f9eea4b2a3d1eca508c4dee9592a89ef6f450c11719da0726f4db"
+checksum = "d56d9e60b4b1758206c238a10165fbcae3ca37b01744e394c463463f6529d23b"
 dependencies = [
  "libc",
  "zstd-sys",

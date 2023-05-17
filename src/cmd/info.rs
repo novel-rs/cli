@@ -74,7 +74,7 @@ where
     if let Some(ref url) = novel_info.cover_url {
         match client.image(url).await {
             Ok(image) => utils::print_novel_info(Some(image), novel_info, &config.converts)?,
-            Err(error) => error!("Image download failed: {error}, url: {url}"),
+            Err(error) => error!("Image download failed: {error}"),
         }
     } else {
         utils::print_novel_info(None, novel_info, &config.converts)?;

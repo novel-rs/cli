@@ -22,7 +22,7 @@ pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> R
 
     let output_dir_path = utils::to_novel_dir_name(&novel.name);
     if output_dir_path.is_dir() {
-        warn!("The pandoc output directory already exists and will be overwritten");
+        warn!("The Pandoc output directory already exists and will be deleted");
         utils::remove_file_or_dir(&output_dir_path)?;
     }
 

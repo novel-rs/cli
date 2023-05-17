@@ -51,6 +51,12 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: obi1kenobi/cargo-semver-checks-action@v2
 
+      # https://github.com/JesseTG/rm
+      - name: Remove File
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: semver-checks
+
       - name: Publish
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}

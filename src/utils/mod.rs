@@ -84,12 +84,12 @@ where
     for path in paths {
         let path = path.as_ref();
 
-        error!(
-            "Failed to put file or folder into Trash: {}",
-            path.display()
-        );
-
         if path.try_exists()? {
+            error!(
+                "Failed to put file or folder into Trash: {}",
+                path.display()
+            );
+
             if path.is_file() {
                 fs::remove_file(path)?;
             } else {

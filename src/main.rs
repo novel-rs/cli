@@ -1,4 +1,4 @@
-use std::{env, io, matches};
+use std::{env, io};
 
 use anyhow::Result;
 use bytesize::ByteSize;

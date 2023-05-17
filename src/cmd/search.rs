@@ -5,6 +5,7 @@ use clap::{value_parser, Args};
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Tag, WordCountRange};
 use tokio::sync::Semaphore;
+use tracing::debug;
 use url::Url;
 
 use crate::{
@@ -64,7 +65,7 @@ pub struct Search {
     help = LOCALES.lookup(&LANG_ID, "excluded_tags").unwrap())]
     pub excluded_tags: Vec<String>,
 
-    #[arg(long, default_value_t = 16, value_parser = value_parser!(u8).range(1..=100),
+    #[arg(long, default_value_t = 10, value_parser = value_parser!(u8).range(1..=100),
       help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
     pub limit: u8,
 
@@ -131,8 +132,8 @@ where
 
         let mut options = None;
         if config.keyword.is_none() {
-            // TODO Display options
-            options = Some(create_options(&client, &config).await?)
+            options = Some(create_options(&client, &config).await?);
+            debug!("{:#?}", options)
         }
 
         let mut novel_infos = Vec::new();

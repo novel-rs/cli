@@ -51,7 +51,7 @@ where
 
     let output_dir = env::current_dir()?.join(path.file_stem().unwrap());
     if output_dir.try_exists()? {
-        warn!("The output directory already exists and will be deleted");
+        warn!("The epub output directory already exists and will be deleted");
         utils::remove_file_or_dir(&output_dir)?;
     }
 

@@ -201,7 +201,7 @@ where
                                     }
                                 }
                                 Err(error) => {
-                                    error!("Image download failed: {error}, url: {url}");
+                                    error!("Image download failed: {error}");
                                 }
                             },
                         }
@@ -247,7 +247,7 @@ where
         match client.image(&url).await {
             Ok(image) => *cover_image.write().await = Some(image),
             Err(error) => {
-                error!("Image download failed: {error}, url: {url}");
+                error!("Image download failed: {error}");
             }
         };
 
