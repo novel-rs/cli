@@ -97,6 +97,7 @@ jobs:
 
       # https://github.com/orhun/git-cliff-action
       - name: Generate changelog
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: orhun/git-cliff-action@v2
         id: git-cliff
         with:
