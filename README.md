@@ -5,6 +5,7 @@
 [![docs.rs](https://img.shields.io/docsrs/novel-cli)](https://docs.rs/novel-cli)
 [![Crates.io](https://img.shields.io/crates/l/novel-cli)](https://github.com/novel-rs/cli)
 [![Crates.io](https://img.shields.io/crates/v/novel-cli)](https://crates.io/crates/novel-cli)
+[![GitHub Downloads](https://img.shields.io/github/downloads/novel-rs/cli/total)](https://github.com/novel-rs/cli/releases)
 
 ---
 
@@ -21,7 +22,12 @@ A set of tools for downloading novels from the web, manipulating text, and gener
 You can download the compiled file from [release](https://github.com/novel-rs/cli/releases), or compile it yourself
 
 ```shell
+# Download the source code from https://crates.io
 cargo install novel-cli
+
+# Or download the source code from GitHub
+git clone https://github.com/novel-rs/cli
+cargo build --release
 ```
 
 If you compile it yourself, you need the following dependencies:
@@ -34,6 +40,8 @@ If you are using Windows, you also need:
 
 - NASM
 
+And requires Clang version below 16 on Windows(due to [this](https://github.com/cloudflare/boring/issues/109))
+
 The **novel-cli build** subcommand requires [pandoc](https://github.com/jgm/pandoc)
 
 The **novel-cli real-cugan** subcommand requires [realcugan-ncnn-vulkan](https://github.com/nihui/realcugan-ncnn-vulkan)
@@ -41,8 +49,6 @@ The **novel-cli real-cugan** subcommand requires [realcugan-ncnn-vulkan](https:/
 ## Usage
 
 You can run `novel-cli help` to view help information
-
-Note that markdown file downloaded by `novel-cli download --format=pandoc` often need to be manually modified before using `novel-cli build` to create epub.
 
 ### Examples
 
