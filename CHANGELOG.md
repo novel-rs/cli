@@ -27,6 +27,9 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 2 -->🚜 Refactor
 
+- Some minor modifications
+- Some minor modifications
+- Some minor modifications
 - Optimize code logic
 - Rename favorites to bookshelf
 - Optimize code logic
@@ -52,6 +55,7 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 3 -->📚 Documentation
 
+- Update README.md
 - Update README.md
 - Update README.md
 - Update README.md
@@ -86,6 +90,8 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Update deps
+- Rename some steps
 - Remove outdated action
 - Specify nasm version
 - Update deps
