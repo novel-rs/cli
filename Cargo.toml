@@ -11,6 +11,7 @@ description = "Download novels from sfacg and ciweimao"
 readme = "README.md"
 keywords = ["novel", "sfacg", "ciweimao"]
 categories = ["command-line-utilities"]
+exclude = ["/tests/data"]
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
