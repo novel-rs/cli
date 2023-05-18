@@ -95,19 +95,11 @@ jobs:
           path: ${{ matrix.artifact_name }}
           directory: target/${{ matrix.target }}/release
 
-      # https://github.com/orhun/git-cliff-action
-      - name: Generate changelog
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: orhun/git-cliff-action@v2
-        id: git-cliff
-        with:
-          args: --latest --strip header
-
       # https://github.com/svenstaro/upload-release-action
       - name: Upload binary to release
         uses: svenstaro/upload-release-action@v2
         with:
           file: target/${{ matrix.target }}/release/release.zip
           asset_name: novel-cli-${{ matrix.target }}.zip
-          body: ${{ steps.git-cliff.outputs.content }}
+          body: "Please refer to [CHANGELOG.md](https://github.com/novel-rs/cli/blob/main/CHANGELOG.md) for details."
           overwrite: true
