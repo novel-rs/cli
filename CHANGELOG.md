@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 0 -->⛰️ Features
 
+- Handle C Locale
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Change release body
+
+## [0.2.1] - 2023-05-18
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Update Cargo.lock
+- Prepare for 0.2.1
+- Run git-cliff only on ubuntu
+
+## [0.2.0] - 2023-05-18
+
+### <!-- 0 -->⛰️ Features
+
 - Add content preview function
 - Complete search subcommand
 - Preliminary addition of library function
@@ -90,6 +108,9 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Run rm only on ubuntu
+- Exclude test data when publish
+- Update changelog
 - Update deps
 - Rename some steps
 - Remove outdated action
