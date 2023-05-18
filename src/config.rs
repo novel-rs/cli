@@ -71,8 +71,8 @@ fn version_msg() -> String {
                 PathBuf::from(crate_name!())
             })
             .display(),
-        novel_api::config_dir_path("").unwrap().display(),
-        novel_api::data_dir_path("").unwrap().display()
+        novel_api::config_dir_path("some-source").unwrap().display(),
+        novel_api::data_dir_path("some-source").unwrap().display()
     )
 }
 

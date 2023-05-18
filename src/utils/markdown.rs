@@ -5,10 +5,12 @@ use std::{
 };
 
 use anyhow::{bail, ensure, Result};
+use novel_api::Timing;
 use parking_lot::Mutex;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
+use tracing::info;
 
 use crate::{
     cmd::Convert,
@@ -40,6 +42,8 @@ pub fn read_markdown<T>(markdown_path: T) -> Result<(MetaData, String)>
 where
     T: AsRef<Path>,
 {
+    let mut timing = Timing::new();
+
     let markdown_path = markdown_path.as_ref();
 
     let bytes = fs::read(markdown_path)?;
@@ -57,6 +61,8 @@ where
         let meta_data: MetaData = serde_yaml::from_str(yaml)?;
         let markdown = markdown[index + 3 + LINE_BREAK.len() * 2..].to_string();
 
+        info!("Time spent on `read_markdown`: {}", timing.elapsed()?);
+
         Ok((meta_data, markdown))
     } else {
         bail!("The markdown format is incorrect, it should end with `...`");
@@ -67,6 +73,8 @@ pub fn to_events<T>(markdown: &str, converts: T) -> Result<Vec<Event>>
 where
     T: AsRef<[Convert]> + Sync + RefUnwindSafe,
 {
+    let mut timing = Timing::new();
+
     let parser = Parser::new_ext(markdown, Options::empty());
     let events = parser.collect::<Vec<_>>();
 
@@ -84,6 +92,8 @@ where
     if let Err(error) = result {
         bail!("`convert_str` execution failed: {error:?}")
     } else {
+        info!("Time spent on `to_events`: {}", timing.elapsed()?);
+
         Ok(result.unwrap())
     }
 }

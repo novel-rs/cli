@@ -1,6 +1,8 @@
 use anyhow::{bail, Result};
 use memchr::memmem;
+use novel_api::Timing;
 use rayon::prelude::*;
+use tracing::info;
 
 pub const WINDOWS_LINE_BREAK: &str = "\r\n";
 pub const UNIX_LINE_BREAK: &str = "\n";
@@ -14,6 +16,8 @@ pub fn verify_line_break<T>(text: T) -> Result<()>
 where
     T: AsRef<str>,
 {
+    let mut timing = Timing::new();
+
     if cfg!(windows) {
         let text = text.as_ref();
 
@@ -34,6 +38,8 @@ where
             bail!(r"The line break under Unix should be `\n`");
         }
     }
+
+    info!("Time spent on `verify_line_break`: {}", timing.elapsed()?);
 
     Ok(())
 }

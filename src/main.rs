@@ -7,7 +7,7 @@ use is_terminal::IsTerminal;
 use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
 use supports_color::Stream;
-use tracing::{debug, error, info, subscriber, warn};
+use tracing::{debug, error, info, subscriber};
 use tracing_log::LogTracer;
 use tracing_subscriber::EnvFilter;
 
@@ -57,7 +57,7 @@ async fn main() -> Result<()> {
                 ByteSize(usage.physical_mem as u64)
             );
         } else {
-            warn!("Couldn't get the current memory usage");
+            error!("Couldn't get the current memory usage");
         }
     }
 
@@ -69,21 +69,23 @@ fn init_log(config: &Config) -> Result<()> {
         LogTracer::init()?;
     }
 
-    let rust_log = if config.quiet {
-        "none"
-    } else if config.verbose == 1 {
-        "none,novel_api=info,novel_cli=info"
-    } else if config.verbose == 2 {
-        "none,novel_api=debug,novel_cli=debug"
-    } else if config.verbose == 3 {
-        "none,novel_api=trace,novel_cli=trace"
-    } else if config.verbose == 4 {
-        "trace"
-    } else {
-        "none,novel_api=warn,novel_cli=warn"
-    };
+    if env::var("RUST_LOG").is_err() {
+        let rust_log = if config.quiet {
+            "none"
+        } else if config.verbose == 1 {
+            "none,novel_api=info,novel_cli=info"
+        } else if config.verbose == 2 {
+            "none,novel_api=debug,novel_cli=debug"
+        } else if config.verbose == 3 {
+            "none,novel_api=trace,novel_cli=trace"
+        } else if config.verbose == 4 {
+            "trace"
+        } else {
+            "none,novel_api=warn,novel_cli=warn"
+        };
 
-    env::set_var("RUST_LOG", rust_log);
+        env::set_var("RUST_LOG", rust_log);
+    }
 
     let subscriber = tracing_subscriber::fmt()
         .without_time()
