@@ -53,6 +53,7 @@ jobs:
 
       # https://github.com/JesseTG/rm
       - name: Remove File
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: JesseTG/rm@v1.0.3
         with:
           path: semver-checks
