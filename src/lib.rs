@@ -27,6 +27,8 @@ pub static LANG_ID: Lazy<LanguageIdentifier> = Lazy::new(|| {
         locale = "zh-Hans".to_string();
     } else if locale == "zh-HK" || locale == "zh-TW" {
         locale = "zh-Hant".to_string();
+    } else if locale == "C" {
+        locale = "en-US".to_string();
     }
 
     match locale.parse::<LanguageIdentifier>() {
