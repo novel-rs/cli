@@ -16,7 +16,7 @@ check:
     cargo clippy --workspace --all-targets -- --deny clippy::all
 
 coverage:
-    RUSTFLAGS="-Cinstrument-coverage" LLVM_PROFILE_FILE="./target/debug/default-%p-%m.profraw"  cargo test --workspace --all-targets
+    RUSTFLAGS="-Cinstrument-coverage" LLVM_PROFILE_FILE="./target/debug/default-%p-%m.profraw"  cargo nextest run --workspace --all-targets
     grcov ./target/debug/ --binary-path ./target/debug/ -s . -t html --branch --ignore-not-existing --ignore "/*"  -o ./target/debug/coverage/
     open ./target/debug/coverage/index.html
 
@@ -24,7 +24,7 @@ build:
     cargo build --workspace --all-targets
 
 test:
-    cargo test --workspace --all-targets
+    cargo nextest run --workspace --all-targets
 
 changelog:
     git cliff -o CHANGELOG.md

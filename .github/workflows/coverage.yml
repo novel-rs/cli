@@ -41,13 +41,19 @@ jobs:
           toolchain: stable
           components: llvm-tools-preview
 
+      # https://github.com/taiki-e/install-action
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-nextest
+
       - name: Install pandoc
         run: |
           curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.2/pandoc-3.1.2-1-amd64.deb -o pandoc.deb
           sudo dpkg -i pandoc.deb
 
-      - name: Run cargo test
-        run: cargo test --workspace --all-targets
+      - name: Run cargo-nextest
+        run: cargo nextest run --workspace --all-targets
 
       # https://github.com/mozilla/grcov
       - name: Generate lcov
