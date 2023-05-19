@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
 use ahash::AHashSet;
-use anyhow::{ensure, Result};
 use clap::Args;
+use color_eyre::eyre::{ensure, Result};
 use fluent_templates::Loader;
 use novel_api::Timing;
 use parking_lot::RwLock;

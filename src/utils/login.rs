@@ -1,6 +1,6 @@
 use std::io::{self, Write};
 
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use novel_api::{Client, Keyring, UserInfo};
 use tracing::info;
 

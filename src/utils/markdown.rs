@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{bail, ensure, Result};
+use color_eyre::eyre::{bail, ensure, Result};
 use novel_api::Timing;
 use parking_lot::Mutex;
 use pulldown_cmark::{Event, Options, Parser, Tag};

@@ -1,6 +1,6 @@
 use std::fmt::Write;
 
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use crossterm::terminal;
 use indicatif::{ProgressState, ProgressStyle};
 

@@ -4,7 +4,7 @@ use std::{
     sync::Arc,
 };
 
-use anyhow::{bail, Result};
+use color_eyre::eyre::{bail, Result};
 use novel_api::Timing;
 use tokio::{
     fs,

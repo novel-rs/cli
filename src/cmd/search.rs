@@ -1,9 +1,9 @@
 use std::{path::PathBuf, sync::Arc};
 
-use anyhow::{bail, Ok, Result};
 use clap::{value_parser, Args};
+use color_eyre::eyre::{bail, Report, Result};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, Options, SfacgClient, Tag, WordCountRange};
+use novel_api::{CiweimaoClient, Client, NovelInfo, Options, SfacgClient, Tag, WordCountRange};
 use tokio::sync::Semaphore;
 use tracing::debug;
 use url::Url;
@@ -159,7 +159,7 @@ where
                 handles.push(tokio::spawn(async move {
                     let novel_info = utils::novel_info(&client, novel_id).await?;
                     drop(permit);
-                    Ok(novel_info)
+                    Ok::<NovelInfo, Report>(novel_info)
                 }));
             }
 

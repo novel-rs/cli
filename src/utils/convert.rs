@@ -1,4 +1,4 @@
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use novel_api::Timing;
 use once_cell::sync::OnceCell;
 use opencc_rs::{Config, OpenCC};

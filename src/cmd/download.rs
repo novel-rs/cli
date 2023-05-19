@@ -1,7 +1,7 @@
 use std::{path::PathBuf, sync::Arc};
 
-use anyhow::Result;
 use clap::{value_parser, Args};
+use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, VolumeInfos};
 use tokio::{

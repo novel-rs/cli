@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use color_eyre::eyre::{bail, Result};
 use memchr::memmem;
 use novel_api::Timing;
 use rayon::prelude::*;

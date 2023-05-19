@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use anyhow::{ensure, Result};
+use color_eyre::eyre::{ensure, Result};
 use comfy_table::{
     modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL, Cell, CellAlignment, ContentArrangement,
     Table,

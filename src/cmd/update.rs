@@ -1,7 +1,7 @@
 use std::env;
 
-use anyhow::{Ok, Result};
 use clap::Args;
+use color_eyre::eyre::{Report, Result};
 use fluent_templates::Loader;
 use self_update::{backends::github, cargo_crate_version};
 use tokio::task;
@@ -34,7 +34,7 @@ pub async fn execute(config: Update) -> Result<()> {
             .build()?
             .update()?;
 
-        Ok(())
+        Ok::<(), Report>(())
     })
     .await??;
 

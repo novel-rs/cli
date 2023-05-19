@@ -1,7 +1,7 @@
 use std::io::{self, Write};
 
-use anyhow::Result;
 use assert_cmd::Command;
+use color_eyre::eyre::Result;
 
 #[test]
 fn info() -> Result<()> {

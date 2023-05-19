@@ -4,9 +4,9 @@ use std::{
     sync::Arc,
 };
 
-use anyhow::{bail, Ok, Result};
 use bytes::BytesMut;
 use clap::Args;
+use color_eyre::eyre::{bail, Report, Result};
 use fluent_templates::Loader;
 use image::io::Reader;
 use novel_api::Timing;
@@ -86,7 +86,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
 
             drop(permit);
 
-            Ok(())
+            Ok::<(), Report>(())
         }));
     }
 

@@ -5,8 +5,8 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::Result;
 use clap::Args;
+use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
 use tracing::{info, warn};

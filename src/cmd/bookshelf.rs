@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use anyhow::{Ok, Result};
 use clap::{value_parser, Args};
+use color_eyre::eyre::{Report, Result};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, SfacgClient};
+use novel_api::{CiweimaoClient, Client, NovelInfo, SfacgClient};
 use tokio::sync::Semaphore;
 use tracing::error;
 use url::Url;
@@ -84,7 +84,7 @@ where
         handles.push(tokio::spawn(async move {
             let novel_info = client.novel_info(novel_id).await?;
             drop(permit);
-            Ok(novel_info)
+            Ok::<Option<NovelInfo>, Report>(novel_info)
         }));
     }
 

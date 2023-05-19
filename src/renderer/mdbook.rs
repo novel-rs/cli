@@ -1,6 +1,6 @@
 use std::{path::Path, sync::Arc};
 
-use anyhow::{bail, Ok, Result};
+use color_eyre::eyre::{bail, Report, Result};
 use novel_api::Timing;
 use serde::Serialize;
 use tokio::{fs, sync::Semaphore, task};
@@ -321,7 +321,7 @@ where
 
                     drop(permit);
 
-                    Ok(())
+                    Ok::<(), Report>(())
                 }));
             }
         }

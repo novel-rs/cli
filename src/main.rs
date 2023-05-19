@@ -1,8 +1,8 @@
 use std::{env, io};
 
-use anyhow::Result;
 use bytesize::ByteSize;
 use clap::Parser;
+use color_eyre::eyre::Result;
 use is_terminal::IsTerminal;
 use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
@@ -24,7 +24,11 @@ static ALLOC: SnMalloc = SnMalloc;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    env::set_var("RUST_BACKTRACE", "full");
+
     let config = Config::parse();
+
+    color_eyre::install()?;
 
     init_log(&config)?;
 

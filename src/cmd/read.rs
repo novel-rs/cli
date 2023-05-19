@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use anyhow::Result;
 use clap::Args;
+use color_eyre::eyre::Result;
 use crossterm::terminal;
 use cursive::event::Key;
 use cursive::theme::{BorderStyle, Color::TerminalDefault, Palette, PaletteColor::*, Theme};

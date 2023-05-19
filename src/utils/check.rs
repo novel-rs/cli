@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use anyhow::{bail, ensure, Result};
+use color_eyre::eyre::{bail, ensure, Result};
 
 pub fn ensure_executable_exists<T>(name: T) -> Result<()>
 where

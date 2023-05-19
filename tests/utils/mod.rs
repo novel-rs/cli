@@ -5,7 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{bail, Result};
+use color_eyre::eyre::{bail, Result};
 use fs_extra::dir::CopyOptions;
 
 #[allow(dead_code)]

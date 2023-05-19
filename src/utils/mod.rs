@@ -28,7 +28,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{bail, Result};
+use color_eyre::eyre::{bail, Result};
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
 use image::{ColorType, DynamicImage};

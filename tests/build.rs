@@ -1,7 +1,7 @@
 use std::{env, fs};
 
-use anyhow::Result;
 use assert_cmd::Command;
+use color_eyre::eyre::Result;
 use ntest::test_case;
 
 mod utils;

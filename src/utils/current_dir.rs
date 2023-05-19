@@ -3,7 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{ensure, Result};
+use color_eyre::eyre::{ensure, Result};
 
 pub struct CurrentDir {
     backup_path: PathBuf,

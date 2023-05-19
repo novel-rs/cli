@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use anyhow::Result;
 use clap::Args;
+use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, SfacgClient};
 use tracing::error;

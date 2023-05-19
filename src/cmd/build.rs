@@ -1,7 +1,7 @@
 use std::{env, path::PathBuf, process::Command};
 
-use anyhow::{bail, Result};
 use clap::Args;
+use color_eyre::eyre::{bail, Result};
 use fluent_templates::Loader;
 use fs_extra::dir::CopyOptions;
 use mdbook::MDBook;
@@ -140,8 +140,13 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
         utils::remove_file_or_dir(&book_path)?;
     }
 
-    let mdbook = MDBook::load(&input_mdbook_dir_path)?;
-    mdbook.build()?;
+    if let Ok(mdbook) = MDBook::load(&input_mdbook_dir_path) {
+        if let Err(error) = mdbook.build() {
+            bail!("mdBook failed to build: {}", error);
+        }
+    } else {
+        bail!("mdBook failed to load");
+    }
 
     if config.delete {
         for entry in WalkDir::new(&input_mdbook_dir_path).max_depth(1) {
