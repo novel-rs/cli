@@ -41,6 +41,7 @@ epub_path = The path of the EPUB file that needs to be unzipped
 shell = The shell to generate completions for
 verbose = Use verbose output
 quiet = Do not print log messages [default: false]
+backtrace = Print backtrace information
 source = Specify the source of the novel
 image_path = The path of the image to run realcugan-ncnn-vulkan, if not specified, it is the current directory
 

@@ -1,6 +1,9 @@
 use std::{env, path::PathBuf};
 
-use clap::{crate_authors, crate_name, crate_version, value_parser, ArgAction, Parser, Subcommand};
+use clap::{
+    crate_authors, crate_name, crate_version, value_parser, ArgAction, Parser, Subcommand,
+    ValueEnum,
+};
 use fluent_templates::Loader;
 
 use crate::{
@@ -18,6 +21,10 @@ use crate::{
 pub struct Config {
     #[command(subcommand)]
     pub command: Commands,
+
+    #[arg(long, value_enum, global = true,
+        help = LOCALES.lookup(&LANG_ID, "backtrace").unwrap())]
+    pub backtrace: Option<Backtrace>,
 
     #[arg(short, long, action = ArgAction::Count, global = true, default_value_t = 0,
         value_parser = value_parser!(u8).range(0..=4),
@@ -45,6 +52,13 @@ pub enum Commands {
     RealCugan(RealCugan),
     Update(Update),
     Completions(Completions),
+}
+
+#[must_use]
+#[derive(Clone, PartialEq, ValueEnum)]
+pub enum Backtrace {
+    ON,
+    FULL,
 }
 
 #[must_use]

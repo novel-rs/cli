@@ -16,7 +16,7 @@ use novel_cli::{
         self, bookshelf, build, check, completions, download, info, read, real_cugan, search,
         transform, unzip, update,
     },
-    config::{Commands, Config},
+    config::{Backtrace, Commands, Config},
 };
 
 #[global_allocator]
@@ -24,8 +24,6 @@ static ALLOC: SnMalloc = SnMalloc;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    env::set_var("RUST_BACKTRACE", "full");
-
     let config = Config::parse();
 
     color_eyre::install()?;
@@ -69,27 +67,32 @@ async fn main() -> Result<()> {
 }
 
 fn init_log(config: &Config) -> Result<()> {
+    if config.backtrace.is_some() {
+        match config.backtrace.as_ref().unwrap() {
+            Backtrace::ON => env::set_var("RUST_BACKTRACE", "1"),
+            Backtrace::FULL => env::set_var("RUST_BACKTRACE", "full"),
+        }
+    }
+
     if config.verbose == 4 {
         LogTracer::init()?;
     }
 
-    if env::var("RUST_LOG").is_err() {
-        let rust_log = if config.quiet {
-            "none"
-        } else if config.verbose == 1 {
-            "none,novel_api=info,novel_cli=info"
-        } else if config.verbose == 2 {
-            "none,novel_api=debug,novel_cli=debug"
-        } else if config.verbose == 3 {
-            "none,novel_api=trace,novel_cli=trace"
-        } else if config.verbose == 4 {
-            "trace"
-        } else {
-            "none,novel_api=warn,novel_cli=warn"
-        };
+    let rust_log = if config.quiet {
+        "none"
+    } else if config.verbose == 1 {
+        "none,novel_api=info,novel_cli=info"
+    } else if config.verbose == 2 {
+        "none,novel_api=debug,novel_cli=debug"
+    } else if config.verbose == 3 {
+        "none,novel_api=trace,novel_cli=trace"
+    } else if config.verbose == 4 {
+        "trace"
+    } else {
+        "none,novel_api=warn,novel_cli=warn"
+    };
 
-        env::set_var("RUST_LOG", rust_log);
-    }
+    env::set_var("RUST_LOG", rust_log);
 
     let subscriber = tracing_subscriber::fmt()
         .without_time()

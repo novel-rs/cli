@@ -41,6 +41,7 @@ epub_path = 要解壓縮的 EPUB 文件路徑
 shell = 要生成補全的 shell
 verbose = 使用詳細的輸出
 quiet = 不打印日誌 [default: false]
+backtrace = 打印 backtrace 信息
 source = 指定小說的來源
 image_path = 要運行 realcugan-ncnn-vulkan 的圖片所在路徑，如果不指定，則爲當前目錄
 
