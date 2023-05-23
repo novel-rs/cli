@@ -84,7 +84,7 @@ bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
 url = { version = "2.3.1", default-features = false }
 # https://github.com/rust-lang/regex
-regex = "1.8.1"
+regex = "1.8.2"
 # https://github.com/image-rs/image
 image = { version = "0.24.6", default-features = false, features = [
   "png",
