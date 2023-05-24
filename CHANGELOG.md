@@ -2,14 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.2.2] - 2023-05-24
 
 ### <!-- 0 -->⛰️ Features
 
+- Add backtrace option
 - Handle C Locale
+
+### <!-- 2 -->🚜 Refactor
+
+- Use color-eyre instead of anyhow
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Prepare for 0.2.2
+- Update deps
+- Use upx on x86_64-apple-darwin
+- Bump regex from 1.8.1 to 1.8.2 ([#86](https://github.com/novel-rs/cli/issues/86))
+- Update deps
+- Update deps
+- Use cargo-nextest
+- Add pre-commit check
+- Update changelog
 - Change release body
 
 ## [0.2.1] - 2023-05-18
