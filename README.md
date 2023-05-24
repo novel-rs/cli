@@ -91,6 +91,7 @@ novel-cli search --source <SOURCE> <KEYWORD>
 
 - `-v, --verbose`: Use verbose output. This option provides more detailed output.
 - `-q, --quiet`: Do not print logs (default: **false**). This option suppresses logging output.
+- `--backtrace`: Print backtrace information. This option displays the backtrace information.
 - `-h, --help`: Print help. This option displays the help information.
 - `-V, --version`: Print version. This option prints the version information.
 
