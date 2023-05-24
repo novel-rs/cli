@@ -2531,7 +2531,7 @@ dependencies = [
 
 [[package]]
 name = "novel-cli"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "ahash 0.8.3",
  "assert_cmd",
