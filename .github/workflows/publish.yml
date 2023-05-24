@@ -105,9 +105,19 @@ jobs:
 
       # https://github.com/svenstaro/upload-release-action
       - name: Upload binary to release
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: svenstaro/upload-release-action@v2
         with:
           file: target/${{ matrix.target }}/release/release.zip
           asset_name: novel-cli-${{ matrix.target }}.zip
           body: ${{ steps.git-cliff.outputs.content }}
+          overwrite: true
+
+      # https://github.com/svenstaro/upload-release-action
+      - name: Upload binary to release
+        if: ${{ matrix.os != 'ubuntu-latest' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: target/${{ matrix.target }}/release/release.zip
+          asset_name: novel-cli-${{ matrix.target }}.zip
           overwrite: true
