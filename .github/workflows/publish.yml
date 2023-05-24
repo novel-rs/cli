@@ -74,9 +74,9 @@ jobs:
 
       # https://github.com/svenstaro/upx-action
       - name: Compress binaries
-        # TODO Use it on macOS
+        # TODO Use it on aarch64-apple-darwin
         # See https://github.com/upx/upx/issues/612
-        if: ${{ !endsWith(matrix.target, 'apple-darwin') }}
+        if: ${{ startsWith(matrix.target, 'x86_64') }}
         uses: svenstaro/upx-action@v2
         with:
           files: |
