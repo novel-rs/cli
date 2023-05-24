@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.2] - 2023-05-24
+## [0.3.0] - 2023-05-24
 
 ### <!-- 0 -->⛰️ Features
 
@@ -15,7 +15,8 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
-- Prepare for 0.2.2
+- Update cliff.toml
+- Update changelog
 - Update deps
 - Use upx on x86_64-apple-darwin
 - Bump regex from 1.8.1 to 1.8.2 ([#86](https://github.com/novel-rs/cli/issues/86))
@@ -31,7 +32,6 @@ All notable changes to this project will be documented in this file.
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
 - Update Cargo.lock
-- Prepare for 0.2.1
 - Run git-cliff only on ubuntu
 
 ## [0.2.0] - 2023-05-18
