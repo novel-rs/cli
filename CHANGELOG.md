@@ -15,8 +15,8 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Update Cargo.lock
 - Update cliff.toml
-- Update changelog
 - Update deps
 - Use upx on x86_64-apple-darwin
 - Bump regex from 1.8.1 to 1.8.2 ([#86](https://github.com/novel-rs/cli/issues/86))
@@ -24,7 +24,6 @@ All notable changes to this project will be documented in this file.
 - Update deps
 - Use cargo-nextest
 - Add pre-commit check
-- Update changelog
 - Change release body
 
 ## [0.2.1] - 2023-05-18
@@ -124,7 +123,6 @@ All notable changes to this project will be documented in this file.
 
 - Run rm only on ubuntu
 - Exclude test data when publish
-- Update changelog
 - Update deps
 - Rename some steps
 - Remove outdated action
