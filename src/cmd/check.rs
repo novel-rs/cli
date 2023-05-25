@@ -29,7 +29,8 @@ pub fn execute(config: Check) -> Result<()> {
 
     let (meta_data, markdown) = utils::read_markdown(&config.markdown_path)?;
 
-    let current_dir = CurrentDir::new(config.markdown_path.parent().unwrap())?;
+    let markdown_path = dunce::canonicalize(&config.markdown_path)?;
+    let current_dir = CurrentDir::new(markdown_path.parent().unwrap())?;
 
     ensure!(
         meta_data.lang_is_ok(),
