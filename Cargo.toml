@@ -27,7 +27,7 @@ serde = { version = "1.0.163", default-features = false, features = [
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.28.1", default-features = false, features = [
+tokio = { version = "1.28.2", default-features = false, features = [
   "macros",
   "io-std",
   "fs",
@@ -84,7 +84,7 @@ bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
 url = { version = "2.3.1", default-features = false }
 # https://github.com/rust-lang/regex
-regex = "1.8.2"
+regex = "1.8.3"
 # https://github.com/image-rs/image
 image = { version = "0.24.6", default-features = false, features = [
   "png",
@@ -118,7 +118,7 @@ console = { version = "0.15.7", default-features = false, features = [
   "unicode-width",
 ] }
 # https://github.com/nukesor/comfy-table
-comfy-table = { version = "6.1.4", default-features = false, features = [
+comfy-table = { version = "6.2.0", default-features = false, features = [
   "tty",
 ] }
 # https://github.com/atanunq/viuer
@@ -171,7 +171,7 @@ memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.2.0", default-features = false }
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.29", default-features = false }
+mdbook = { version = "0.4.30", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.4.0", default-features = false }
 # https://github.com/magiclen/html-escape
