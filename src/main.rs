@@ -48,7 +48,7 @@ async fn main() -> Result<()> {
         Commands::Zip(config) => cmd::zip::execute(config)?,
         Commands::Unzip(config) => unzip::execute(config)?,
         Commands::RealCugan(config) => real_cugan::execute(config).await?,
-        Commands::Update(config) => update::execute(config)?,
+        Commands::Update(config) => update::execute(config).await?,
         Commands::Completions(config) => completions::execute(config)?,
     }
 
