@@ -110,7 +110,7 @@ clap = { version = "4.3.0", default-features = false, features = [
 # https://github.com/clap-rs/clap
 clap_complete = { version = "4.3.0", default-features = false }
 # https://github.com/console-rs/indicatif
-indicatif = { version = "0.17.3", default-features = false, features = [
+indicatif = { version = "0.17.4", default-features = false, features = [
   "improved_unicode",
 ] }
 # https://github.com/console-rs/console
