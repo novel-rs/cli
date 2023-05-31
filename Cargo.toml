@@ -210,6 +210,10 @@ memchr = { version = "2.5.0", default-features = false, features = ["std"] }
 crossterm = { version = "0.26.1", default-features = false }
 # https://github.com/seanmonstar/num_cpus
 num_cpus = { version = "1.15.0", default-features = false }
+# https://github.com/rust-cli/human-panic
+human-panic = { version = "1.1.4", default-features = false, features = [
+  "color",
+] }
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions
