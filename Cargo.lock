@@ -2584,6 +2584,7 @@ dependencies = [
  "once_cell",
  "opencc-rs",
  "opener 0.6.1",
+ "os_info",
  "parking_lot 0.12.1",
  "pathdiff",
  "pretty_assertions",

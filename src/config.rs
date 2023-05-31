@@ -76,8 +76,10 @@ const fn about_msg() -> &'static str {
 
 #[must_use]
 fn version_msg() -> String {
+    let info = os_info::get();
+
     format!(
-        "{}\nExecutable path: {}\nConfig directory: {}\nData directory: {}",
+        "{}\nExecutable path: {}\nConfig directory: {}\nData directory: {}\nOS information: {info}\nArchitecture: {}",
         crate_version!(),
         env::current_exe()
             .unwrap_or_else(|_| {
@@ -86,7 +88,8 @@ fn version_msg() -> String {
             })
             .display(),
         novel_api::config_dir_path("some-source").unwrap().display(),
-        novel_api::data_dir_path("some-source").unwrap().display()
+        novel_api::data_dir_path("some-source").unwrap().display(),
+        info.architecture().unwrap_or("unknown")
     )
 }
 
