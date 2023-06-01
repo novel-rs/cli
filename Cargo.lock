@@ -2562,7 +2562,6 @@ dependencies = [
  "color-eyre",
  "comfy-table",
  "console",
- "crossterm 0.26.1",
  "cursive",
  "dunce",
  "fluent-templates",

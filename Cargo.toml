@@ -206,8 +206,6 @@ which = { version = "4.4.0", default-features = false }
 dunce = { version = "1.0.4", default-features = false }
 # https://github.com/BurntSushi/memchr
 memchr = { version = "2.5.0", default-features = false, features = ["std"] }
-# https://github.com/crossterm-rs/crossterm
-crossterm = { version = "0.26.1", default-features = false }
 # https://github.com/seanmonstar/num_cpus
 num_cpus = { version = "1.15.0", default-features = false }
 # https://github.com/rust-cli/human-panic

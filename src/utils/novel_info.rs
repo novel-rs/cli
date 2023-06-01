@@ -5,7 +5,6 @@ use comfy_table::{
     modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL, Cell, CellAlignment, ContentArrangement,
     Table,
 };
-use crossterm::terminal;
 use image::DynamicImage;
 use novel_api::{Client, NovelInfo};
 use viuer::{Config, KittySupport};
@@ -36,7 +35,7 @@ where
 {
     if viuer::is_iterm_supported() || viuer::get_kitty_support() != KittySupport::None {
         if let Some(image) = image {
-            let (width, height) = terminal::size()?;
+            let (width, height) = viuer::terminal_size();
 
             let config = Config {
                 absolute_offset: false,

@@ -1,7 +1,6 @@
 use std::fmt::Write;
 
 use color_eyre::eyre::Result;
-use crossterm::terminal;
 use indicatif::{ProgressState, ProgressStyle};
 
 #[must_use]
@@ -13,7 +12,7 @@ pub struct ProgressBar {
 
 impl ProgressBar {
     pub fn new(total_size: u64) -> Result<Self> {
-        let message_width = (terminal::size()?.0 / 3) as usize;
+        let message_width = (viuer::terminal_size().0 / 3) as usize;
 
         let pb = indicatif::ProgressBar::new(total_size);
 

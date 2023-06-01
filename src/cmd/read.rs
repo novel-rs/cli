@@ -3,7 +3,6 @@ use std::sync::Arc;
 
 use clap::Args;
 use color_eyre::eyre::Result;
-use crossterm::terminal;
 use cursive::event::Key;
 use cursive::theme::{BorderStyle, Color::TerminalDefault, Palette, PaletteColor::*, Theme};
 use cursive::view::Nameable;
@@ -87,7 +86,7 @@ where
     set_shortcut_keys(&mut siv);
 
     let mut select = SelectView::new();
-    let select_width = (terminal::size()?.0 / 3) as usize;
+    let select_width = (viuer::terminal_size().0 / 3) as usize;
 
     for volume in client.volume_infos(config.novel_id).await? {
         let volume_title = utils::convert_str(volume.title, &config.converts)?;
