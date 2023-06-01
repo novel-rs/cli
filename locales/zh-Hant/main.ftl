@@ -44,6 +44,7 @@ quiet = 不打印日誌 [default: false]
 backtrace = 打印 backtrace 信息
 source = 指定小說的來源
 image_path = 要運行 realcugan-ncnn-vulkan 的圖片所在路徑，如果不指定，則爲當前目錄
+skip_login = 跳過登錄
 
 login_msg = {$emoji} 登錄成功，暱稱：{$arg}
 start_msg = {$emoji} 開始下載小說：{$arg}

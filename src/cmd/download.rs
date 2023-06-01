@@ -1,7 +1,7 @@
 use std::{path::PathBuf, sync::Arc};
 
 use clap::{value_parser, Args};
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{bail, Result};
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, VolumeInfos};
 use tokio::{
@@ -57,9 +57,15 @@ pub struct Download {
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
         help = super::cert_help_msg())]
     pub cert: Option<PathBuf>,
+
+    #[arg(long, default_value_t = false,
+        help = LOCALES.lookup(&LANG_ID, "skip_login").unwrap())]
+    pub skip_login: bool,
 }
 
 pub async fn execute(config: Download) -> Result<()> {
+    check_skip_login(&config)?;
+
     match config.source {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
@@ -76,18 +82,30 @@ pub async fn execute(config: Download) -> Result<()> {
     Ok(())
 }
 
+fn check_skip_login(config: &Download) -> Result<()> {
+    if config.skip_login {
+        if let Source::Ciweimao = config.source {
+            bail!("ciweimao cannot skip login");
+        }
+    }
+
+    Ok(())
+}
+
 async fn do_execute<T>(client: T, config: Download) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    let mut user_info = utils::login(&client, &config.source, config.ignore_keyring).await?;
-    if user_info.is_none() {
-        user_info = client.user_info().await?;
+    if !config.skip_login {
+        let mut user_info = utils::login(&client, &config.source, config.ignore_keyring).await?;
+        if user_info.is_none() {
+            user_info = client.user_info().await?;
+        }
+        println!(
+            "{}",
+            utils::locales_with_arg("login_msg", "✨", user_info.unwrap().nickname)
+        );
     }
-    println!(
-        "{}",
-        utils::locales_with_arg("login_msg", "✨", user_info.unwrap().nickname)
-    );
 
     let mut handles = Vec::new();
     let mut novel = download_novel(client, &config, &mut handles).await?;

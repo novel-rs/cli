@@ -44,6 +44,7 @@ quiet = Do not print log messages [default: false]
 backtrace = Print backtrace information
 source = Specify the source of the novel
 image_path = The path of the image to run realcugan-ncnn-vulkan, if not specified, it is the current directory
+skip_login = Skip login
 
 login_msg = {$emoji} Login successful, nickname: {$arg}
 start_msg = {$emoji} Start downloading novel: {$arg}
