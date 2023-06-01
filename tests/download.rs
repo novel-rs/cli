@@ -24,6 +24,7 @@ fn download_pandoc() -> Result<()> {
             "--source=sfacg",
             "--format=pandoc",
             "--skip-login",
+            "--backtrace",
             "548678",
         ])
         .output()?;
@@ -45,6 +46,7 @@ fn download_mdbook() -> Result<()> {
             "--source=sfacg",
             "--format=mdbook",
             "--skip-login",
+            "--backtrace",
             "548678",
         ])
         .output()?;
