@@ -51,6 +51,20 @@ where
     Ok(())
 }
 
+pub fn ensure_pandoc_dir<T>(path: T) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    if !is_pandoc_dir(&path)? {
+        bail!(
+            "Directory `{}` is not pandoc directory",
+            path.as_ref().display()
+        )
+    }
+
+    Ok(())
+}
+
 pub fn ensure_mdbook_dir<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
@@ -113,6 +127,23 @@ where
     let toml_path = path.join("book.toml");
 
     Ok(src_path.is_dir() && toml_path.is_file())
+}
+
+pub fn is_pandoc_dir<T>(path: T) -> Result<bool>
+where
+    T: AsRef<Path>,
+{
+    let path = path.as_ref();
+
+    ensure_exists(path)?;
+
+    if !path.is_dir() {
+        return Ok(false);
+    }
+
+    let markdown = path.join(path.file_stem().unwrap()).with_extension("md");
+
+    Ok(markdown.is_file())
 }
 
 pub fn is_epub_dir<T>(path: T) -> Result<bool>
