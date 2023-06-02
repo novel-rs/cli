@@ -1,10 +1,12 @@
-use std::{env, io};
+use std::{
+    env,
+    io::{self, IsTerminal},
+};
 
 use bytesize::ByteSize;
 use clap::Parser;
 use color_eyre::eyre::Result;
 use human_panic::setup_panic;
-use is_terminal::IsTerminal;
 use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
 use supports_color::Stream;

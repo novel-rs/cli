@@ -2572,7 +2572,6 @@ dependencies = [
  "image",
  "indicatif",
  "infer",
- "is-terminal",
  "libc",
  "mdbook",
  "memchr",
