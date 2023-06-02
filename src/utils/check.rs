@@ -178,9 +178,9 @@ where
         return Ok(false);
     }
 
-    Ok(novel_api::is_some_and(path.extension(), |ext| {
-        ext == extension.as_ref()
-    }))
+    Ok(path
+        .extension()
+        .is_some_and(|ext| ext == extension.as_ref()))
 }
 
 fn ensure_exists<T>(path: T) -> Result<()>

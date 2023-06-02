@@ -30,7 +30,7 @@ where
                 info!("Unable to get password from Keyring");
 
                 let password = get_password()?;
-                client.login(username, &password).await?;
+                client.login(username, password.clone()).await?;
 
                 keyring.set_password(password)?;
             }

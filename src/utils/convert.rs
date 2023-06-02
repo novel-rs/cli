@@ -139,11 +139,11 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
     {
         // do nothing
     } else if c.is_whitespace() {
-        if novel_api::is_some_and(last, |c| !super::is_punctuation(c)) {
+        if last.is_some_and(|c| !super::is_punctuation(c)) {
             result.push(space)
         }
     } else if super::is_punctuation(c) {
-        if novel_api::is_some_and(last, |c| c.is_whitespace()) {
+        if last.is_some_and(|c| c.is_whitespace()) {
             result.pop();
         }
 
@@ -155,8 +155,8 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
             result.push('，');
         } else if c == ':' {
             // e.g. 08:00
-            if novel_api::is_some_and(last, |c| c.is_ascii_digit())
-                && novel_api::is_some_and(next_c, |c| c.is_ascii_digit())
+            if last.is_some_and(|c| c.is_ascii_digit())
+                && next_c.is_some_and(|c| c.is_ascii_digit())
             {
                 result.push(':');
             } else {
@@ -190,7 +190,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
         } else if c == ')' {
             result.push('）');
         } else if c == '。' || c == '，' || c == '、' {
-            if novel_api::is_some_and(last, |last_char| last_char == c) {
+            if last.is_some_and(|last_char| last_char == c) {
                 // do nothing
             } else {
                 result.push(c);

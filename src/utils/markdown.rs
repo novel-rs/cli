@@ -34,7 +34,10 @@ impl MetaData {
     }
 
     pub fn cover_image_is_ok(&self) -> bool {
-        !novel_api::is_some_and(self.cover_image.as_ref(), |path| !path.is_file())
+        !self
+            .cover_image
+            .as_ref()
+            .is_some_and(|path| !path.is_file())
     }
 }
 
