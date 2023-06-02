@@ -2,19 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.3.0] - 2023-05-24
+## [0.3.1] - 2023-06-02
 
 ### <!-- 0 -->⛰️ Features
 
+- Add --skip-login option
+- Add os info for -V
+- Use human-panic
 - Add backtrace option
 - Handle C Locale
 
+### <!-- 1 -->🐛 Bug Fixes
+
+- Do not panic when get terminal size failed
+- Set working directory using absolute path
+
 ### <!-- 2 -->🚜 Refactor
 
+- Bump novel-api to 0.7.1
+- Use std::io::IsTerminal
+- No longer use spawn_blocking
 - Use color-eyre instead of anyhow
+
+### <!-- 3 -->📚 Documentation
+
+- Update README.md
+
+### <!-- 6 -->🧪 Testing
+
+- Add --backtrace
+- Add --backtrace
+- Add download test
+- Add update test
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Bump indicatif from 0.17.3 to 0.17.4 ([#89](https://github.com/novel-rs/cli/issues/89))
+- Bump once_cell from 1.17.1 to 1.17.2 ([#90](https://github.com/novel-rs/cli/issues/90))
+- Downgrade enum-as-inner
+- Update deps
+- Update .justfile
+- Do not set release body on windows
+- Update cliff.toml
 - Update cliff.toml
 - Update Cargo.lock
 - Update changelog
