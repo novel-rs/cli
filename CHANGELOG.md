@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.3.5] - 2023-06-05
+## [0.3.7] - 2023-06-05
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- No longer include debug information
+
+## [0.3.6] - 2023-06-05
 
 ### <!-- 0 -->⛰️ Features
 
@@ -40,6 +46,7 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Do not run strip
 - Add pdb file on windows
 - Add pdb file on windows
 - Add pdb file on windows
