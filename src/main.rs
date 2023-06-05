@@ -6,7 +6,6 @@ use std::{
 use bytesize::ByteSize;
 use clap::Parser;
 use color_eyre::eyre::Result;
-use human_panic::setup_panic;
 use memory_stats::memory_stats;
 use snmalloc_rs::SnMalloc;
 use supports_color::Stream;
@@ -27,13 +26,6 @@ static ALLOC: SnMalloc = SnMalloc;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    setup_panic!(Metadata {
-        name: env!("CARGO_PKG_NAME").into(),
-        version: env!("CARGO_PKG_VERSION").into(),
-        authors: env!("CARGO_PKG_AUTHORS").into(),
-        homepage: env!("CARGO_PKG_HOMEPAGE").into(),
-    });
-
     color_eyre::install()?;
 
     let config = Config::parse();
