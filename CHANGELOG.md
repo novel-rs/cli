@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.3.4] - 2023-06-05
+## [0.3.5] - 2023-06-05
 
 ### <!-- 0 -->⛰️ Features
 
@@ -40,6 +40,7 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Add pdb file on windows
 - Add pdb file on windows
 - Add pdb file on windows
 - Add pdb file on windows
