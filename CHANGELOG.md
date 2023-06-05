@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.3.2] - 2023-06-05
+## [0.3.3] - 2023-06-05
 
 ### <!-- 2 -->🚜 Refactor
 
@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Add pdb file on windows
 - Add pdb file on windows
 - Generates the minimal amount of debug info
 - Correct incorrect manifest field
