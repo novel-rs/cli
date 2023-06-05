@@ -17,7 +17,7 @@ jobs:
             artifact_name: novel-cli
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            artifact_name: novel-cli.exe
+            artifact_name: [novel-cli.exe, novel-cli.pdb]
           - os: macos-latest
             target: x86_64-apple-darwin
             artifact_name: novel-cli
