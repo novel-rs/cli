@@ -103,9 +103,7 @@ jobs:
         with:
           type: zip
           filename: release.zip
-          path: |
-            ${{ matrix.artifact_name }}
-            novel-cli.pdb
+          path: ${{ matrix.artifact_name }} novel-cli.pdb
           directory: target/${{ matrix.target }}/release
 
       # https://github.com/orhun/git-cliff-action
