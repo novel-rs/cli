@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2023-06-05
+
+### <!-- 2 -->🚜 Refactor
+
+- Remove human_panic
+
+### <!-- 3 -->📚 Documentation
+
+- Add msrv badge
+
+### <!-- 6 -->🧪 Testing
+
+- Delete update test due to network problems
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Add pdb file on windows
+- Generates the minimal amount of debug info
+- Correct incorrect manifest field
+- Update deps
+- Record minimum supported Rust version in metadata ([#93](https://github.com/novel-rs/cli/issues/93))
+
 ## [0.3.1] - 2023-06-02
 
 ### <!-- 0 -->⛰️ Features
