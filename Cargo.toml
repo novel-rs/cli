@@ -2,7 +2,7 @@
 name = "novel-cli"
 version = "0.3.1"
 edition = "2021"
-rust = "1.70"
+rust-version = "1.70"
 license = "MIT OR Apache-2.0"
 authors = ["Terakomari <im.terakomari@icloud.com>"]
 repository = "https://github.com/novel-rs/cli"
