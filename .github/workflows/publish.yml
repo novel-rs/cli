@@ -88,11 +88,24 @@ jobs:
 
       # https://github.com/TheDoctor0/zip-release
       - name: Archive Release
+        if: ${{ matrix.os != 'windows-latest' }}
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: zip
           filename: release.zip
           path: ${{ matrix.artifact_name }}
+          directory: target/${{ matrix.target }}/release
+
+      # https://github.com/TheDoctor0/zip-release
+      - name: Archive Release for windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: zip
+          filename: release.zip
+          path: |
+            ${{ matrix.artifact_name }}
+            novel-cli.pdb
           directory: target/${{ matrix.target }}/release
 
       # https://github.com/orhun/git-cliff-action
@@ -104,7 +117,7 @@ jobs:
           args: --latest --strip header
 
       # https://github.com/svenstaro/upload-release-action
-      - name: Upload binary to release
+      - name: Upload binary to release for ubuntu
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: svenstaro/upload-release-action@v2
         with:
