@@ -2,30 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.3.3] - 2023-06-05
-
-### <!-- 2 -->🚜 Refactor
-
-- Remove human_panic
-
-### <!-- 3 -->📚 Documentation
-
-- Add msrv badge
-
-### <!-- 6 -->🧪 Testing
-
-- Delete update test due to network problems
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Add pdb file on windows
-- Add pdb file on windows
-- Generates the minimal amount of debug info
-- Correct incorrect manifest field
-- Update deps
-- Record minimum supported Rust version in metadata ([#93](https://github.com/novel-rs/cli/issues/93))
-
-## [0.3.1] - 2023-06-02
+## [0.3.4] - 2023-06-05
 
 ### <!-- 0 -->⛰️ Features
 
@@ -42,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 2 -->🚜 Refactor
 
+- Remove human_panic
 - Bump novel-api to 0.7.1
 - Use std::io::IsTerminal
 - No longer use spawn_blocking
@@ -49,10 +27,12 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 3 -->📚 Documentation
 
+- Add msrv badge
 - Update README.md
 
 ### <!-- 6 -->🧪 Testing
 
+- Delete update test due to network problems
 - Add --backtrace
 - Add --backtrace
 - Add download test
@@ -60,6 +40,13 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Add pdb file on windows
+- Add pdb file on windows
+- Add pdb file on windows
+- Generates the minimal amount of debug info
+- Correct incorrect manifest field
+- Update deps
+- Record minimum supported Rust version in metadata ([#93](https://github.com/novel-rs/cli/issues/93))
 - Bump indicatif from 0.17.3 to 0.17.4 ([#89](https://github.com/novel-rs/cli/issues/89))
 - Bump once_cell from 1.17.1 to 1.17.2 ([#90](https://github.com/novel-rs/cli/issues/90))
 - Downgrade enum-as-inner
@@ -83,13 +70,6 @@ All notable changes to this project will be documented in this file.
 - Change release body
 
 ## [0.2.1] - 2023-05-18
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Update Cargo.lock
-- Run git-cliff only on ubuntu
-
-## [0.2.0] - 2023-05-18
 
 ### <!-- 0 -->⛰️ Features
 
@@ -177,6 +157,8 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
+- Update Cargo.lock
+- Run git-cliff only on ubuntu
 - Run rm only on ubuntu
 - Exclude test data when publish
 - Update changelog
