@@ -81,6 +81,7 @@ jobs:
         with:
           files: |
             target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+          strip: false
 
       - name: Permission
         if: ${{ matrix.os != 'windows-latest' }}
