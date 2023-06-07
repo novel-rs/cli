@@ -79,7 +79,7 @@ tracing-log = { version = "0.1.3", default-features = false, features = [
   "log-tracer",
 ] }
 # https://github.com/rust-lang/libc
-libc = { version = "0.2.145", default-features = false, features = ["std"] }
+libc = { version = "0.2.146", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
 bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
@@ -119,7 +119,7 @@ console = { version = "0.15.7", default-features = false, features = [
   "unicode-width",
 ] }
 # https://github.com/nukesor/comfy-table
-comfy-table = { version = "6.2.0", default-features = false, features = [
+comfy-table = { version = "7.0.0", default-features = false, features = [
   "tty",
 ] }
 # https://github.com/atanunq/viuer
@@ -220,7 +220,7 @@ assert_cmd = { version = "2.0.11", default-features = false, features = [
   "color-auto",
 ] }
 # https://github.com/Stebalien/tempfile
-tempfile = { version = "3.5.0", default-features = false }
+tempfile = { version = "3.6.0", default-features = false }
 # https://github.com/becheran/ntest
 ntest = { version = "0.9.0", default-features = false }
 

@@ -5,7 +5,7 @@ fmt:
     just --fmt --unstable
 
 update:
-    cargo upgrade
+    cargo upgrade --incompatible
     cargo update
 
 check:
