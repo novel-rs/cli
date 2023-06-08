@@ -107,7 +107,10 @@ clap = { version = "4.3.2", default-features = false, features = [
   "wrap_help",
   "unicode",
   "string",
+  "unstable-styles",
 ] }
+# https://github.com/rust-cli/anstyle
+anstyle = { version = "1.0.0", default-features = false, features = ["std"] }
 # https://github.com/clap-rs/clap
 clap_complete = { version = "4.3.1", default-features = false }
 # https://github.com/console-rs/indicatif

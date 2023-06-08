@@ -1,10 +1,12 @@
 use std::{env, path::PathBuf};
 
+use anstyle::{AnsiColor, Color};
 use clap::{
-    crate_authors, crate_name, crate_version, value_parser, ArgAction, Parser, Subcommand,
-    ValueEnum,
+    builder::Styles, crate_authors, crate_name, crate_version, value_parser, ArgAction, Parser,
+    Subcommand, ValueEnum,
 };
 use fluent_templates::Loader;
+use supports_color::Stream;
 
 use crate::{
     cmd::{
@@ -17,7 +19,8 @@ use crate::{
 
 #[must_use]
 #[derive(Parser)]
-#[command(author, version = version_msg(), about = about_msg(), long_about = None, propagate_version = true)]
+#[command(author, version = version_msg(), about = about_msg(),
+    long_about = None, propagate_version = true, styles = get_styles())]
 pub struct Config {
     #[command(subcommand)]
     pub command: Commands,
@@ -91,6 +94,32 @@ fn version_msg() -> String {
         novel_api::data_dir_path("some-source").unwrap().display(),
         info.architecture().unwrap_or("unknown")
     )
+}
+
+pub fn get_styles() -> Styles {
+    if supports_color::on(Stream::Stdout).is_some() {
+        Styles::styled()
+            .header(
+                anstyle::Style::new()
+                    .bold()
+                    .underline()
+                    .fg_color(Some(Color::Ansi(AnsiColor::Yellow))),
+            )
+            .usage(
+                anstyle::Style::new()
+                    .bold()
+                    .underline()
+                    .fg_color(Some(Color::Ansi(AnsiColor::Yellow))),
+            )
+            .literal(
+                anstyle::Style::new()
+                    .bold()
+                    .fg_color(Some(Color::Ansi(AnsiColor::Green))),
+            )
+            .placeholder(anstyle::Style::new().fg_color(Some(Color::Ansi(AnsiColor::Blue))))
+    } else {
+        Styles::plain()
+    }
 }
 
 #[cfg(test)]

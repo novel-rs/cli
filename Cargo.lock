@@ -2405,6 +2405,7 @@ name = "novel-cli"
 version = "0.3.7"
 dependencies = [
  "ahash 0.8.3",
+ "anstyle",
  "assert_cmd",
  "bytes",
  "bytesize",
