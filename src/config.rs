@@ -6,6 +6,7 @@ use clap::{
     Subcommand, ValueEnum,
 };
 use fluent_templates::Loader;
+use shadow_rs::shadow;
 use supports_color::Stream;
 
 use crate::{
@@ -16,6 +17,8 @@ use crate::{
     },
     LANG_ID, LOCALES,
 };
+
+shadow!(shadow_build);
 
 #[must_use]
 #[derive(Parser)]
@@ -79,20 +82,50 @@ const fn about_msg() -> &'static str {
 
 #[must_use]
 fn version_msg() -> String {
-    let info = os_info::get();
+    let version = crate_version!();
+    let author = crate_authors!();
+    let home_page = env!("CARGO_PKG_HOMEPAGE");
+
+    let commit_date = shadow_build::COMMIT_DATE;
+    let commit_hash = shadow_build::COMMIT_HASH;
+    let build_time = shadow_build::BUILD_TIME;
+    let build_target = shadow_build::BUILD_TARGET;
+
+    let os_info = os_info::get();
+    let architecture = os_info.architecture().unwrap_or("unknown");
+
+    let current_exe_path = env::current_exe()
+        .unwrap_or_else(|_| {
+            eprintln!("Unable to get current executable path");
+            PathBuf::from(crate_name!())
+        })
+        .display()
+        .to_string();
+    let config_dir_path = novel_api::config_dir_path("some-source")
+        .unwrap()
+        .display()
+        .to_string();
+    let data_dir_path = novel_api::data_dir_path("some-source")
+        .unwrap()
+        .display()
+        .to_string();
 
     format!(
-        "{}\nExecutable path: {}\nConfig directory: {}\nData directory: {}\nOS information: {info}\nArchitecture: {}",
-        crate_version!(),
-        env::current_exe()
-            .unwrap_or_else(|_| {
-                eprintln!("Unable to get current executable path");
-                PathBuf::from(crate_name!())
-            })
-            .display(),
-        novel_api::config_dir_path("some-source").unwrap().display(),
-        novel_api::data_dir_path("some-source").unwrap().display(),
-        info.architecture().unwrap_or("unknown")
+        "\
+{version}
+Author: {author}
+Project home page: {home_page}
+
+Commit date: {commit_date}
+Commit hash: {commit_hash}
+Build time: {build_time}
+Build target: {build_target}
+
+OS information: {os_info} [{architecture}]
+
+Executable path: {current_exe_path}
+Config directory: {config_dir_path}
+Data directory: {data_dir_path}"
     )
 }
 

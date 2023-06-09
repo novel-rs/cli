@@ -13,6 +13,7 @@ readme = "README.md"
 keywords = ["novel", "sfacg", "ciweimao"]
 categories = ["command-line-utilities"]
 exclude = ["/tests/data"]
+build = "build.rs"
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
@@ -23,7 +24,7 @@ novel-api = { version = "0.7.1", default-features = false }
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.163", default-features = false, features = [
+serde = { version = "1.0.164", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -212,6 +213,18 @@ memchr = { version = "2.5.0", default-features = false, features = ["std"] }
 num_cpus = { version = "1.15.0", default-features = false }
 # https://github.com/stanislav-tkach/os_info
 os_info = { version = "3.7.0", default-features = false }
+# https://github.com/baoyachi/shadow-rs
+shadow-rs = { version = "0.23.0", default-features = false, features = [
+  "git2",
+  "tzdb",
+] }
+
+[build-dependencies]
+# https://github.com/baoyachi/shadow-rs
+shadow-rs = { version = "0.23.0", default-features = false, features = [
+  "git2",
+  "tzdb",
+] }
 
 [dev-dependencies]
 # https://github.com/rust-pretty-assertions/rust-pretty-assertions
