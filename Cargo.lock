@@ -86,6 +86,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "allocator-api2"
+version = "0.2.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c4f263788a35611fba42eb41ff811c5d0360c58b97402570312a350736e2542e"
+
+[[package]]
 name = "android-tzdata"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -514,9 +520,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.3.2"
+version = "4.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "401a4694d2bf92537b6867d94de48c4842089645fdcdf6c71865b175d836e9c2"
+checksum = "ca8f255e4b8027970e78db75e78831229c9815fdbfa67eb1a1b777a62e24b4a0"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -525,9 +531,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.3.1"
+version = "4.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72394f3339a76daf211e57d4bcb374410f3965dcc606dd0e03738c7888766980"
+checksum = "acd4f3c17c83b0ba34ffbc4f8bbd74f079413f747f84a6f89292f138057e36ab"
 dependencies = [
  "anstream",
  "anstyle",
@@ -1618,20 +1624,21 @@ checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
 
 [[package]]
 name = "hashbrown"
-version = "0.13.2"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43a3c133739dddd0d2990f9a4bdf8eb4b21ef50e4851ca85ab661199821d510e"
+checksum = "2c6201b9ff9fd90a5a3bac2e56a830d0caa509576f0e503818ee82c181b3437a"
 dependencies = [
  "ahash 0.8.3",
+ "allocator-api2",
 ]
 
 [[package]]
 name = "hashlink"
-version = "0.8.2"
+version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0761a1b9491c4f2e3d66aa0f62d0fba0af9a0e2852e4d48ea506632a4b56e6aa"
+checksum = "312f66718a2d7789ffef4f4b7b213138ed9f1eb3aa1d0d82fc99f88fb3ffd26f"
 dependencies = [
- "hashbrown 0.13.2",
+ "hashbrown 0.14.0",
 ]
 
 [[package]]
@@ -1816,7 +1823,7 @@ dependencies = [
  "hyper",
  "rustls 0.21.1",
  "tokio",
- "tokio-rustls 0.24.0",
+ "tokio-rustls 0.24.1",
 ]
 
 [[package]]
@@ -2212,9 +2219,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.18"
+version = "0.4.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "518ef76f2f87365916b142844c16d8fefd85039bc5699050210a7778ee1cd1de"
+checksum = "b06a4cde4c0f271a446782e3eff8de789548ce57dbc8eca9292c27f4a42004b4"
 
 [[package]]
 name = "lru-cache"
@@ -2430,9 +2437,9 @@ dependencies = [
 
 [[package]]
 name = "novel-api"
-version = "0.7.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d4de05eb4d53a8e95ee672c5b8b2a5516ca9756997d93dc35998eeee7d2a18d"
+checksum = "2c5561fee98baae15899888b92062588d597edb65711519133296c170b556a52"
 dependencies = [
  "async-compression",
  "async-trait",
@@ -3065,9 +3072,9 @@ checksum = "26072860ba924cbfa98ea39c8c19b4dd6a4a25423dbdf219c1eca91aa0cf6964"
 
 [[package]]
 name = "png"
-version = "0.17.8"
+version = "0.17.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaeebc51f9e7d2c150d3f3bfeb667f2aa985db5ef1e3d212847bdedb488beeaa"
+checksum = "59871cc5b6cce7eaccca5a802b4173377a1c2ba90654246789a8fa2334426d11"
 dependencies = [
  "bitflags",
  "crc32fast",
@@ -3457,7 +3464,7 @@ dependencies = [
  "serde_json",
  "serde_urlencoded",
  "tokio",
- "tokio-rustls 0.24.0",
+ "tokio-rustls 0.24.1",
  "tokio-util",
  "tower-service",
  "trust-dns-resolver",
@@ -3560,9 +3567,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.37.19"
+version = "0.37.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "acf8729d8542766f1b2cf77eb034d52f40d375bb8b615d0b147089946e16613d"
+checksum = "b96e891d04aa506a6d1f318d2771bcb1c7dfda84e126660ace067c9b474bb2c0"
 dependencies = [
  "bitflags",
  "errno",
@@ -4545,9 +4552,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-rustls"
-version = "0.24.0"
+version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0d409377ff5b1e3ca6437aa86c1eb7d40c134bfec254e44c830defa92669db5"
+checksum = "c28327cf380ac148141087fbfb9de9d7bd4e84ab5d2c28fbc911d753de8a7081"
 dependencies = [
  "rustls 0.21.1",
  "tokio",
@@ -4699,9 +4706,9 @@ dependencies = [
 
 [[package]]
 name = "trash"
-version = "3.0.2"
+version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b782240476bca40f750a7f205510ac1449ab707d3ac3f451c4b356f557c0ecd"
+checksum = "1d219a2989f6a23fd3a6599d733e03b524cc3c50feed539ea3a136ae7845fe83"
 dependencies = [
  "libc",
  "log",
