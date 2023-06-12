@@ -2478,7 +2478,7 @@ dependencies = [
 
 [[package]]
 name = "novel-cli"
-version = "0.3.7"
+version = "0.3.8"
 dependencies = [
  "ahash 0.8.3",
  "anstyle",
