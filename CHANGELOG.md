@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.8] - 2023-06-12
+
+### <!-- 0 -->⛰️ Features
+
+- Improve version info
+- Colored help message
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Fixes #98
+
+### <!-- 6 -->🧪 Testing
+
+- Add help test
+- Add version test
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Bump pandoc from 3.1.2 to 3.1.3
+- Update deps
+- Bump self_update from 0.36.0 to 0.37.0 ([#94](https://github.com/novel-rs/cli/issues/94))
+- Bump clap from 4.3.1 to 4.3.2 ([#97](https://github.com/novel-rs/cli/issues/97))
+- Bump url from 2.3.1 to 2.4.0 ([#96](https://github.com/novel-rs/cli/issues/96))
+- Bump regex from 1.8.3 to 1.8.4 ([#95](https://github.com/novel-rs/cli/issues/95))
+
 ## [0.3.7] - 2023-06-05
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
