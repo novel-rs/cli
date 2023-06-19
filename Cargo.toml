@@ -96,7 +96,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.3.3", default-features = false, features = [
+clap = { version = "4.3.4", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -123,7 +123,7 @@ console = { version = "0.15.7", default-features = false, features = [
   "unicode-width",
 ] }
 # https://github.com/nukesor/comfy-table
-comfy-table = { version = "7.0.0", default-features = false, features = [
+comfy-table = { version = "7.0.1", default-features = false, features = [
   "tty",
 ] }
 # https://github.com/atanunq/viuer
@@ -182,7 +182,7 @@ html-escape = { version = "0.2.13", default-features = false, features = [
   "std",
 ] }
 # https://github.com/Peternator7/strum
-strum = { version = "0.24.1", default-features = false, features = [
+strum = { version = "0.25.0", default-features = false, features = [
   "std",
   "derive",
 ] }
