@@ -24,11 +24,11 @@ repos:
       - id: pretty-format-json
       - id: trailing-whitespace
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.6.24
+    rev: v1.6.25
     hooks:
       - id: actionlint
   - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.16.4
+    rev: v8.17.0
     hooks:
       - id: gitleaks
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
