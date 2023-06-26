@@ -118,7 +118,7 @@ pub fn execute_pandoc(config: Build) -> Result<()> {
     }
 
     if config.open {
-        opener::open(output_epub_file_path)?;
+        open::that(output_epub_file_path)?;
     }
 
     Ok(())
@@ -170,7 +170,7 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
             book_path.join("index.html")
         };
 
-        opener::open_browser(index_html_path)?;
+        open::that(index_html_path)?;
     }
 
     Ok(())
