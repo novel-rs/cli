@@ -80,7 +80,7 @@ tracing-log = { version = "0.1.3", default-features = false, features = [
   "log-tracer",
 ] }
 # https://github.com/rust-lang/libc
-libc = { version = "0.2.146", default-features = false, features = ["std"] }
+libc = { version = "0.2.147", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
 bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
@@ -96,7 +96,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.3.4", default-features = false, features = [
+clap = { version = "4.3.8", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -111,7 +111,7 @@ clap = { version = "4.3.4", default-features = false, features = [
   "unstable-styles",
 ] }
 # https://github.com/rust-cli/anstyle
-anstyle = { version = "1.0.0", default-features = false, features = ["std"] }
+anstyle = { version = "1.0.1", default-features = false, features = ["std"] }
 # https://github.com/clap-rs/clap
 clap_complete = { version = "4.3.1", default-features = false }
 # https://github.com/console-rs/indicatif
@@ -145,9 +145,9 @@ trash = { version = "3.0.3", default-features = false, features = [
 # https://github.com/Seeker14491/opener
 opener = { version = "0.6.1", default-features = false }
 # https://github.com/dtolnay/serde-yaml
-serde_yaml = { version = "0.9.21", default-features = false }
+serde_yaml = { version = "0.9.22", default-features = false }
 # https://github.com/toml-rs/toml
-toml = { version = "0.7.4", default-features = false, features = ["display"] }
+toml = { version = "0.7.5", default-features = false, features = ["display"] }
 # https://github.com/raphlinus/pulldown-cmark
 pulldown-cmark = { version = "0.9.3", default-features = false, features = [
   "simd",
@@ -168,7 +168,7 @@ fluent-templates = { version = "0.8.0", default-features = false, features = [
   "macros",
 ] }
 # https://github.com/bojand/infer
-infer = { version = "0.13.0", default-features = false, features = ["std"] }
+infer = { version = "0.14.0", default-features = false, features = ["std"] }
 # https://github.com/Arc-blroth/memory-stats
 memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
