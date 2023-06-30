@@ -29,7 +29,7 @@ serde = { version = "1.0.164", default-features = false, features = [
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.28.2", default-features = false, features = [
+tokio = { version = "1.29.1", default-features = false, features = [
   "macros",
   "io-std",
   "fs",
@@ -40,7 +40,7 @@ tokio = { version = "1.28.2", default-features = false, features = [
   "parking_lot",
 ] }
 # https://github.com/SchrodingerZhu/snmalloc-rs
-snmalloc-rs = "0.3.3"
+snmalloc-rs = { version = "0.3.4", default-features = true }
 # https://github.com/tkaitchuck/ahash
 ahash = { version = "0.8.3", default-features = false, features = [
   "std",
@@ -86,7 +86,7 @@ bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
 url = { version = "2.4.0", default-features = false }
 # https://github.com/rust-lang/regex
-regex = "1.8.4"
+regex = { version = "1.8.4", default-features = true }
 # https://github.com/image-rs/image
 image = { version = "0.24.6", default-features = false, features = [
   "png",
@@ -96,7 +96,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.3.8", default-features = false, features = [
+clap = { version = "4.3.9", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -174,7 +174,7 @@ memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.2.0", default-features = false }
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.30", default-features = false }
+mdbook = { version = "0.4.31", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.4.0", default-features = false }
 # https://github.com/magiclen/html-escape
@@ -210,7 +210,7 @@ dunce = { version = "1.0.4", default-features = false }
 # https://github.com/BurntSushi/memchr
 memchr = { version = "2.5.0", default-features = false, features = ["std"] }
 # https://github.com/seanmonstar/num_cpus
-num_cpus = { version = "1.15.0", default-features = false }
+num_cpus = { version = "1.16.0", default-features = false }
 # https://github.com/stanislav-tkach/os_info
 os_info = { version = "3.7.0", default-features = false }
 # https://github.com/baoyachi/shadow-rs
