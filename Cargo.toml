@@ -139,7 +139,7 @@ walkdir = { version = "2.3.3", default-features = false }
 # https://github.com/webdesus/fs_extra
 fs_extra = { version = "1.3.0", default-features = false }
 # https://github.com/Byron/trash-rs
-trash = { version = "3.0.3", default-features = false, features = [
+trash = { version = "3.0.4", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Byron/open-rs
