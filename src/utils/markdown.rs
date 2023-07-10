@@ -10,6 +10,7 @@ use parking_lot::Mutex;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 use tracing::info;
 
 use crate::{
@@ -18,6 +19,7 @@ use crate::{
 };
 
 #[must_use]
+#[skip_serializing_none]
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct MetaData {
