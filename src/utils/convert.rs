@@ -65,11 +65,11 @@ where
 
         if converts.contains(&Convert::JP2T2S) {
             result = OPENCC_JP2T2S
-                .get_or_try_init(|| OpenCC::new(vec![Config::JP2T, Config::T2S]))?
+                .get_or_try_init(|| OpenCC::new(vec![Config::JP2T, Config::TW2S]))?
                 .convert(&str)?;
         } else if converts.contains(&Convert::T2S) {
             result = OPENCC_T2S
-                .get_or_try_init(|| OpenCC::new(vec![Config::T2S]))?
+                .get_or_try_init(|| OpenCC::new(vec![Config::TW2S]))?
                 .convert(&str)?;
         } else if converts.contains(&Convert::S2T) {
             result = OPENCC_S2T
@@ -83,9 +83,23 @@ where
             } else {
                 result = custom_convert(result);
             }
+
+            if converts.contains(&Convert::JP2T2S) || converts.contains(&Convert::T2S) {
+                let mut new_result = String::with_capacity(result.len());
+                for c in result.chars() {
+                    match super::CONVERT_T2S_MAP.get(&c) {
+                        Some(new) => {
+                            new_result.push(*new);
+                        }
+                        None => new_result.push(c),
+                    }
+                }
+
+                result = new_result;
+            }
         }
 
-        Ok(result)
+        Ok(result.trim().to_string())
     }
 }
 
@@ -117,7 +131,7 @@ where
     }
     do_custom_convert(s.chars().last().unwrap(), None, &mut result);
 
-    result.trim().to_string()
+    result
 }
 
 fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
@@ -215,7 +229,7 @@ mod tests {
 
         assert_eq!(convert_str("顛覆", &config)?, "颠覆");
         assert_eq!(convert_str("幺", &config)?, "幺");
-        assert_eq!(convert_str("妳", &config)?, "妳");
+        assert_eq!(convert_str("妳", &config)?, "你");
         assert_eq!(convert_str("Ｑ０", &config)?, "Q0");
         assert_eq!(convert_str("“安装后”", &config)?, "“安装后”");
         assert_eq!(convert_str("&amp;", &config)?, "&");
@@ -224,6 +238,7 @@ mod tests {
         assert_eq!(convert_str("安　装", &config)?, "安 装");
         assert_eq!(convert_str("你\n好", &config)?, "你好");
         assert_eq!(convert_str("08:00", &config)?, "08:00");
+        assert_eq!(convert_str("接著", &config)?, "接着");
 
         Ok(())
     }
