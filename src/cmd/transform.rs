@@ -4,6 +4,7 @@ use clap::Args;
 use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
+use regex::Regex;
 use tracing::info;
 
 use crate::{
@@ -77,8 +78,8 @@ pub fn execute(config: Transform) -> Result<()> {
     let mut markdown_buf = String::with_capacity(markdown.len());
     pulldown_cmark_to_cmark::cmark(events.iter(), &mut markdown_buf)?;
 
-    buf.push_str(&markdown_buf);
-    buf.push_str(UNIX_LINE_BREAK);
+    let regex = Regex::new(&format!("({})+", UNIX_LINE_BREAK))?;
+    buf.push_str(&regex.replace_all(&markdown_buf, format!("{0}{0}", UNIX_LINE_BREAK)));
 
     if config.delete {
         utils::remove_file_or_dir(input_markdown_file_path)?;
