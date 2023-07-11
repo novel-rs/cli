@@ -17,9 +17,9 @@ build = "build.rs"
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
-opencc-rs = { version = "0.3.0", default-features = false }
+opencc-rs = { version = "0.3.1", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { version = "0.7.2", default-features = false }
+novel-api = { version = "0.8.0", default-features = false }
 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
