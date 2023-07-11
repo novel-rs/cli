@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2023-07-11
+
+### <!-- 0 -->⛰️ Features
+
+- Convert Image Format
+- Remove extra line breaks
+- Improve conversion function
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Guaranteed to end with a newline character
+- Does not serialize Option::None
+
+### <!-- 2 -->🚜 Refactor
+
+- Use open instead of opener
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Bump pandoc
+- Update deps
+- Update deps
+- Bump clap from 4.3.9 to 4.3.10 ([#102](https://github.com/novel-rs/cli/issues/102))
+- Bump serde from 1.0.164 to 1.0.166 ([#103](https://github.com/novel-rs/cli/issues/103))
+- Bump trash from 3.0.3 to 3.0.4 ([#104](https://github.com/novel-rs/cli/issues/104))
+- Update deps
+- Update deps
+- Pre-commit autoupdate ([#100](https://github.com/novel-rs/cli/issues/100))
+- Update deps
+- Pre-commit autoupdate ([#99](https://github.com/novel-rs/cli/issues/99))
+
 ## [0.3.8] - 2023-06-12
 
 ### <!-- 0 -->⛰️ Features
