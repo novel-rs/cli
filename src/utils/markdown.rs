@@ -74,9 +74,15 @@ where
     }
 }
 
-pub fn to_events<T>(markdown: &str, converts: T) -> Result<Vec<Event>>
+pub fn to_markdown_events<T, E>(
+    markdown: &str,
+    converts: T,
+    input_dir: E,
+    delete: bool,
+) -> Result<Vec<Event>>
 where
     T: AsRef<[Convert]> + Sync + RefUnwindSafe,
+    E: AsRef<Path> + Sync + RefUnwindSafe,
 {
     let mut timing = Timing::new();
 
@@ -88,6 +94,23 @@ where
             Event::Text(text) => {
                 Event::Text(utils::convert_str(text, converts.as_ref()).unwrap().into())
             }
+            Event::Start(Tag::Image(link_type, path, title)) => {
+                let new_image_path =
+                    super::convert_image(input_dir.as_ref().join(path.into_string()), delete)
+                        .unwrap();
+
+                Event::Start(Tag::Image(
+                    link_type,
+                    new_image_path
+                        .file_name()
+                        .unwrap()
+                        .to_str()
+                        .unwrap()
+                        .to_string()
+                        .into(),
+                    title,
+                ))
+            }
             _ => event.to_owned(),
         });
 
@@ -95,9 +118,9 @@ where
     });
 
     if let Err(error) = result {
-        bail!("`convert_str` execution failed: {error:?}")
+        bail!("{error:?}")
     } else {
-        info!("Time spent on `to_events`: {}", timing.elapsed()?);
+        info!("Time spent on `to_markdown_events`: {}", timing.elapsed()?);
 
         Ok(result.unwrap())
     }

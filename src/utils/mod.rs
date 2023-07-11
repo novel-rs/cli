@@ -1,6 +1,7 @@
 mod check;
 mod convert;
 mod current_dir;
+mod image;
 mod line_break;
 mod login;
 mod markdown;
@@ -10,6 +11,7 @@ mod progress;
 mod unicode;
 mod writer;
 
+pub use self::image::*;
 pub use check::*;
 pub use convert::*;
 pub use current_dir::*;
@@ -31,7 +33,6 @@ use std::{
 use color_eyre::eyre::{bail, Result};
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
-use image::{ColorType, DynamicImage};
 use tracing::{error, info, warn};
 
 use crate::{cmd::Convert, LANG_ID, LOCALES};
@@ -110,20 +111,6 @@ where
         String::from("zh-Hant")
     } else {
         String::from("zh-Hans")
-    }
-}
-
-#[inline]
-pub fn image_ext(image: &DynamicImage) -> Result<String> {
-    match image.color() {
-        ColorType::Rgb8 | ColorType::Rgba8 => Ok(String::from("webp")),
-        ColorType::L8
-        | ColorType::L16
-        | ColorType::La8
-        | ColorType::La16
-        | ColorType::Rgb16
-        | ColorType::Rgba16 => Ok(String::from("png")),
-        other => bail!("This color type is not supported: {:?}", other),
     }
 }
 

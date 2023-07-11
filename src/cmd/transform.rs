@@ -67,8 +67,20 @@ pub fn execute(config: Transform) -> Result<()> {
 
         meta_data.description = Some(description.join(UNIX_LINE_BREAK));
     }
+    if meta_data.cover_image.is_some() {
+        meta_data.cover_image = Some(PathBuf::from(
+            utils::convert_image(
+                input_dir.join(meta_data.cover_image.unwrap()),
+                config.delete,
+            )?
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        ));
+    }
 
-    let events = utils::to_events(&markdown, &config.converts)?;
+    let events = utils::to_markdown_events(&markdown, &config.converts, &input_dir, config.delete)?;
 
     let mut buf = String::with_capacity(4096);
     buf.push_str(format!("---{}", UNIX_LINE_BREAK).as_str());
@@ -80,6 +92,8 @@ pub fn execute(config: Transform) -> Result<()> {
 
     let regex = Regex::new(&format!("({})+", UNIX_LINE_BREAK))?;
     buf.push_str(&regex.replace_all(&markdown_buf, format!("{0}{0}", UNIX_LINE_BREAK)));
+    // \n
+    buf.pop();
 
     if config.delete {
         utils::remove_file_or_dir(input_markdown_file_path)?;
