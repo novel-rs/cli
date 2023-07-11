@@ -92,8 +92,11 @@ pub fn execute(config: Transform) -> Result<()> {
 
     let regex = Regex::new(&format!("({})+", UNIX_LINE_BREAK))?;
     buf.push_str(&regex.replace_all(&markdown_buf, format!("{0}{0}", UNIX_LINE_BREAK)));
-    // \n
-    buf.pop();
+
+    while buf.ends_with(UNIX_LINE_BREAK) {
+        buf.pop();
+    }
+    buf.push_str(UNIX_LINE_BREAK);
 
     if config.delete {
         utils::remove_file_or_dir(input_markdown_file_path)?;
