@@ -7,7 +7,7 @@ use bytesize::ByteSize;
 use clap::Parser;
 use color_eyre::eyre::Result;
 use memory_stats::memory_stats;
-use mimalloc::MiMalloc;
+use snmalloc_rs::SnMalloc;
 use supports_color::Stream;
 use tracing::{debug, error, info, subscriber};
 use tracing_log::LogTracer;
@@ -22,7 +22,7 @@ use novel_cli::{
 };
 
 #[global_allocator]
-static GLOBAL: MiMalloc = MiMalloc;
+static ALLOC: SnMalloc = SnMalloc;
 
 #[tokio::main]
 async fn main() -> Result<()> {

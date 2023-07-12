@@ -39,8 +39,8 @@ tokio = { version = "1.29.1", default-features = false, features = [
   "rt-multi-thread",
   "parking_lot",
 ] }
-# https://github.com/purpleprotocol/mimalloc_rust
-mimalloc = { version = "0.1.37", default-features = false }
+# https://github.com/SchrodingerZhu/snmalloc-rs
+snmalloc-rs = { version = "0.3.4", default-features = true }
 # https://github.com/rust-lang/hashbrown
 hashbrown = { version = "0.14.0", default-features = false, features = [
   "ahash",
