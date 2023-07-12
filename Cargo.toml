@@ -41,10 +41,10 @@ tokio = { version = "1.29.1", default-features = false, features = [
 ] }
 # https://github.com/SchrodingerZhu/snmalloc-rs
 snmalloc-rs = { version = "0.3.4", default-features = true }
-# https://github.com/tkaitchuck/ahash
-ahash = { version = "0.8.3", default-features = false, features = [
-  "std",
-  "runtime-rng",
+# https://github.com/rust-lang/hashbrown
+hashbrown = { version = "0.14.0", default-features = false, features = [
+  "ahash",
+  "inline-more",
 ] }
 # https://github.com/Amanieu/parking_lot
 parking_lot = { version = "0.12.1", default-features = false, features = [

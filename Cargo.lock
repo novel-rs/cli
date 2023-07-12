@@ -2487,7 +2487,6 @@ dependencies = [
 name = "novel-cli"
 version = "0.4.0"
 dependencies = [
- "ahash 0.8.3",
  "anstyle",
  "assert_cmd",
  "bytes",
@@ -2502,6 +2501,7 @@ dependencies = [
  "fluent-templates",
  "fs_extra",
  "futures",
+ "hashbrown 0.14.0",
  "html-escape",
  "image",
  "indicatif",

@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
-use ahash::AHashSet;
 use clap::Args;
 use color_eyre::eyre::{ensure, Result};
 use fluent_templates::Loader;
+use hashbrown::HashSet;
 use novel_api::Timing;
 use parking_lot::RwLock;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
@@ -45,7 +45,7 @@ pub fn execute(config: Check) -> Result<()> {
 
     let parser = Parser::new_ext(&markdown, Options::empty());
     let events = parser.into_offset_iter().collect::<Vec<(_, _)>>();
-    let char_set = RwLock::new(AHashSet::new());
+    let char_set = RwLock::new(HashSet::new());
 
     // TODO i18n output
     events
