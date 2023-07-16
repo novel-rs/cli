@@ -96,7 +96,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.3.11", default-features = false, features = [
+clap = { version = "4.3.12", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -139,13 +139,13 @@ walkdir = { version = "2.3.3", default-features = false }
 # https://github.com/webdesus/fs_extra
 fs_extra = { version = "1.3.0", default-features = false }
 # https://github.com/Byron/trash-rs
-trash = { version = "3.0.5", default-features = false, features = [
+trash = { version = "3.0.6", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Byron/open-rs
 open = { version = "5.0.0", default-features = false }
 # https://github.com/dtolnay/serde-yaml
-serde_yaml = { version = "0.9.22", default-features = false }
+serde_yaml = { version = "0.9.23", default-features = false }
 # https://github.com/toml-rs/toml
 toml = { version = "0.7.6", default-features = false, features = ["display"] }
 # https://github.com/raphlinus/pulldown-cmark
@@ -237,7 +237,7 @@ pretty_assertions = { version = "1.4.0", default-features = false, features = [
   "std",
 ] }
 # https://github.com/assert-rs/assert_cmd
-assert_cmd = { version = "2.0.11", default-features = false, features = [
+assert_cmd = { version = "2.0.12", default-features = false, features = [
   "color-auto",
 ] }
 # https://github.com/Stebalien/tempfile
