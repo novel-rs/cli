@@ -47,7 +47,6 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ntest::assert_panics;
 
     #[test]
     fn line_break() -> Result<()> {
@@ -63,19 +62,11 @@ mod tests {
     #[test]
     fn line_break_failed() -> Result<()> {
         if cfg!(windows) {
-            assert_panics!({
-                verify_line_break("12345\n\r\n").unwrap();
-            });
-            assert_panics!({
-                verify_line_break("12345\n\n").unwrap();
-            });
+            assert!(verify_line_break("12345\n\r\n").is_err());
+            assert!(verify_line_break("12345\n\n").is_err());
         } else {
-            assert_panics!({
-                verify_line_break("12345\r\n\n123").unwrap();
-            });
-            assert_panics!({
-                verify_line_break("12345\r\n").unwrap();
-            });
+            assert!(verify_line_break("12345\r\n\n123").is_err());
+            assert!(verify_line_break("12345\r\n").is_err());
         }
 
         Ok(())

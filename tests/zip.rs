@@ -2,18 +2,16 @@ use std::{env, fs};
 
 use assert_cmd::Command;
 use color_eyre::eyre::Result;
+use rstest::rstest;
+use serial_test::file_serial;
 
 mod utils;
 
-#[test]
-fn zip() -> Result<()> {
-    do_zip(false)?;
-    do_zip(true)?;
-
-    Ok(())
-}
-
-fn do_zip(delete: bool) -> Result<()> {
+#[rstest]
+#[case(false)]
+#[case(true)]
+#[file_serial(zip)]
+fn zip(#[case] delete: bool) -> Result<()> {
     let temp_dir = tempfile::tempdir()?;
     let input_path = utils::copy_to_temp_dir("pandoc-epub", temp_dir.path())?;
     novel_cli::utils::ensure_epub_dir(&input_path)?;
