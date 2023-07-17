@@ -6,7 +6,7 @@ use color_eyre::eyre::Result;
 mod utils;
 
 #[test]
-fn check_pandoc() -> Result<()> {
+fn completions() -> Result<()> {
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd.args(["completions", "zsh"]).output()?;
     cmd.assert().success();
