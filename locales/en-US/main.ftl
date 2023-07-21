@@ -54,3 +54,6 @@ build_msg = {$emoji} Start building {$arg} format output
 
 download_failed_msg = Failed to download this chapter
 inaccessible_msg = This chapter was not purchased or this chapter is inaccessible
+
+enter_user_name = Please enter user name
+enter_password = Please enter password

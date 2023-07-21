@@ -126,8 +126,11 @@ comfy-table = { version = "7.0.1", default-features = false, features = [
 ] }
 # https://github.com/atanunq/viuer
 viuer = { version = "0.6.2", default-features = false }
-# https://github.com/conradkleinespel/rpassword
-rpassword = { version = "7.2.0", default-features = false }
+# https://github.com/Lutetium-Vanadium/requestty
+requestty = { version = "0.5.0", default-features = false, features = [
+  "crossterm",
+  "smallvec",
+] }
 # https://github.com/Manishearth/pathdiff
 pathdiff = { version = "0.2.1", default-features = false, features = [
   "camino",

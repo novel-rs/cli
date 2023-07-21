@@ -54,3 +54,6 @@ build_msg = {$emoji} 开始构建 {$arg} 格式输出
 
 download_failed_msg = 无法下载该章节
 inaccessible_msg = 该章节未购买或者该章节无法访问
+
+enter_user_name = 请输入用户名
+enter_password = 请输入密码
