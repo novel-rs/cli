@@ -1,5 +1,5 @@
 [build]
-rustflags = ["-Dwarnings"]
+rustflags = ["-Dwarnings", "--cfg", "aes_armv8"]
 
 [target.x86_64-pc-windows-msvc]
-rustflags = ["-Dwarnings", "-Ctarget-feature=+crt-static"]
+rustflags = ["-Dwarnings", "-Ctarget-feature=+crt-static", "--cfg", "aes_armv8"]

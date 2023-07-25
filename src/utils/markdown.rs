@@ -2,11 +2,11 @@ use std::{
     fs,
     panic::{self, RefUnwindSafe},
     path::{Path, PathBuf},
+    sync::Mutex,
 };
 
 use color_eyre::eyre::{bail, ensure, Result};
 use novel_api::Timing;
-use parking_lot::Mutex;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -139,11 +139,14 @@ where
 
     events.into_par_iter().for_each(|event| {
         if let Event::Start(Tag::Image(_, path, _)) = event {
-            result.lock().push(PathBuf::from(&path.to_string()));
+            result
+                .lock()
+                .unwrap()
+                .push(PathBuf::from(&path.to_string()));
         }
     });
 
-    let mut result = result.lock().to_vec();
+    let mut result = result.lock().unwrap().to_vec();
     if metadata.cover_image.is_some() {
         result.push(metadata.cover_image.unwrap())
     }

@@ -17,9 +17,9 @@ build = "build.rs"
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
-opencc-rs = { version = "0.3.1", default-features = false }
+opencc-rs = { git = "https://github.com/novel-rs/opencc-rs", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { version = "0.8.0", default-features = false }
+novel-api = { git = "https://github.com/novel-rs/api", default-features = false }
 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
@@ -37,7 +37,6 @@ tokio = { version = "1.29.1", default-features = false, features = [
   "process",
   "signal",
   "rt-multi-thread",
-  "parking_lot",
 ] }
 # https://github.com/SchrodingerZhu/snmalloc-rs
 snmalloc-rs = { version = "0.3.4", default-features = true }
@@ -46,15 +45,8 @@ hashbrown = { version = "0.14.0", default-features = false, features = [
   "ahash",
   "inline-more",
 ] }
-# https://github.com/Amanieu/parking_lot
-parking_lot = { version = "0.12.1", default-features = false, features = [
-  "hardware-lock-elision",
-] }
 # https://github.com/matklad/once_cell
-once_cell = { version = "1.18.0", default-features = false, features = [
-  "std",
-  "parking_lot",
-] }
+once_cell = { version = "1.18.0", default-features = false, features = ["std"] }
 # https://github.com/rusticstuff/simdutf8
 simdutf8 = { version = "0.1.4", default-features = false, features = [
   "std",
@@ -72,7 +64,6 @@ tracing-subscriber = { version = "0.3.17", default-features = false, features = 
   "env-filter",
   "tracing-log",
   "smallvec",
-  "parking_lot",
 ] }
 # https://github.com/tokio-rs/tracing
 tracing-log = { version = "0.1.3", default-features = false, features = [

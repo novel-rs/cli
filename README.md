@@ -37,12 +37,6 @@ If you compile it yourself, you need the following dependencies:
 - CMake
 - Python / Python3
 
-If you are using Windows, you also need:
-
-- NASM
-
-And requires Clang version below 16 on Windows(due to [this](https://github.com/cloudflare/boring/issues/109))
-
 The **novel-cli build** subcommand requires [pandoc](https://github.com/jgm/pandoc)
 
 The **novel-cli real-cugan** subcommand requires [realcugan-ncnn-vulkan](https://github.com/nihui/realcugan-ncnn-vulkan)

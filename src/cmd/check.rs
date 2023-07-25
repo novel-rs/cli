@@ -1,11 +1,10 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, sync::RwLock};
 
 use clap::Args;
 use color_eyre::eyre::{ensure, Result};
 use fluent_templates::Loader;
 use hashbrown::HashSet;
 use novel_api::Timing;
-use parking_lot::RwLock;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
 use rayon::prelude::*;
 use tracing::info;
@@ -96,10 +95,10 @@ pub fn execute(config: Check) -> Result<()> {
                         && !c.is_ascii_alphanumeric()
                         && c != ' '
                     {
-                        if char_set.read().contains(&c) {
+                        if char_set.read().unwrap().contains(&c) {
                             continue;
                         } else {
-                            char_set.write().insert(c);
+                            char_set.write().unwrap().insert(c);
 
                             println(format!(
                                 "Irregular char: `{}`, at `{}`",

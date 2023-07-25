@@ -59,13 +59,6 @@ jobs:
         with:
           tool: cargo-nextest
 
-      # https://github.com/ilammy/setup-nasm
-      - name: Install NASM
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: ilammy/setup-nasm@v1
-        with:
-          version: 2.16.01
-
       - name: Install pandoc for Linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
