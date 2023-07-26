@@ -7,7 +7,7 @@ use hashbrown::HashSet;
 use novel_api::Timing;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
 use rayon::prelude::*;
-use tracing::info;
+use tracing::debug;
 
 use crate::{
     utils::{self, CurrentDir},
@@ -127,7 +127,7 @@ pub fn execute(config: Check) -> Result<()> {
 
     current_dir.restore()?;
 
-    info!("Time spent on `check`: {}", timing.elapsed()?);
+    debug!("Time spent on `check`: {}", timing.elapsed()?);
 
     Ok(())
 }

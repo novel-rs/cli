@@ -5,7 +5,7 @@ use clap_complete::Shell;
 use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
-use tracing::info;
+use tracing::debug;
 
 use crate::{config::Config, LANG_ID, LOCALES};
 
@@ -27,7 +27,7 @@ pub fn execute(config: Completions) -> Result<()> {
 
     clap_complete::generate(config.shell, &mut cmd, bin_name, &mut io::stdout());
 
-    info!("Time spent on `completions`: {}", timing.elapsed()?);
+    debug!("Time spent on `completions`: {}", timing.elapsed()?);
 
     Ok(())
 }

@@ -1676,9 +1676,6 @@ name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
-dependencies = [
- "ahash 0.7.6",
-]
 
 [[package]]
 name = "hashbrown"
@@ -2266,9 +2263,9 @@ dependencies = [
 
 [[package]]
 name = "libz-sys"
-version = "1.1.10"
+version = "1.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24e6ab01971eb092ffe6a7d42f49f9ff42662f17604681e2843ad65077ba47dc"
+checksum = "121f7402cc6ab5821dad08d1b9d11618a9ea4da992343909fecf8e430e86364c"
 dependencies = [
  "cc",
  "libc",
@@ -2540,7 +2537,7 @@ dependencies = [
 [[package]]
 name = "novel-api"
 version = "0.8.0"
-source = "git+https://github.com/novel-rs/api#23205acb20c595436e8a458f268528ea0bbfedc8"
+source = "git+https://github.com/novel-rs/api#3ceda1e1d3de399e39054bef8939d016ec025fc6"
 dependencies = [
  "aes",
  "async-compression",
@@ -2563,13 +2560,13 @@ dependencies = [
  "requestty",
  "reqwest",
  "reqwest_cookie_store",
+ "ring",
  "scraper",
  "sea-orm",
  "sea-orm-migration",
  "semver",
  "serde",
  "serde_json",
- "sha2",
  "simdutf8",
  "thiserror",
  "tokio",
@@ -5043,13 +5040,9 @@ checksum = "301abaae475aa91687eb82514b328ab47a211a533026cb25fc3e519b86adfc3c"
 
 [[package]]
 name = "unicode-linebreak"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c5faade31a542b8b35855fff6e8def199853b2da8da256da52f52f1316ee3137"
-dependencies = [
- "hashbrown 0.12.3",
- "regex",
-]
+checksum = "3b09c83c3c29d37506a3e260c08c03743a6bb66a9cd432c6934ab501a190571f"
 
 [[package]]
 name = "unicode-normalization"

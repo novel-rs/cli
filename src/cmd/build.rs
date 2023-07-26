@@ -6,7 +6,7 @@ use fluent_templates::Loader;
 use fs_extra::dir::CopyOptions;
 use mdbook::MDBook;
 use novel_api::Timing;
-use tracing::{error, info, warn};
+use tracing::{debug, error, info, warn};
 use walkdir::WalkDir;
 
 use crate::{
@@ -41,7 +41,7 @@ pub fn execute(config: Build) -> Result<()> {
     }
     println!("{}", utils::locales("build_complete_msg", "👌"));
 
-    info!("Time spent on `build`: {}", timing.elapsed()?);
+    debug!("Time spent on `build`: {}", timing.elapsed()?);
 
     Ok(())
 }

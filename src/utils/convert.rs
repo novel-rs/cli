@@ -2,7 +2,7 @@ use color_eyre::eyre::Result;
 use novel_api::Timing;
 use once_cell::sync::OnceCell;
 use opencc_rs::{Config, OpenCC};
-use tracing::info;
+use tracing::debug;
 
 use crate::cmd::Convert;
 
@@ -42,7 +42,7 @@ where
         }
     }
 
-    info!("Time spent on `convert`: {}", timing.elapsed()?);
+    debug!("Time spent on `convert`: {}", timing.elapsed()?);
 
     Ok(())
 }

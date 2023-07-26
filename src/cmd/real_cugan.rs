@@ -16,7 +16,7 @@ use tokio::{
     process::Command,
     sync::Semaphore,
 };
-use tracing::{error, info};
+use tracing::{debug, error, info};
 use walkdir::WalkDir;
 
 use crate::{
@@ -100,7 +100,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
         utils::remove_file_or_dir(path)?;
     }
 
-    info!("Time spent on `real_cugan`: {}", timing.elapsed()?);
+    debug!("Time spent on `real_cugan`: {}", timing.elapsed()?);
 
     Ok(())
 }

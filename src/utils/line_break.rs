@@ -2,7 +2,7 @@ use color_eyre::eyre::{bail, Result};
 use memchr::memmem;
 use novel_api::Timing;
 use rayon::prelude::*;
-use tracing::info;
+use tracing::debug;
 
 pub const WINDOWS_LINE_BREAK: &str = "\r\n";
 pub const UNIX_LINE_BREAK: &str = "\n";
@@ -39,7 +39,7 @@ where
         }
     }
 
-    info!("Time spent on `verify_line_break`: {}", timing.elapsed()?);
+    debug!("Time spent on `verify_line_break`: {}", timing.elapsed()?);
 
     Ok(())
 }

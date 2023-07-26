@@ -4,7 +4,7 @@ use color_eyre::eyre::{bail, Report, Result};
 use novel_api::Timing;
 use serde::Serialize;
 use tokio::{fs, sync::Semaphore, task};
-use tracing::{info, warn};
+use tracing::{debug, warn};
 
 use crate::{
     cmd::Convert,
@@ -64,7 +64,7 @@ where
     generate_chapters(&novel, &base_path).await?;
     generate_image(novel, &base_path).await?;
 
-    info!("Time spent on `generate mdBook`: {}", timing.elapsed()?);
+    debug!("Time spent on `generate mdBook`: {}", timing.elapsed()?);
 
     Ok(())
 }

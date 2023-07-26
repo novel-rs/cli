@@ -9,7 +9,7 @@ use clap::Args;
 use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
-use tracing::{info, warn};
+use tracing::{debug, warn};
 use walkdir::{DirEntry, WalkDir};
 use zip::{write::FileOptions, CompressionMethod, ZipWriter};
 
@@ -53,7 +53,7 @@ pub fn execute(config: Zip) -> Result<()> {
         utils::remove_file_or_dir(&config.epub_dir_path)?;
     }
 
-    info!("Time spent on `zip`: {}", timing.elapsed()?);
+    debug!("Time spent on `zip`: {}", timing.elapsed()?);
 
     Ok(())
 }

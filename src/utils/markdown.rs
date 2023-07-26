@@ -11,7 +11,7 @@ use pulldown_cmark::{Event, Options, Parser, Tag};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use tracing::info;
+use tracing::debug;
 
 use crate::{
     cmd::Convert,
@@ -66,7 +66,7 @@ where
         let meta_data: MetaData = serde_yaml::from_str(yaml)?;
         let markdown = markdown[index + 3 + LINE_BREAK.len() * 2..].to_string();
 
-        info!("Time spent on `read_markdown`: {}", timing.elapsed()?);
+        debug!("Time spent on `read_markdown`: {}", timing.elapsed()?);
 
         Ok((meta_data, markdown))
     } else {
@@ -120,7 +120,7 @@ where
     if let Err(error) = result {
         bail!("{error:?}")
     } else {
-        info!("Time spent on `to_markdown_events`: {}", timing.elapsed()?);
+        debug!("Time spent on `to_markdown_events`: {}", timing.elapsed()?);
 
         Ok(result.unwrap())
     }

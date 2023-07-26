@@ -5,7 +5,7 @@ use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
 use regex::Regex;
-use tracing::info;
+use tracing::{debug, info};
 
 use crate::{
     cmd::Convert,
@@ -123,7 +123,7 @@ pub fn execute(config: Transform) -> Result<()> {
     }
     fs::write(output_markdown_file_path, buf)?;
 
-    info!("Time spent on `transform`: {}", timing.elapsed()?);
+    debug!("Time spent on `transform`: {}", timing.elapsed()?);
 
     Ok(())
 }

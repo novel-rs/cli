@@ -9,7 +9,7 @@ use clap::Args;
 use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
-use tracing::{info, warn};
+use tracing::{debug, warn};
 use zip::ZipArchive;
 
 use crate::{utils, LANG_ID, LOCALES};
@@ -38,7 +38,7 @@ pub fn execute(config: Unzip) -> Result<()> {
         utils::remove_file_or_dir(&config.epub_path)?;
     }
 
-    info!("Time spent on `unzip`: {}", timing.elapsed()?);
+    debug!("Time spent on `unzip`: {}", timing.elapsed()?);
 
     Ok(())
 }
