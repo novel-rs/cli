@@ -24,7 +24,7 @@ novel-api = { git = "https://github.com/novel-rs/api", default-features = false 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.175", default-features = false, features = [
+serde = { version = "1.0.177", default-features = false, features = [
   "std",
   "derive",
 ] }
