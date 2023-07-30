@@ -1,7 +1,7 @@
 use color_eyre::eyre::Result;
+use dialoguer::{theme::ColorfulTheme, Input, Password};
 use fluent_templates::Loader;
 use novel_api::{Client, Keyring, UserInfo};
-use requestty::Question;
 use tracing::info;
 
 use crate::{cmd::Source, LANG_ID, LOCALES};
@@ -41,24 +41,13 @@ where
 }
 
 fn get_user_name() -> Result<String> {
-    let question = Question::input("user_name")
-        .message(LOCALES.lookup(&LANG_ID, "enter_user_name").unwrap())
-        .build();
-
-    Ok(requestty::prompt_one(question)?
-        .as_string()
-        .unwrap()
-        .to_string())
+    Ok(Input::with_theme(&ColorfulTheme::default())
+        .with_prompt(LOCALES.lookup(&LANG_ID, "enter_user_name").unwrap())
+        .interact_text()?)
 }
 
 fn get_password() -> Result<String> {
-    let question = Question::password("password")
-        .message(LOCALES.lookup(&LANG_ID, "enter_password").unwrap())
-        .mask('*')
-        .build();
-
-    Ok(requestty::prompt_one(question)?
-        .as_string()
-        .unwrap()
-        .to_string())
+    Ok(Password::with_theme(&ColorfulTheme::default())
+        .with_prompt(LOCALES.lookup(&LANG_ID, "enter_password").unwrap())
+        .interact()?)
 }

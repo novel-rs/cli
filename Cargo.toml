@@ -24,7 +24,7 @@ novel-api = { git = "https://github.com/novel-rs/api", default-features = false 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.177", default-features = false, features = [
+serde = { version = "1.0.178", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -117,10 +117,9 @@ comfy-table = { version = "7.0.1", default-features = false, features = [
 ] }
 # https://github.com/atanunq/viuer
 viuer = { version = "0.6.2", default-features = false }
-# https://github.com/Lutetium-Vanadium/requestty
-requestty = { version = "0.5.0", default-features = false, features = [
-  "crossterm",
-  "smallvec",
+# https://github.com/console-rs/dialoguer
+dialoguer = { version = "0.10.4", default-features = false, features = [
+  "password",
 ] }
 # https://github.com/Manishearth/pathdiff
 pathdiff = { version = "0.2.1", default-features = false, features = [
