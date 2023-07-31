@@ -17,14 +17,14 @@ build = "build.rs"
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
-opencc-rs = { git = "https://github.com/novel-rs/opencc-rs", default-features = false }
+opencc-rs = { version = "0.3.2", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { git = "https://github.com/novel-rs/api", default-features = false }
+novel-api = { version = "0.9.0", default-features = false }
 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.178", default-features = false, features = [
+serde = { version = "1.0.179", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -167,7 +167,7 @@ bytesize = { version = "1.2.0", default-features = false }
 # https://github.com/rust-lang/mdBook
 mdbook = { version = "0.4.32", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
-sanitize-filename = { version = "0.4.0", default-features = false }
+sanitize-filename = { version = "0.5.0", default-features = false }
 # https://github.com/magiclen/html-escape
 html-escape = { version = "0.2.13", default-features = false, features = [
   "std",
