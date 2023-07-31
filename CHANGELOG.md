@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2023-07-31
+
+### <!-- 0 -->⛰️ Features
+
+- Improve user name and password enter
+
+### <!-- 2 -->🚜 Refactor
+
+- Modify translation
+- Use dialoguer
+- Change time-consuming log level
+- Use the latest novel-api
+- Use mimalloc
+- Use hashbrown
+
+### <!-- 6 -->🧪 Testing
+
+- Rename some test
+- Improve test parallelism
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- No longer ignore RUSTSEC-2022-0090
+- Update deps
+- Bump tempfile from 3.6.0 to 3.7.0 ([#111](https://github.com/novel-rs/cli/issues/111))
+- Bump serde_yaml from 0.9.24 to 0.9.25 ([#112](https://github.com/novel-rs/cli/issues/112))
+- Bump clap from 4.3.17 to 4.3.19 ([#109](https://github.com/novel-rs/cli/issues/109))
+- Bump serde from 1.0.173 to 1.0.175 ([#110](https://github.com/novel-rs/cli/issues/110))
+- Update deps
+- Bump serde_yaml from 0.9.23 to 0.9.24 ([#106](https://github.com/novel-rs/cli/issues/106))
+- Bump serde_with from 3.0.0 to 3.1.0 ([#107](https://github.com/novel-rs/cli/issues/107))
+- Bump clap from 4.3.12 to 4.3.14 ([#108](https://github.com/novel-rs/cli/issues/108))
+- Update deps
+
 ## [0.4.0] - 2023-07-11
 
 ### <!-- 0 -->⛰️ Features
