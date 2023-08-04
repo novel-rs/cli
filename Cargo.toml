@@ -24,7 +24,7 @@ novel-api = { version = "0.9.0", default-features = false }
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.180", default-features = false, features = [
+serde = { version = "1.0.181", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -104,7 +104,7 @@ clap = { version = "4.3.19", default-features = false, features = [
 # https://github.com/clap-rs/clap
 clap_complete = { version = "4.3.2", default-features = false }
 # https://github.com/console-rs/indicatif
-indicatif = { version = "0.17.5", default-features = false, features = [
+indicatif = { version = "0.17.6", default-features = false, features = [
   "improved_unicode",
 ] }
 # https://github.com/console-rs/console
@@ -165,7 +165,7 @@ memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.2.0", default-features = false }
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.32", default-features = false }
+mdbook = { version = "0.4.33", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.5.0", default-features = false }
 # https://github.com/magiclen/html-escape
