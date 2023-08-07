@@ -232,7 +232,7 @@ assert_cmd = { version = "2.0.12", default-features = false, features = [
   "color-auto",
 ] }
 # https://github.com/Stebalien/tempfile
-tempfile = { version = "3.7.0", default-features = false }
+tempfile = { version = "3.7.1", default-features = false }
 # https://github.com/la10736/rstest
 rstest = { version = "0.18.1", default-features = false }
 # https://github.com/palfrey/serial_test
