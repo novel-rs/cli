@@ -104,11 +104,14 @@ fn version_msg() -> String {
         })
         .display()
         .to_string();
-    let config_dir_path = novel_api::config_dir_path("")
+    let config_dir_path = novel_api::config_dir_path("some-source")
         .unwrap()
         .display()
         .to_string();
-    let data_dir_path = novel_api::data_dir_path("").unwrap().display().to_string();
+    let data_dir_path = novel_api::data_dir_path("some-source")
+        .unwrap()
+        .display()
+        .to_string();
 
     format!(
         "\
