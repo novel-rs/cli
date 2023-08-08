@@ -24,7 +24,7 @@ novel-api = { version = "0.9.0", default-features = false }
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.2", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.181", default-features = false, features = [
+serde = { version = "1.0.183", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -77,7 +77,7 @@ bytes = { version = "1.4.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
 url = { version = "2.4.0", default-features = false }
 # https://github.com/rust-lang/regex
-regex = { version = "1.9.1", default-features = true }
+regex = { version = "1.9.3", default-features = true }
 # https://github.com/image-rs/image
 image = { version = "0.24.6", default-features = false, features = [
   "png",
@@ -87,7 +87,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.3.19", default-features = false, features = [
+clap = { version = "4.3.21", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -165,7 +165,7 @@ memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.2.0", default-features = false }
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.33", default-features = false }
+mdbook = { version = "0.4.34", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.5.0", default-features = false }
 # https://github.com/magiclen/html-escape
@@ -210,7 +210,7 @@ shadow-rs = { version = "0.23.0", default-features = false, features = [
   "tzdb",
 ] }
 # https://github.com/jonasbb/serde_with
-serde_with = { version = "3.1.0", default-features = false, features = [
+serde_with = { version = "3.2.0", default-features = false, features = [
   "std",
   "macros",
 ] }
@@ -232,7 +232,7 @@ assert_cmd = { version = "2.0.12", default-features = false, features = [
   "color-auto",
 ] }
 # https://github.com/Stebalien/tempfile
-tempfile = { version = "3.7.0", default-features = false }
+tempfile = { version = "3.7.1", default-features = false }
 # https://github.com/la10736/rstest
 rstest = { version = "0.18.1", default-features = false }
 # https://github.com/palfrey/serial_test
