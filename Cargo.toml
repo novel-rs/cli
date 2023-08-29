@@ -87,7 +87,7 @@ image = { version = "0.24.6", default-features = false, features = [
   "webp-encoder",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.3.21", default-features = false, features = [
+clap = { version = "4.4.1", default-features = false, features = [
   "std",
   "color",
   "help",
