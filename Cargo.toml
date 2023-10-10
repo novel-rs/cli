@@ -29,7 +29,7 @@ serde = { version = "1.0.183", default-features = false, features = [
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.29.1", default-features = false, features = [
+tokio = { version = "1.33.0", default-features = false, features = [
   "macros",
   "io-std",
   "fs",
