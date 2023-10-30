@@ -82,7 +82,7 @@ jobs:
 
       # https://github.com/TheDoctor0/zip-release
       - name: Archive Release
-        uses: thedoctor0/zip-release@0.7.1
+        uses: thedoctor0/zip-release@0.7.5
         with:
           type: zip
           filename: release.zip
