@@ -12,16 +12,14 @@ jobs:
       matrix:
         include:
           # https://doc.rust-lang.org/rustc/platform-support.html
+          # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             artifact_name: novel-cli
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             artifact_name: novel-cli.exe
-          - os: macos-latest
-            target: x86_64-apple-darwin
-            artifact_name: novel-cli
-          - os: macos-latest
+          - os: macos-14
             target: aarch64-apple-darwin
             artifact_name: novel-cli
 
@@ -31,7 +29,7 @@ jobs:
     steps:
       # https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -82,7 +80,7 @@ jobs:
 
       # https://github.com/TheDoctor0/zip-release
       - name: Archive Release
-        uses: thedoctor0/zip-release@0.7.1
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: zip
           filename: release.zip
@@ -92,7 +90,7 @@ jobs:
       # https://github.com/orhun/git-cliff-action
       - name: Generate changelog
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: orhun/git-cliff-action@v2
+        uses: orhun/git-cliff-action@v3
         id: git-cliff
         with:
           args: --latest --strip header

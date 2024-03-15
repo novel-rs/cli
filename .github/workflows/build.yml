@@ -24,13 +24,12 @@ jobs:
       matrix:
         include:
           # https://doc.rust-lang.org/rustc/platform-support.html
+          # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-          - os: macos-latest
-            target: x86_64-apple-darwin
-          - os: macos-latest
+          - os: macos-14
             target: aarch64-apple-darwin
 
     name: Build for ${{ matrix.os }}-${{ matrix.target }}
@@ -39,7 +38,7 @@ jobs:
     steps:
       # https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # https://github.com/Swatinem/rust-cache
       - name: Cache
@@ -54,7 +53,6 @@ jobs:
 
       # https://github.com/taiki-e/install-action
       - name: Install cargo-nextest
-        if: ${{ startsWith(matrix.target, 'x86_64') }}
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-nextest
@@ -62,7 +60,7 @@ jobs:
       - name: Install pandoc for Linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
-          curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.5/pandoc-3.1.5-1-amd64.deb -o pandoc.deb
+          curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.12.2/pandoc-3.1.12.2-1-amd64.deb -o pandoc.deb
           sudo dpkg -i pandoc.deb
 
       - name: Install pandoc for Windows
@@ -77,5 +75,4 @@ jobs:
         run: cargo build --workspace --all-targets --target ${{ matrix.target }}
 
       - name: Run cargo-nextest
-        if: ${{ startsWith(matrix.target, 'x86_64') }}
         run: cargo nextest run --workspace --all-targets --target ${{ matrix.target }}

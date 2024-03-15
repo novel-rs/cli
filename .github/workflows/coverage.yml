@@ -28,7 +28,7 @@ jobs:
     steps:
       # https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # https://github.com/Swatinem/rust-cache
       - name: Cache
@@ -49,7 +49,7 @@ jobs:
 
       - name: Install pandoc
         run: |
-          curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.5/pandoc-3.1.5-1-amd64.deb -o pandoc.deb
+          curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.12.2/pandoc-3.1.12.2-1-amd64.deb -o pandoc.deb
           sudo dpkg -i pandoc.deb
 
       - name: Run cargo-nextest
@@ -63,7 +63,8 @@ jobs:
 
       # https://github.com/codecov/codecov-action
       - name: Upload to codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: lcov.info
-          fail_ci_if_error: false
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
