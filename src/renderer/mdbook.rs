@@ -258,7 +258,7 @@ where
     let mut chapter_count = 1;
 
     let mut handles = Vec::new();
-    let semaphore = Arc::new(Semaphore::new(num_cpus::get()));
+    let semaphore = Arc::new(Semaphore::new(utils::maximum_concurrency()));
 
     for volume in &novel.volumes {
         let volume_path = src_path.join(format!("volume{}", utils::num_to_str(volume_count)));
@@ -342,7 +342,7 @@ where
     fs::create_dir_all(&image_path).await?;
 
     let mut handles = Vec::new();
-    let semaphore = Arc::new(Semaphore::new(num_cpus::get()));
+    let semaphore = Arc::new(Semaphore::new(utils::maximum_concurrency()));
 
     for volume in novel.volumes {
         for chapter in volume.chapters {

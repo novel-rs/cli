@@ -18,13 +18,13 @@ use crate::{utils, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "zip_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "zip_command"))]
 pub struct Zip {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "epub_dir_path").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "epub_dir_path"))]
     pub epub_dir_path: PathBuf,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "delete"))]
     pub delete: bool,
 }
 

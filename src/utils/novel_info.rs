@@ -62,47 +62,61 @@ where
         utils::convert_str(&novel_info.author_name, converts)?
     );
 
-    println!(
-        "{}：{}",
-        utils::convert_str("类型", converts)?,
-        utils::convert_str(try_get_category(&novel_info), converts)?
-    );
+    if novel_info.category.is_some() {
+        println!(
+            "{}：{}",
+            utils::convert_str("类型", converts)?,
+            utils::convert_str(try_get_category(&novel_info), converts)?
+        );
+    }
 
-    println!(
-        "{}：{}",
-        utils::convert_str("标签", converts)?,
-        utils::convert_str(try_get_tags(&novel_info), converts)?
-    );
+    if novel_info.tags.is_some() {
+        println!(
+            "{}：{}",
+            utils::convert_str("标签", converts)?,
+            utils::convert_str(try_get_tags(&novel_info), converts)?
+        );
+    }
 
-    println!(
-        "{}：{}",
-        utils::convert_str("字数", converts)?,
-        utils::convert_str(try_get_word_count(&novel_info), converts)?
-    );
+    if novel_info.word_count.is_some() {
+        println!(
+            "{}：{}",
+            utils::convert_str("字数", converts)?,
+            utils::convert_str(try_get_word_count(&novel_info), converts)?
+        );
+    }
 
-    println!(
-        "{}：{}",
-        utils::convert_str("状态", converts)?,
-        utils::convert_str(try_get_is_finished(&novel_info), converts)?
-    );
+    if novel_info.is_finished.is_some() {
+        println!(
+            "{}：{}",
+            utils::convert_str("状态", converts)?,
+            utils::convert_str(try_get_is_finished(&novel_info), converts)?
+        );
+    }
 
-    println!(
-        "{}：{}",
-        utils::convert_str("创建时间", converts)?,
-        try_get_create_time(&novel_info)
-    );
+    if novel_info.create_time.is_some() {
+        println!(
+            "{}：{}",
+            utils::convert_str("创建时间", converts)?,
+            try_get_create_time(&novel_info)
+        );
+    }
 
-    println!(
-        "{}：{}",
-        utils::convert_str("更新时间", converts)?,
-        try_get_update_time(&novel_info)
-    );
+    if novel_info.update_time.is_some() {
+        println!(
+            "{}：{}",
+            utils::convert_str("更新时间", converts)?,
+            try_get_update_time(&novel_info)
+        );
+    }
 
-    println!(
-        "{}：{}",
-        utils::convert_str("简介", converts)?,
-        utils::convert_str(try_get_introduction(&novel_info), converts)?
-    );
+    if novel_info.introduction.is_some() {
+        println!(
+            "{}：{}",
+            utils::convert_str("简介", converts)?,
+            utils::convert_str(try_get_introduction(&novel_info), converts)?
+        );
+    }
 
     Ok(())
 }

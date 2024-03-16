@@ -4,7 +4,7 @@ use std::sync::Arc;
 use clap::{value_parser, Args};
 use color_eyre::eyre::{Report, Result};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, NovelInfo, SfacgClient};
+use novel_api::{CiweimaoClient, CiyuanjiClient, Client, NovelInfo, SfacgClient};
 use tokio::sync::Semaphore;
 use tracing::error;
 use url::Url;
@@ -14,30 +14,30 @@ use crate::{utils, LANG_ID, LOCALES};
 
 #[must_use]
 #[derive(Args)]
-#[command(about = LOCALES.lookup(&LANG_ID, "bookshelf_command").unwrap())]
+#[command(about = LOCALES.lookup(&LANG_ID, "bookshelf_command"))]
 pub struct Bookshelf {
     #[arg(short, long,
-        help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "source"))]
     pub source: Source,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "converts"))]
     pub converts: Vec<Convert>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "ignore_keyring"))]
     pub ignore_keyring: bool,
 
     #[arg(short, long, default_value_t = 8, value_parser = value_parser!(u8).range(1..=8),
-        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency"))]
     pub maximum_concurrency: u8,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
-        help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "proxy"))]
     pub proxy: Option<Url>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "no_proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "no_proxy"))]
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
@@ -50,12 +50,20 @@ pub async fn execute(config: Bookshelf) -> Result<()> {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            do_execute(client, config).await?
+            utils::log_in(&client, &config.source, config.ignore_keyring).await?;
+            do_execute(client, config).await?;
         }
         Source::Ciweimao => {
             let mut client = CiweimaoClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            do_execute(client, config).await?
+            utils::log_in(&client, &config.source, config.ignore_keyring).await?;
+            do_execute(client, config).await?;
+        }
+        Source::Ciyuanji => {
+            let mut client = CiyuanjiClient::new().await?;
+            super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            utils::log_in_without_password(&client).await?;
+            do_execute(client, config).await?;
         }
     }
 
@@ -66,7 +74,6 @@ async fn do_execute<T>(client: T, config: Bookshelf) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    utils::login(&client, &config.source, config.ignore_keyring).await?;
     let novel_ids = client.bookshelf_infos().await?;
 
     let mut novel_infos = Vec::new();
@@ -91,10 +98,10 @@ where
     for handle in handles {
         let novel_info = handle.await??;
 
-        if novel_info.is_none() {
-            error!("The novel does not exist, and it may have been taken down");
+        if let Some(info) = novel_info {
+            novel_infos.push(info);
         } else {
-            novel_infos.push(novel_info.unwrap());
+            error!("The novel does not exist, and it may have been taken down");
         }
     }
 

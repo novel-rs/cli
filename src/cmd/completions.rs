@@ -12,10 +12,10 @@ use crate::{config::Config, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "completions_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "completions_command"))]
 pub struct Completions {
     #[arg(value_enum,
-        help = LOCALES.lookup(&LANG_ID, "shell").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "shell"))]
     pub shell: Shell,
 }
 

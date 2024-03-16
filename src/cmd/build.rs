@@ -17,17 +17,17 @@ use crate::{
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "build_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "build_command"))]
 pub struct Build {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "build_path").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "build_path"))]
     pub build_path: PathBuf,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "delete"))]
     pub delete: bool,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "open").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "open"))]
     pub open: bool,
 }
 

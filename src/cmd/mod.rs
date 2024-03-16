@@ -33,6 +33,8 @@ pub enum Source {
     Sfacg,
     #[strum(serialize = "ciweimao")]
     Ciweimao,
+    #[strum(serialize = "ciyuanji")]
+    Ciyuanji,
 }
 
 #[must_use]
@@ -76,7 +78,7 @@ where
     }
 
     if let Some(cert) = cert {
-        client.cert(cert)
+        client.cert(cert.as_ref().to_path_buf())
     }
 }
 
@@ -103,5 +105,5 @@ fn cert_help_msg() -> String {
         map
     };
 
-    LOCALES.lookup_with_args(&LANG_ID, "cert", &args).unwrap()
+    LOCALES.lookup_with_args(&LANG_ID, "cert", &args)
 }

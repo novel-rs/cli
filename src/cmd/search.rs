@@ -3,7 +3,9 @@ use std::{path::PathBuf, sync::Arc};
 use clap::{value_parser, Args};
 use color_eyre::eyre::{bail, Report, Result};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, NovelInfo, Options, SfacgClient, Tag, WordCountRange};
+use novel_api::{
+    CiweimaoClient, CiyuanjiClient, Client, NovelInfo, Options, SfacgClient, Tag, WordCountRange,
+};
 use tokio::sync::Semaphore;
 use tracing::debug;
 use url::Url;
@@ -16,77 +18,71 @@ use crate::{
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "search_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "search_command"))]
 pub struct Search {
     #[arg(short, long,
-        help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "source"))]
     pub source: Source,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "show_categories").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "show_categories"))]
     pub show_categories: bool,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "show_tags").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "show_tags"))]
     pub show_tags: bool,
 
-    #[arg(help = LOCALES.lookup(&LANG_ID, "keyword").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "keyword"))]
     pub keyword: Option<String>,
 
-    #[arg(long, conflicts_with = "keyword",
-        help = LOCALES.lookup(&LANG_ID, "min_word_count").unwrap())]
+    #[arg(long, help = LOCALES.lookup(&LANG_ID, "min_word_count"))]
     pub min_word_count: Option<u32>,
 
-    #[arg(long, conflicts_with = "keyword",
-        help = LOCALES.lookup(&LANG_ID, "max_word_count").unwrap())]
+    #[arg(long, help = LOCALES.lookup(&LANG_ID, "max_word_count"))]
     pub max_word_count: Option<u32>,
 
-    #[arg(long, conflicts_with = "keyword",
-        help = LOCALES.lookup(&LANG_ID, "update_days").unwrap())]
+    #[arg(long, help = LOCALES.lookup(&LANG_ID, "update_days"))]
     pub update_days: Option<u8>,
 
-    #[arg(long, conflicts_with = "keyword",
-        help = LOCALES.lookup(&LANG_ID, "is_finished").unwrap())]
+    #[arg(long, help = LOCALES.lookup(&LANG_ID, "is_finished"))]
     pub is_finished: Option<bool>,
 
-    #[arg(long, conflicts_with = "keyword",
-        help = LOCALES.lookup(&LANG_ID, "is_vip").unwrap())]
+    #[arg(long, help = LOCALES.lookup(&LANG_ID, "is_vip"))]
     pub is_vip: Option<bool>,
 
-    #[arg(long, conflicts_with = "keyword",
-        help = LOCALES.lookup(&LANG_ID, "category").unwrap())]
+    #[arg(long, help = LOCALES.lookup(&LANG_ID, "category"))]
     pub category: Option<String>,
 
-    #[arg(long, conflicts_with = "keyword", value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "tags").unwrap())]
+    #[arg(long, value_delimiter = ',',
+        help = LOCALES.lookup(&LANG_ID, "tags"))]
     pub tags: Vec<String>,
 
-    #[arg(long, conflicts_with = "keyword", value_delimiter = ',',
-    help = LOCALES.lookup(&LANG_ID, "excluded_tags").unwrap())]
+    #[arg(long, value_delimiter = ',',
+    help = LOCALES.lookup(&LANG_ID, "excluded_tags"))]
     pub excluded_tags: Vec<String>,
 
     #[arg(long, default_value_t = 10, value_parser = value_parser!(u8).range(1..=100),
-      help = LOCALES.lookup(&LANG_ID, "limit").unwrap())]
+      help = LOCALES.lookup(&LANG_ID, "limit"))]
     pub limit: u8,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "converts"))]
     pub converts: Vec<Convert>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "ignore_keyring"))]
     pub ignore_keyring: bool,
 
     #[arg(short, long, default_value_t = 8, value_parser = value_parser!(u8).range(1..=8),
-    help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
+    help = LOCALES.lookup(&LANG_ID, "maximum_concurrency"))]
     pub maximum_concurrency: u8,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
-        help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "proxy"))]
     pub proxy: Option<Url>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "no_proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "no_proxy"))]
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
@@ -99,13 +95,18 @@ pub async fn execute(config: Search) -> Result<()> {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            do_execute(client, config).await?
+            do_execute(client, config).await?;
         }
         Source::Ciweimao => {
             let mut client = CiweimaoClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            utils::login(&client, &config.source, config.ignore_keyring).await?;
-            do_execute(client, config).await?
+            utils::log_in(&client, &config.source, config.ignore_keyring).await?;
+            do_execute(client, config).await?;
+        }
+        Source::Ciyuanji => {
+            let mut client = CiyuanjiClient::new().await?;
+            super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            do_execute(client, config).await?;
         }
     }
 
@@ -130,29 +131,21 @@ where
         let size = 10;
         let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
 
-        let mut options = None;
-        if config.keyword.is_none() {
-            options = Some(create_options(&client, &config).await?);
-            debug!("{:#?}", options)
-        }
+        let options = create_options(&client, &config).await?;
+        debug!("{:#?}", options);
 
         let mut novel_infos = Vec::new();
         loop {
-            let novel_ids = if config.keyword.is_some() {
-                client
-                    .search_infos(config.keyword.as_ref().unwrap(), page, size)
-                    .await?
-            } else {
-                client.novels(options.as_ref().unwrap(), page, size).await?
-            };
-            if novel_ids.is_empty() {
+            let novel_ids = client.search_infos(&options, page, size).await?;
+
+            if novel_ids.is_none() {
                 break;
             }
 
             page += 1;
 
             let mut handles = Vec::new();
-            for novel_id in novel_ids {
+            for novel_id in novel_ids.unwrap() {
                 let client = Arc::clone(&client);
                 let permit = semaphore.clone().acquire_owned().await.unwrap();
 
@@ -189,6 +182,7 @@ where
     T: Client,
 {
     let mut options = Options {
+        keyword: config.keyword.clone(),
         is_finished: config.is_finished,
         is_vip: config.is_vip,
         update_days: config.update_days,

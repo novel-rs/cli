@@ -26,13 +26,13 @@ use crate::{
 
 #[must_use]
 #[derive(Args)]
-#[command(about = LOCALES.lookup(&LANG_ID, "real_cugan_command").unwrap())]
+#[command(about = LOCALES.lookup(&LANG_ID, "real_cugan_command"))]
 pub struct RealCugan {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "image_path").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "image_path"))]
     pub image_path: Option<PathBuf>,
 
-    #[arg(short, long, default_value_t = num_cpus::get(),
-        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
+    #[arg(short, long, default_value_t = utils::maximum_concurrency(),
+        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency"))]
     pub maximum_concurrency: usize,
 }
 

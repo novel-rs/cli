@@ -3,7 +3,7 @@ use std::{path::PathBuf, sync::Arc};
 use clap::{value_parser, Args};
 use color_eyre::eyre::{bail, Result};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, Client, ContentInfo, SfacgClient, VolumeInfos};
+use novel_api::{CiweimaoClient, CiyuanjiClient, Client, ContentInfo, SfacgClient, VolumeInfos};
 use tokio::{
     sync::{RwLock, Semaphore},
     task::JoinHandle,
@@ -21,37 +21,37 @@ use crate::{
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "download_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "download_command"))]
 pub struct Download {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "novel_id").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "novel_id"))]
     pub novel_id: u32,
 
     #[arg(short, long,
-        help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "source"))]
     pub source: Source,
 
     #[arg(short, long, value_enum,
-        help = LOCALES.lookup(&LANG_ID, "format").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "format"))]
     pub format: Format,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "converts"))]
     pub converts: Vec<Convert>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "ignore_keyring"))]
     pub ignore_keyring: bool,
 
     #[arg(short, long, default_value_t = 4, value_parser = value_parser!(u8).range(1..=8),
-        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "maximum_concurrency"))]
     pub maximum_concurrency: u8,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
-        help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "proxy"))]
     pub proxy: Option<Url>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "no_proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "no_proxy"))]
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
@@ -59,7 +59,7 @@ pub struct Download {
     pub cert: Option<PathBuf>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "skip_login").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "skip_login"))]
     pub skip_login: bool,
 }
 
@@ -70,12 +70,17 @@ pub async fn execute(config: Download) -> Result<()> {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            do_execute(client, config).await?
+            do_execute(client, config).await?;
         }
         Source::Ciweimao => {
             let mut client = CiweimaoClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            do_execute(client, config).await?
+            do_execute(client, config).await?;
+        }
+        Source::Ciyuanji => {
+            let mut client = CiyuanjiClient::new().await?;
+            super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            do_execute(client, config).await?;
         }
     }
 
@@ -97,13 +102,16 @@ where
     T: Client + Send + Sync + 'static,
 {
     if !config.skip_login {
-        let mut user_info = utils::login(&client, &config.source, config.ignore_keyring).await?;
-        if user_info.is_none() {
-            user_info = client.user_info().await?;
+        if matches!(config.source, Source::Ciyuanji) {
+            utils::log_in_without_password(&client).await?;
+        } else {
+            utils::log_in(&client, &config.source, config.ignore_keyring).await?;
         }
+
+        let user_info = client.user_info().await?;
         println!(
             "{}",
-            utils::locales_with_arg("login_msg", "✨", user_info.unwrap().nickname)
+            utils::locales_with_arg("login_msg", "✨", user_info.nickname)
         );
     }
 
@@ -160,6 +168,7 @@ where
         utils::locales_with_arg("start_msg", "🚚", &novel.name)
     );
     let volume_infos = client.volume_infos(config.novel_id).await?;
+    let volume_infos = volume_infos.unwrap_or_else(|| todo!());
 
     let pb = ProgressBar::new(chapter_count(&volume_infos))?;
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));

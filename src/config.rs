@@ -32,16 +32,16 @@ pub struct Config {
     pub command: Commands,
 
     #[arg(long, value_enum, global = true,
-        help = LOCALES.lookup(&LANG_ID, "backtrace").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "backtrace"))]
     pub backtrace: Option<Backtrace>,
 
     #[arg(short, long, action = ArgAction::Count, global = true, default_value_t = 0,
         value_parser = value_parser!(u8).range(0..=4),
-        help = LOCALES.lookup(&LANG_ID, "verbose").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "verbose"))]
     pub verbose: u8,
 
     #[arg(short, long, global = true, conflicts_with = "verbose", default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "quiet").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "quiet"))]
     pub quiet: bool,
 }
 

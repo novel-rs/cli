@@ -17,9 +17,9 @@ use crate::{
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "check_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "check_command"))]
 pub struct Check {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path"))]
     pub markdown_path: PathBuf,
 }
 

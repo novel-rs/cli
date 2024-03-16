@@ -1,4 +1,5 @@
 mod check;
+mod concurrency;
 mod convert;
 mod current_dir;
 mod image;
@@ -13,6 +14,7 @@ mod writer;
 
 pub use self::image::*;
 pub use check::*;
+pub use concurrency::*;
 pub use convert::*;
 pub use current_dir::*;
 pub use line_break::*;
@@ -135,9 +137,7 @@ where
         map
     };
 
-    LOCALES
-        .lookup_with_args(&LANG_ID, name.as_ref(), &args)
-        .unwrap()
+    LOCALES.lookup_with_args(&LANG_ID, name.as_ref(), &args)
 }
 
 #[must_use]
@@ -154,9 +154,7 @@ where
         map
     };
 
-    LOCALES
-        .lookup_with_args(&LANG_ID, name.as_ref(), &args)
-        .unwrap()
+    LOCALES.lookup_with_args(&LANG_ID, name.as_ref(), &args)
 }
 
 #[must_use]

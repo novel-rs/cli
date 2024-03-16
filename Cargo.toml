@@ -2,7 +2,7 @@
 name = "novel-cli"
 version = "0.5.0"
 edition = "2021"
-rust-version = "1.70"
+rust-version = "1.75"
 license = "MIT OR Apache-2.0"
 authors = ["Terakomari <im.terakomari@icloud.com>"]
 repository = "https://github.com/novel-rs/cli"
@@ -17,21 +17,21 @@ build = "build.rs"
 
 [dependencies]
 # https://github.com/novel-rs/opencc-rs
-opencc-rs = { version = "0.3.2", default-features = false }
+opencc-rs = { git = "https://github.com/novel-rs/opencc-rs", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { version = "0.9.0", default-features = false }
+novel-api = { git = "https://github.com/novel-rs/api", default-features = false }
 
 # https://github.com/yaahc/color-eyre
-color-eyre = { version = "0.6.2", default-features = false }
+color-eyre = { version = "0.6.3", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.183", default-features = false, features = [
+serde = { version = "1.0.197", default-features = false, features = [
   "std",
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.29.1", default-features = false, features = [
+tokio = { version = "1.36.0", default-features = false, features = [
   "macros",
-  "io-std",
+  "io-util",
   "fs",
   "sync",
   "process",
@@ -39,25 +39,26 @@ tokio = { version = "1.29.1", default-features = false, features = [
   "rt-multi-thread",
 ] }
 # https://github.com/SchrodingerZhu/snmalloc-rs
-snmalloc-rs = { version = "0.3.4", default-features = true }
+# default-features for snmalloc-sys/build_cmake
+snmalloc-rs = { version = "0.3.5", default-features = true, features = ["lto"] }
 # https://github.com/rust-lang/hashbrown
-hashbrown = { version = "0.14.0", default-features = false, features = [
+hashbrown = { version = "0.14.3", default-features = false, features = [
   "ahash",
   "inline-more",
 ] }
 # https://github.com/matklad/once_cell
-once_cell = { version = "1.18.0", default-features = false, features = ["std"] }
+once_cell = { version = "1.19.0", default-features = false, features = ["std"] }
 # https://github.com/rusticstuff/simdutf8
 simdutf8 = { version = "0.1.4", default-features = false, features = [
   "std",
   "aarch64_neon",
 ] }
 # https://github.com/rayon-rs/rayon
-rayon = { version = "1.7.0", default-features = false }
+rayon = { version = "1.9.0", default-features = false }
 # https://github.com/tokio-rs/tracing
-tracing = { version = "0.1.37", default-features = false, features = ["std"] }
+tracing = { version = "0.1.40", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/tracing
-tracing-subscriber = { version = "0.3.17", default-features = false, features = [
+tracing-subscriber = { version = "0.3.18", default-features = false, features = [
   "std",
   "fmt",
   "ansi",
@@ -66,28 +67,29 @@ tracing-subscriber = { version = "0.3.17", default-features = false, features = 
   "smallvec",
 ] }
 # https://github.com/tokio-rs/tracing
-tracing-log = { version = "0.1.3", default-features = false, features = [
+tracing-log = { version = "0.2.0", default-features = false, features = [
   "std",
   "log-tracer",
 ] }
 # https://github.com/rust-lang/libc
-libc = { version = "0.2.147", default-features = false, features = ["std"] }
+libc = { version = "0.2.153", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
-bytes = { version = "1.4.0", default-features = false, features = ["std"] }
+bytes = { version = "1.5.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
-url = { version = "2.4.0", default-features = false }
+url = { version = "2.5.0", default-features = false }
 # https://github.com/rust-lang/regex
-regex = { version = "1.9.3", default-features = true }
+# default-features for std, perf, unicode regex-syntax/default
+regex = { version = "1.10.3", default-features = true }
+# pin for viuer
 # https://github.com/image-rs/image
-image = { version = "0.24.6", default-features = false, features = [
+image = { version = "=0.24", default-features = false, features = [
   "png",
   "jpeg",
-  "jpeg_rayon",
   "webp",
-  "webp-encoder",
+  "jpeg_rayon",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.3.21", default-features = false, features = [
+clap = { version = "4.5.3", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -99,26 +101,25 @@ clap = { version = "4.3.21", default-features = false, features = [
   "wrap_help",
   "unicode",
   "string",
-  "unstable-styles",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.3.2", default-features = false }
+clap_complete = { version = "4.5.1", default-features = false }
 # https://github.com/console-rs/indicatif
-indicatif = { version = "0.17.6", default-features = false, features = [
+indicatif = { version = "0.17.8", default-features = false, features = [
   "improved_unicode",
 ] }
 # https://github.com/console-rs/console
-console = { version = "0.15.7", default-features = false, features = [
+console = { version = "0.15.8", default-features = false, features = [
   "unicode-width",
 ] }
 # https://github.com/nukesor/comfy-table
-comfy-table = { version = "7.0.1", default-features = false, features = [
+comfy-table = { version = "7.1.0", default-features = false, features = [
   "tty",
 ] }
 # https://github.com/atanunq/viuer
-viuer = { version = "0.6.2", default-features = false }
+viuer = { version = "0.7.1", default-features = false }
 # https://github.com/console-rs/dialoguer
-dialoguer = { version = "0.10.4", default-features = false, features = [
+dialoguer = { version = "0.11.0", default-features = false, features = [
   "password",
 ] }
 # https://github.com/Manishearth/pathdiff
@@ -126,46 +127,51 @@ pathdiff = { version = "0.2.1", default-features = false, features = [
   "camino",
 ] }
 # https://github.com/BurntSushi/walkdir
-walkdir = { version = "2.3.3", default-features = false }
+walkdir = { version = "2.5.0", default-features = false }
 # https://github.com/webdesus/fs_extra
 fs_extra = { version = "1.3.0", default-features = false }
 # https://github.com/Byron/trash-rs
-trash = { version = "3.0.6", default-features = false, features = [
+# See https://learn.microsoft.com/en-us/windows/win32/api/objbase/ne-objbase-coinit
+trash = { version = "4.0.0", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Byron/open-rs
-open = { version = "5.0.0", default-features = false }
+open = { version = "5.1.2", default-features = false, features = [
+  "shellexecute-on-windows",
+] }
 # https://github.com/dtolnay/serde-yaml
-serde_yaml = { version = "0.9.25", default-features = false }
+serde_yaml = { version = "0.9.32", default-features = false }
 # https://github.com/toml-rs/toml
-toml = { version = "0.7.6", default-features = false, features = ["display"] }
+toml = { version = "0.8.11", default-features = false, features = ["display"] }
+# pin for pulldown-cmark-to-cmark
 # https://github.com/raphlinus/pulldown-cmark
-pulldown-cmark = { version = "0.9.3", default-features = false, features = [
+pulldown-cmark = { version = "=0.9", default-features = false, features = [
   "simd",
 ] }
 # https://github.com/Byron/pulldown-cmark-to-cmark
-pulldown-cmark-to-cmark = { version = "10.0.4", default-features = false }
+pulldown-cmark-to-cmark = { version = "11.2.0", default-features = false }
 # https://github.com/zip-rs/zip
 zip = { version = "0.6.6", default-features = false, features = [
   "deflate",
   "time",
 ] }
 # https://github.com/1Password/sys-locale
-sys-locale = { version = "0.3.0", default-features = false }
+sys-locale = { version = "0.3.1", default-features = false }
 # https://github.com/zbraniecki/unic-locale
-unic-langid = { version = "0.9.1", default-features = false }
+unic-langid = { version = "0.9.4", default-features = false }
 # https://github.com/XAMPPRocky/fluent-templates
-fluent-templates = { version = "0.8.0", default-features = false, features = [
+fluent-templates = { version = "0.9.1", default-features = false, features = [
   "macros",
+  "use-ignore",
 ] }
 # https://github.com/bojand/infer
 infer = { version = "0.15.0", default-features = false, features = ["std"] }
 # https://github.com/Arc-blroth/memory-stats
 memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
-bytesize = { version = "1.2.0", default-features = false }
+bytesize = { version = "1.3.0", default-features = false }
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.34", default-features = false }
+mdbook = { version = "0.4.37", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.5.0", default-features = false }
 # https://github.com/magiclen/html-escape
@@ -173,13 +179,12 @@ html-escape = { version = "0.2.13", default-features = false, features = [
   "std",
 ] }
 # https://github.com/Peternator7/strum
-strum = { version = "0.25.0", default-features = false, features = [
+strum = { version = "0.26.2", default-features = false, features = [
   "std",
   "derive",
 ] }
 # https://github.com/jaemk/self_update
-self_update = { version = "0.37.0", default-features = false, features = [
-  "archive-zip",
+self_update = { version = "0.39.0", default-features = false, features = [
   "compression-zip-deflate",
   "rustls",
 ] }
@@ -188,36 +193,31 @@ cursive = { version = "0.20.0", default-features = false, features = [
   "crossterm-backend",
 ] }
 # https://github.com/rust-lang/futures-rs
-futures = { version = "0.3.28", default-features = false, features = [
+futures = { version = "0.3.30", default-features = false, features = [
   "std",
   "executor",
 ] }
 # https://github.com/zkat/supports-color
-supports-color = { version = "2.0.0", default-features = false }
+supports-color = { version = "3.0.0", default-features = false }
 # https://github.com/harryfei/which-rs
-which = { version = "4.4.0", default-features = false }
+which = { version = "6.0.0", default-features = false }
 # https://gitlab.com/kornelski/dunce
 dunce = { version = "1.0.4", default-features = false }
 # https://github.com/BurntSushi/memchr
-memchr = { version = "2.5.0", default-features = false, features = ["std"] }
-# https://github.com/seanmonstar/num_cpus
-num_cpus = { version = "1.16.0", default-features = false }
+memchr = { version = "2.7.1", default-features = false, features = ["std"] }
 # https://github.com/stanislav-tkach/os_info
-os_info = { version = "3.7.0", default-features = false }
+os_info = { version = "3.8.0", default-features = false }
 # https://github.com/baoyachi/shadow-rs
-shadow-rs = { version = "0.23.0", default-features = false, features = [
-  "git2",
-  "tzdb",
-] }
+shadow-rs = { version = "0.27.1", default-features = false }
 # https://github.com/jonasbb/serde_with
-serde_with = { version = "3.2.0", default-features = false, features = [
+serde_with = { version = "3.7.0", default-features = false, features = [
   "std",
   "macros",
 ] }
 
 [build-dependencies]
 # https://github.com/baoyachi/shadow-rs
-shadow-rs = { version = "0.23.0", default-features = false, features = [
+shadow-rs = { version = "0.27.1", default-features = false, features = [
   "git2",
   "tzdb",
 ] }
@@ -228,15 +228,15 @@ pretty_assertions = { version = "1.4.0", default-features = false, features = [
   "std",
 ] }
 # https://github.com/assert-rs/assert_cmd
-assert_cmd = { version = "2.0.12", default-features = false, features = [
-  "color-auto",
+assert_cmd = { version = "2.0.14", default-features = false, features = [
+  "color",
 ] }
 # https://github.com/Stebalien/tempfile
-tempfile = { version = "3.7.1", default-features = false }
+tempfile = { version = "3.10.1", default-features = false }
 # https://github.com/la10736/rstest
-rstest = { version = "0.18.1", default-features = false }
+rstest = { version = "0.18.2", default-features = false }
 # https://github.com/palfrey/serial_test
-serial_test = { version = "2.0.0", default-features = false, features = [
+serial_test = { version = "3.0.0", default-features = false, features = [
   "file_locks",
 ] }
 
@@ -246,5 +246,6 @@ lto = true
 codegen-units = 1
 panic = 'abort'
 
+# https://github.com/eyre-rs/color-eyre?tab=readme-ov-file#improving-perf-on-debug-builds
 [profile.dev.package.backtrace]
 opt-level = 3

@@ -16,17 +16,17 @@ use crate::{
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "transform_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "transform_command"))]
 pub struct Transform {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path"))]
     pub markdown_path: PathBuf,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "converts"))]
     pub converts: Vec<Convert>,
 
     #[arg(short, long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "delete").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "delete"))]
     pub delete: bool,
 }
 

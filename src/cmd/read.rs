@@ -12,7 +12,7 @@ use cursive::views::{
 use cursive::{Cursive, CursiveRunnable, With};
 use fluent_templates::Loader;
 use futures::executor;
-use novel_api::{ChapterInfo, CiweimaoClient, Client, ContentInfo, SfacgClient};
+use novel_api::{ChapterInfo, CiweimaoClient, CiyuanjiClient, Client, ContentInfo, SfacgClient};
 use url::Url;
 
 use crate::cmd::{Convert, Source};
@@ -21,29 +21,29 @@ use crate::{utils, LANG_ID, LOCALES};
 #[must_use]
 #[derive(Args)]
 #[command(arg_required_else_help = true,
-    about = LOCALES.lookup(&LANG_ID, "read_command").unwrap())]
+    about = LOCALES.lookup(&LANG_ID, "read_command"))]
 pub struct Read {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "novel_id").unwrap())]
+    #[arg(help = LOCALES.lookup(&LANG_ID, "novel_id"))]
     pub novel_id: u32,
 
     #[arg(short, long,
-        help = LOCALES.lookup(&LANG_ID, "source").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "source"))]
     pub source: Source,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
-        help = LOCALES.lookup(&LANG_ID, "converts").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "converts"))]
     pub converts: Vec<Convert>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "ignore_keyring").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "ignore_keyring"))]
     pub ignore_keyring: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
-        help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "proxy"))]
     pub proxy: Option<Url>,
 
     #[arg(long, default_value_t = false,
-        help = LOCALES.lookup(&LANG_ID, "no_proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "no_proxy"))]
     pub no_proxy: bool,
 
     #[arg(long, num_args = 0..=1, default_missing_value = super::default_cert_path(),
@@ -56,12 +56,20 @@ pub async fn execute(config: Read) -> Result<()> {
         Source::Sfacg => {
             let mut client = SfacgClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            do_execute(client, config).await?
+            utils::log_in(&client, &config.source, config.ignore_keyring).await?;
+            do_execute(client, config).await?;
         }
         Source::Ciweimao => {
             let mut client = CiweimaoClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
-            do_execute(client, config).await?
+            utils::log_in(&client, &config.source, config.ignore_keyring).await?;
+            do_execute(client, config).await?;
+        }
+        Source::Ciyuanji => {
+            let mut client = CiyuanjiClient::new().await?;
+            super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            utils::log_in_without_password(&client).await?;
+            do_execute(client, config).await?;
         }
     }
 
@@ -76,8 +84,6 @@ async fn do_execute<T>(client: T, config: Read) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    utils::login(&client, &config.source, config.ignore_keyring).await?;
-
     let client = Arc::new(client);
     super::handle_ctrl_c(&client);
 
@@ -88,7 +94,10 @@ where
     let mut select = SelectView::new();
     let select_width = (viuer::terminal_size().0 / 3) as usize;
 
-    for volume in client.volume_infos(config.novel_id).await? {
+    let volume_infos = client.volume_infos(config.novel_id).await?;
+    let volume_infos = volume_infos.unwrap_or_else(|| todo!());
+
+    for volume in volume_infos {
         let volume_title = utils::convert_str(volume.title, &config.converts)?;
         select.add_item(
             console::truncate_str(&volume_title, select_width, "..."),
@@ -126,13 +135,11 @@ where
                     });
                 } else {
                     s.add_layer(create_dialog(
-                        LOCALES.lookup(&LANG_ID, "download_failed_msg").unwrap(),
+                        LOCALES.lookup(&LANG_ID, "download_failed_msg"),
                     ));
                 }
             } else {
-                s.add_layer(create_dialog(
-                    LOCALES.lookup(&LANG_ID, "inaccessible_msg").unwrap(),
-                ));
+                s.add_layer(create_dialog(LOCALES.lookup(&LANG_ID, "inaccessible_msg")));
             };
         }
     });

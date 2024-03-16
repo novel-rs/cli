@@ -11,10 +11,10 @@ use crate::{LANG_ID, LOCALES};
 
 #[must_use]
 #[derive(Args)]
-#[command(about = LOCALES.lookup(&LANG_ID, "update_command").unwrap())]
+#[command(about = LOCALES.lookup(&LANG_ID, "update_command"))]
 pub struct Update {
     #[arg(long, num_args = 0..=1, default_missing_value = super::DEFAULT_PROXY,
-        help = LOCALES.lookup(&LANG_ID, "proxy").unwrap())]
+        help = LOCALES.lookup(&LANG_ID, "proxy"))]
     pub proxy: Option<Url>,
 }
 
