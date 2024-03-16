@@ -68,7 +68,7 @@ jobs:
         run: choco install pandoc
 
       - name: Install pandoc for macOS
-        if: ${{ matrix.os == 'macos-latest' }}
+        if: ${{ matrix.os == 'macos-14' }}
         run: brew install pandoc
 
       - name: Run cargo build
