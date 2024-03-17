@@ -4,7 +4,7 @@ use std::{
 };
 
 use color_eyre::eyre::{bail, Result};
-use pulldown_cmark::{Event, MetadataBlockKind, Options, Parser, Tag, TagEnd};
+use pulldown_cmark::{Event, MetadataBlockKind, Options, Tag, TagEnd, TextMergeWithOffset};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -40,16 +40,17 @@ where
     let bytes = fs::read(markdown_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
 
-    let mut parser = Parser::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
+    let mut parser =
+        TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
     get_metadata(&mut parser)
 }
 
-pub fn get_metadata(parser: &mut Parser) -> Result<Metadata> {
+pub fn get_metadata(parser: &mut TextMergeWithOffset) -> Result<Metadata> {
     let event = parser.next();
     if event.is_none()
         || !matches!(
-            event.unwrap(),
+            event.unwrap().0,
             Event::Start(Tag::MetadataBlock(MetadataBlockKind::YamlStyle))
         )
     {
@@ -57,7 +58,7 @@ pub fn get_metadata(parser: &mut Parser) -> Result<Metadata> {
     }
 
     let metadata: Metadata;
-    if let Some(Event::Text(text)) = parser.next() {
+    if let Some((Event::Text(text), _)) = parser.next() {
         metadata = serde_yaml::from_str(&text)?;
     } else {
         bail!("Metadata block content does not exist")
@@ -66,7 +67,7 @@ pub fn get_metadata(parser: &mut Parser) -> Result<Metadata> {
     let event = parser.next();
     if event.is_none()
         || !matches!(
-            event.unwrap(),
+            event.unwrap().0,
             Event::End(TagEnd::MetadataBlock(MetadataBlockKind::YamlStyle))
         )
     {
@@ -83,11 +84,12 @@ where
     let bytes = fs::read(markdown_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
 
-    let mut parser = Parser::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
+    let mut parser =
+        TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
     let metadata = get_metadata(&mut parser)?;
 
-    let parser = parser.filter_map(|event| {
+    let parser = parser.filter_map(|(event, _)| {
         if let Event::Start(Tag::Image { dest_url, .. }) = event {
             Some(PathBuf::from(dest_url.as_ref()))
         } else {

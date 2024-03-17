@@ -8,7 +8,7 @@ use color_eyre::eyre::{ensure, Result};
 use fluent_templates::Loader;
 use hashbrown::HashSet;
 use novel_api::Timing;
-use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
+use pulldown_cmark::{Event, HeadingLevel, Options, Tag, TextMergeWithOffset};
 use tracing::debug;
 
 use crate::{
@@ -35,100 +35,99 @@ pub fn execute(config: Check) -> Result<()> {
 
     let bytes = fs::read(&markdown_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
-    let mut parser = Parser::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
+    let mut parser =
+        TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
     check_metadata(&mut parser)?;
 
     let mut char_set = HashSet::new();
     // TODO i18n output
-    parser
-        .into_offset_iter()
-        .for_each(|(event, range)| match event {
-            Event::Start(tag) => match tag {
-                Tag::Heading { level, .. } => {
-                    let title = markdown[range].trim_start_matches('#').trim();
+    parser.for_each(|(event, range)| match event {
+        Event::Start(tag) => match tag {
+            Tag::Heading { level, .. } => {
+                let title = markdown[range].trim_start_matches('#').trim();
 
-                    if level == HeadingLevel::H1 {
-                        if !check_volume_title(title) {
-                            println_msg(format!("Irregular volume title format: `{title}`"));
-                        }
-                    } else if level == HeadingLevel::H2 {
-                        if !check_chapter_title(title) {
-                            println_msg(format!("Irregular chapter title format: `{title}`"));
-                        }
-                    } else {
-                        println_msg(format!(
-                            "Irregular heading level: `{level:?}`, content: `{title}`"
-                        ));
+                if level == HeadingLevel::H1 {
+                    if !check_volume_title(title) {
+                        println_msg(format!("Irregular volume title format: `{title}`"));
                     }
-                }
-                Tag::Image { dest_url, .. } => {
-                    let image_path = Path::new(dest_url.as_ref());
-
-                    if !image_path.is_file() {
-                        println_msg(format!("Image `{}` does not exist", image_path.display()));
+                } else if level == HeadingLevel::H2 {
+                    if !check_chapter_title(title) {
+                        println_msg(format!("Irregular chapter title format: `{title}`"));
                     }
-                }
-                Tag::Paragraph => (),
-                Tag::BlockQuote
-                | Tag::CodeBlock(_)
-                | Tag::List(_)
-                | Tag::Item
-                | Tag::FootnoteDefinition(_)
-                | Tag::Table(_)
-                | Tag::TableHead
-                | Tag::TableRow
-                | Tag::TableCell
-                | Tag::Emphasis
-                | Tag::Strong
-                | Tag::Strikethrough
-                | Tag::Link { .. }
-                | Tag::HtmlBlock
-                | Tag::MetadataBlock(_) => {
-                    let content = markdown[range].trim();
-
+                } else {
                     println_msg(format!(
-                        "Markdown tag that should not appear: `{tag:?}`, content: `{content}`"
+                        "Irregular heading level: `{level:?}`, content: `{title}`"
                     ));
                 }
-            },
-            Event::Text(text) => {
-                for c in text.chars() {
-                    if !utils::is_cjk(c)
-                        && !utils::is_punctuation(c)
-                        && !c.is_ascii_alphanumeric()
-                        && c != ' '
-                    {
-                        if char_set.contains(&c) {
-                            continue;
-                        } else {
-                            char_set.insert(c);
+            }
+            Tag::Image { dest_url, .. } => {
+                let image_path = Path::new(dest_url.as_ref());
 
-                            println_msg(format!(
-                                "Irregular char: `{}`, at `{}`",
-                                c,
-                                &markdown[range.clone()]
-                            ));
-                        }
-                    }
+                if !image_path.is_file() {
+                    println_msg(format!("Image `{}` does not exist", image_path.display()));
                 }
             }
-            Event::End(_) => (),
-            Event::HardBreak
-            | Event::Code(_)
-            | Event::Html(_)
-            | Event::FootnoteReference(_)
-            | Event::SoftBreak
-            | Event::Rule
-            | Event::TaskListMarker(_)
-            | Event::InlineHtml(_) => {
+            Tag::Paragraph => (),
+            Tag::BlockQuote
+            | Tag::CodeBlock(_)
+            | Tag::List(_)
+            | Tag::Item
+            | Tag::FootnoteDefinition(_)
+            | Tag::Table(_)
+            | Tag::TableHead
+            | Tag::TableRow
+            | Tag::TableCell
+            | Tag::Emphasis
+            | Tag::Strong
+            | Tag::Strikethrough
+            | Tag::Link { .. }
+            | Tag::HtmlBlock
+            | Tag::MetadataBlock(_) => {
                 let content = markdown[range].trim();
 
                 println_msg(format!(
-                    "Markdown event that should not appear: `{event:?}`, content: `{content}`"
+                    "Markdown tag that should not appear: `{tag:?}`, content: `{content}`"
                 ));
             }
-        });
+        },
+        Event::Text(text) => {
+            for c in text.chars() {
+                if !utils::is_cjk(c)
+                    && !utils::is_punctuation(c)
+                    && !c.is_ascii_alphanumeric()
+                    && c != ' '
+                {
+                    if char_set.contains(&c) {
+                        continue;
+                    } else {
+                        char_set.insert(c);
+
+                        println_msg(format!(
+                            "Irregular char: `{}`, at `{}`",
+                            c,
+                            &markdown[range.clone()]
+                        ));
+                    }
+                }
+            }
+        }
+        Event::End(_) => (),
+        Event::HardBreak
+        | Event::Code(_)
+        | Event::Html(_)
+        | Event::FootnoteReference(_)
+        | Event::SoftBreak
+        | Event::Rule
+        | Event::TaskListMarker(_)
+        | Event::InlineHtml(_) => {
+            let content = markdown[range].trim();
+
+            println_msg(format!(
+                "Markdown event that should not appear: `{event:?}`, content: `{content}`"
+            ));
+        }
+    });
 
     current_dir.restore()?;
 
@@ -137,7 +136,7 @@ pub fn execute(config: Check) -> Result<()> {
     Ok(())
 }
 
-fn check_metadata(parser: &mut Parser) -> Result<()> {
+fn check_metadata(parser: &mut TextMergeWithOffset) -> Result<()> {
     let metadata = utils::get_metadata(parser)?;
 
     ensure!(

@@ -8,7 +8,7 @@ use clap::Args;
 use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
-use pulldown_cmark::{Event, MetadataBlockKind, Options, Parser, Tag, TagEnd};
+use pulldown_cmark::{Event, MetadataBlockKind, Options, Tag, TagEnd, TextMergeWithOffset};
 use tracing::{debug, info};
 
 use crate::{
@@ -54,12 +54,13 @@ pub fn execute(config: Transform) -> Result<()> {
 
     let bytes = fs::read(&input_markdown_file_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
-    let mut parser = Parser::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
+    let mut parser =
+        TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
     let mut metadata = utils::get_metadata(&mut parser)?;
     convert_metadata(&mut metadata, &config.converts, &input_dir, config.delete)?;
 
-    let parser = parser.map(|event| match event {
+    let parser = parser.map(|(event, _)| match event {
         Event::Text(text) => {
             Event::Text(utils::convert_str(text, &config.converts).unwrap().into())
         }
