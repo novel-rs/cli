@@ -121,6 +121,9 @@ pub fn execute(config: Transform) -> Result<()> {
         output_markdown_file_path.display()
     );
 
+    if cfg!(windows) {
+        markdown_buf = markdown_buf.replace('\n', "\r\n");
+    }
     fs::write(output_markdown_file_path, markdown_buf)?;
 
     debug!("Time spent on `transform`: {}", timing.elapsed()?);
