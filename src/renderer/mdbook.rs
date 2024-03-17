@@ -8,7 +8,7 @@ use tracing::{debug, warn};
 
 use crate::{
     cmd::Convert,
-    utils::{self, Content, Novel, Writer, LINE_BREAK, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
+    utils::{self, Content, Novel, Writer},
 };
 
 #[must_use]
@@ -77,7 +77,7 @@ where
     let config = Config {
         book: Book {
             title: novel.name.clone(),
-            description: novel.introduction.clone().map(|v| v.join(UNIX_LINE_BREAK)),
+            description: novel.introduction.clone().map(|v| v.join("\n")),
             authors: vec![novel.author_name.clone()],
             language: utils::lang(convert),
         },
@@ -88,10 +88,7 @@ where
         },
     };
 
-    let mut buf = toml::to_string(&config)?;
-    if cfg!(windows) {
-        buf = buf.replace(UNIX_LINE_BREAK, WINDOWS_LINE_BREAK);
-    }
+    let buf = toml::to_string(&config)?;
 
     let path = base_path.as_ref().join("book.toml");
     let mut writer = Writer::new(path).await?;
@@ -186,7 +183,7 @@ where
             .await?;
         writer.ln().await?;
 
-        let ext = utils::image_ext(novel.cover_image.read().await.as_ref().unwrap());
+        let ext = utils::new_image_ext(novel.cover_image.read().await.as_ref().unwrap());
 
         if ext.is_ok() {
             let image_path = src_path
@@ -229,14 +226,10 @@ where
         let mut buf = String::with_capacity(4096);
         for line in introduction {
             buf.push_str(line);
-            buf.push_str(&format!("{0}{0}", LINE_BREAK));
+            buf.push_str(&format!("{0}{0}", '\n'));
         }
         // last '\n'
         buf.pop();
-        if cfg!(windows) {
-            // last '\r'
-            buf.pop();
-        }
 
         writer.write(buf).await?;
         writer.flush().await?;
@@ -294,7 +287,7 @@ where
                         match content {
                             Content::Text(line) => {
                                 buf.push_str(line);
-                                buf.push_str(&format!("{0}{0}", LINE_BREAK));
+                                buf.push_str(&format!("{0}{0}", '\n'));
                             }
                             Content::Image(image) => {
                                 let image_path = image_path.join(&image.file_name);
@@ -304,17 +297,13 @@ where
                                     image_path.display().to_string().replace('\\', "/");
 
                                 buf.push_str(&super::image_markdown_str(image_path_str));
-                                buf.push_str(&format!("{0}{0}", LINE_BREAK));
+                                buf.push_str(&format!("{0}{0}", '\n'));
                             }
                         }
                     }
 
                     // last '\n'
                     buf.pop();
-                    if cfg!(windows) {
-                        // last '\r'
-                        buf.pop();
-                    }
 
                     chapter_writer.write(buf).await?;
                     chapter_writer.flush().await?;
@@ -370,7 +359,7 @@ where
         let image_path = image_path.clone();
 
         handles.push(task::spawn_blocking(move || {
-            let ext = utils::image_ext(cover_image.blocking_read().as_ref().unwrap());
+            let ext = utils::new_image_ext(cover_image.blocking_read().as_ref().unwrap());
 
             if ext.is_ok() {
                 let path = image_path.join(format!("cover.{}", ext.unwrap()));

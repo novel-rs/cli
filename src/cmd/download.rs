@@ -207,7 +207,7 @@ where
                             }
                             ContentInfo::Image(url) => match client.image(&url).await {
                                 Ok(image) => {
-                                    let ext = utils::image_ext(&image);
+                                    let ext = utils::new_image_ext(&image);
 
                                     if ext.is_ok() {
                                         let image_name = format!(

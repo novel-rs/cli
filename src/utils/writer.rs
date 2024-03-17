@@ -33,7 +33,7 @@ impl Writer {
 
     #[inline]
     pub async fn ln(&mut self) -> Result<()> {
-        self.writer.write_all(super::LINE_BREAK.as_bytes()).await?;
+        self.writer.write_all(b"\n").await?;
         Ok(())
     }
 

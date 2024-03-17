@@ -54,7 +54,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
         let image = Reader::open(&input_path)?.decode()?;
         let scale = calc_scale(image.width(), image.height());
 
-        let ext = utils::image_ext(&image);
+        let ext = utils::new_image_ext(&image);
         if ext.is_err() {
             error!("{}: {}", ext.unwrap_err(), input_path.display());
             continue;

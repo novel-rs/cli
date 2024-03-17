@@ -3,7 +3,6 @@ mod concurrency;
 mod convert;
 mod current_dir;
 mod image;
-mod line_break;
 mod login;
 mod markdown;
 mod novel;
@@ -17,7 +16,6 @@ pub use check::*;
 pub use concurrency::*;
 pub use convert::*;
 pub use current_dir::*;
-pub use line_break::*;
 pub use login::*;
 pub use markdown::*;
 pub use novel::*;
@@ -193,18 +191,10 @@ where
     path
 }
 
-pub fn read_markdown_to_markdown_file_name<T>(markdown_path: T) -> Result<PathBuf>
-where
-    T: AsRef<Path>,
-{
-    let (meta_data, _) = read_markdown(markdown_path)?;
-    Ok(to_markdown_file_name(meta_data.title))
-}
-
 pub fn read_markdown_to_epub_file_name<T>(markdown_path: T) -> Result<PathBuf>
 where
     T: AsRef<Path>,
 {
-    let (meta_data, _) = read_markdown(markdown_path)?;
-    Ok(to_epub_file_name(meta_data.title))
+    let metadata = get_metadata_from_file(markdown_path)?;
+    Ok(to_epub_file_name(metadata.title))
 }

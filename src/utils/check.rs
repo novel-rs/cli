@@ -26,6 +26,20 @@ where
     Ok(())
 }
 
+pub fn ensure_markdown_or_txt_file<T>(path: T) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    if !(is_markdown_file(&path)? || is_txt_file(&path)?) {
+        bail!(
+            "File `{}` is not markdown or txt file",
+            path.as_ref().display()
+        )
+    }
+
+    Ok(())
+}
+
 pub fn ensure_epub_file<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
@@ -84,6 +98,13 @@ where
     T: AsRef<Path>,
 {
     is_some_file(path, "md")
+}
+
+pub fn is_txt_file<T>(path: T) -> Result<bool>
+where
+    T: AsRef<Path>,
+{
+    is_some_file(path, "txt")
 }
 
 pub fn is_epub_file<T>(path: T) -> Result<bool>

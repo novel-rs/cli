@@ -1,15 +1,19 @@
-use std::{fs, path::PathBuf};
+use std::{
+    fmt::Write,
+    fs,
+    path::{Path, PathBuf},
+};
 
 use clap::Args;
 use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use novel_api::Timing;
-use regex::Regex;
+use pulldown_cmark::{Event, MetadataBlockKind, Options, Parser, Tag, TagEnd};
 use tracing::{debug, info};
 
 use crate::{
     cmd::Convert,
-    utils::{self, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
+    utils::{self, Metadata},
     LANG_ID, LOCALES,
 };
 
@@ -48,55 +52,53 @@ pub fn execute(config: Transform) -> Result<()> {
         input_markdown_file_path.display()
     );
 
-    let (mut meta_data, markdown) = utils::read_markdown(&input_markdown_file_path)?;
+    let bytes = fs::read(&input_markdown_file_path)?;
+    let markdown = simdutf8::basic::from_utf8(&bytes)?;
+    let mut parser = Parser::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
-    meta_data.title = utils::convert_str(&meta_data.title, &config.converts)?;
-    meta_data.author = utils::convert_str(&meta_data.author, &config.converts)?;
-    meta_data.lang = utils::lang(&config.converts);
-    if meta_data.description.is_some() {
-        let mut description = Vec::new();
+    let mut metadata = utils::get_metadata(&mut parser)?;
+    convert_metadata(&mut metadata, &config.converts, &input_dir, config.delete)?;
 
-        for line in meta_data
-            .description
-            .as_ref()
-            .unwrap()
-            .split(UNIX_LINE_BREAK)
-        {
-            description.push(utils::convert_str(line, &config.converts)?);
+    let parser = parser.map(|event| match event {
+        Event::Text(text) => {
+            Event::Text(utils::convert_str(text, &config.converts).unwrap().into())
         }
+        Event::Start(Tag::Image {
+            link_type,
+            dest_url,
+            title,
+            id,
+        }) => {
+            let new_image_path =
+                utils::convert_image(input_dir.join(dest_url.as_ref()), config.delete).unwrap();
 
-        meta_data.description = Some(description.join(UNIX_LINE_BREAK));
-    }
-    if meta_data.cover_image.is_some() {
-        meta_data.cover_image = Some(PathBuf::from(
-            utils::convert_image(
-                input_dir.join(meta_data.cover_image.unwrap()),
-                config.delete,
-            )?
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap(),
-        ));
-    }
+            Event::Start(Tag::Image {
+                link_type,
+                dest_url: new_image_path
+                    .file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_string()
+                    .into(),
+                title,
+                id,
+            })
+        }
+        _ => event,
+    });
 
-    let events = utils::to_markdown_events(&markdown, &config.converts, &input_dir, config.delete)?;
-
-    let mut buf = String::with_capacity(4096);
-    buf.push_str(format!("---{}", UNIX_LINE_BREAK).as_str());
-    buf.push_str(&serde_yaml::to_string(&meta_data)?);
-    buf.push_str(format!("...{0}{0}", UNIX_LINE_BREAK).as_str());
+    let metadata_block = vec![
+        Event::Start(Tag::MetadataBlock(MetadataBlockKind::YamlStyle)),
+        Event::Text(serde_yaml::to_string(&metadata)?.into()),
+        Event::End(TagEnd::MetadataBlock(MetadataBlockKind::YamlStyle)),
+    ];
 
     let mut markdown_buf = String::with_capacity(markdown.len());
-    pulldown_cmark_to_cmark::cmark(events.iter(), &mut markdown_buf)?;
-
-    let regex = Regex::new(&format!("({})+", UNIX_LINE_BREAK))?;
-    buf.push_str(&regex.replace_all(&markdown_buf, format!("{0}{0}", UNIX_LINE_BREAK)));
-
-    while buf.ends_with(UNIX_LINE_BREAK) {
-        buf.pop();
-    }
-    buf.push_str(UNIX_LINE_BREAK);
+    pulldown_cmark_to_cmark::cmark(metadata_block.iter(), &mut markdown_buf)?;
+    markdown_buf.write_char('\n')?;
+    pulldown_cmark_to_cmark::cmark(parser, &mut markdown_buf)?;
+    markdown_buf.write_char('\n')?;
 
     if config.delete {
         utils::remove_file_or_dir(input_markdown_file_path)?;
@@ -111,19 +113,52 @@ pub fn execute(config: Transform) -> Result<()> {
     }
 
     let new_file_name =
-        utils::to_markdown_file_name(utils::convert_str(&meta_data.title, &config.converts)?);
+        utils::to_markdown_file_name(utils::convert_str(&metadata.title, &config.converts)?);
     let output_markdown_file_path = input_dir.join(new_file_name);
     info!(
         "Output Markdown file path: `{}`",
         output_markdown_file_path.display()
     );
 
-    if cfg!(windows) {
-        buf = buf.replace(UNIX_LINE_BREAK, WINDOWS_LINE_BREAK);
-    }
-    fs::write(output_markdown_file_path, buf)?;
+    fs::write(output_markdown_file_path, markdown_buf)?;
 
     debug!("Time spent on `transform`: {}", timing.elapsed()?);
+
+    Ok(())
+}
+
+fn convert_metadata(
+    metadata: &mut Metadata,
+    converts: &[Convert],
+    input_dir: &Path,
+    delete: bool,
+) -> Result<()> {
+    metadata.title = utils::convert_str(&metadata.title, converts)?;
+    metadata.author = utils::convert_str(&metadata.author, converts)?;
+    metadata.lang = utils::lang(converts);
+
+    if metadata.description.is_some() {
+        let mut description = Vec::with_capacity(4);
+
+        for line in metadata.description.as_ref().unwrap().split('\n') {
+            description.push(utils::convert_str(line, converts).unwrap());
+        }
+
+        metadata.description = Some(description.join("\n"));
+    }
+
+    if metadata.cover_image.is_some() {
+        metadata.cover_image = Some(PathBuf::from(
+            utils::convert_image(
+                input_dir.join(metadata.cover_image.as_ref().unwrap()),
+                delete,
+            )?
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        ));
+    }
 
     Ok(())
 }

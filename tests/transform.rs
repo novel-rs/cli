@@ -12,7 +12,7 @@ fn transform(#[case] delete: bool) -> Result<()> {
     let input_path = utils::copy_to_temp_dir("pandoc", temp_dir.path())?.join("pandoc.md");
 
     let output_path_old = temp_dir.path().join("pandoc").join("pandoc.old.md");
-    let (meta_data, _) = novel_cli::utils::read_markdown(&input_path)?;
+    let metadata = novel_cli::utils::get_metadata_from_file(&input_path)?;
 
     let mut cmd = Command::cargo_bin("novel-cli")?;
     if delete {
@@ -37,7 +37,7 @@ fn transform(#[case] delete: bool) -> Result<()> {
     }
 
     let novel_name =
-        novel_cli::utils::convert_str(meta_data.title, [novel_cli::cmd::Convert::CUSTOM])?;
+        novel_cli::utils::convert_str(metadata.title, [novel_cli::cmd::Convert::CUSTOM])?;
     let output_file_name = temp_dir
         .path()
         .join("pandoc")

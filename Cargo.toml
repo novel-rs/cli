@@ -53,8 +53,6 @@ simdutf8 = { version = "0.1.4", default-features = false, features = [
   "std",
   "aarch64_neon",
 ] }
-# https://github.com/rayon-rs/rayon
-rayon = { version = "1.9.0", default-features = false }
 # https://github.com/tokio-rs/tracing
 tracing = { version = "0.1.40", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/tracing
@@ -140,16 +138,15 @@ open = { version = "5.1.2", default-features = false, features = [
   "shellexecute-on-windows",
 ] }
 # https://github.com/dtolnay/serde-yaml
-serde_yaml = { version = "0.9.32", default-features = false }
+serde_yaml = { version = "0.9.33", default-features = false }
 # https://github.com/toml-rs/toml
 toml = { version = "0.8.11", default-features = false, features = ["display"] }
-# pin for pulldown-cmark-to-cmark
 # https://github.com/raphlinus/pulldown-cmark
-pulldown-cmark = { version = "=0.9", default-features = false, features = [
+pulldown-cmark = { version = "0.10.0", default-features = false, features = [
   "simd",
 ] }
 # https://github.com/Byron/pulldown-cmark-to-cmark
-pulldown-cmark-to-cmark = { version = "11.2.0", default-features = false }
+pulldown-cmark-to-cmark = { version = "13.0.0", default-features = false }
 # https://github.com/zip-rs/zip
 zip = { version = "0.6.6", default-features = false, features = [
   "deflate",
@@ -203,10 +200,8 @@ supports-color = { version = "3.0.0", default-features = false }
 which = { version = "6.0.0", default-features = false }
 # https://gitlab.com/kornelski/dunce
 dunce = { version = "1.0.4", default-features = false }
-# https://github.com/BurntSushi/memchr
-memchr = { version = "2.7.1", default-features = false, features = ["std"] }
 # https://github.com/stanislav-tkach/os_info
-os_info = { version = "3.8.0", default-features = false }
+os_info = { version = "3.8.1", default-features = false }
 # https://github.com/baoyachi/shadow-rs
 shadow-rs = { version = "0.27.1", default-features = false }
 # https://github.com/jonasbb/serde_with

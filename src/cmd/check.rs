@@ -1,4 +1,7 @@
-use std::{path::PathBuf, sync::RwLock};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use clap::Args;
 use color_eyre::eyre::{ensure, Result};
@@ -6,7 +9,6 @@ use fluent_templates::Loader;
 use hashbrown::HashSet;
 use novel_api::Timing;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
-use rayon::prelude::*;
 use tracing::debug;
 
 use crate::{
@@ -26,45 +28,45 @@ pub struct Check {
 pub fn execute(config: Check) -> Result<()> {
     let mut timing = Timing::new();
 
-    let (meta_data, markdown) = utils::read_markdown(&config.markdown_path)?;
+    utils::ensure_markdown_or_txt_file(&config.markdown_path)?;
 
     let markdown_path = dunce::canonicalize(&config.markdown_path)?;
     let current_dir = CurrentDir::new(markdown_path.parent().unwrap())?;
 
-    ensure!(
-        meta_data.lang_is_ok(),
-        "The lang field must be zh-Hant or zh-Hans: `{}`",
-        meta_data.lang
-    );
-    ensure!(
-        meta_data.cover_image_is_ok(),
-        "Cover image does not exist: `{}`",
-        meta_data.cover_image.unwrap().display()
-    );
+    let bytes = fs::read(&markdown_path)?;
+    let markdown = simdutf8::basic::from_utf8(&bytes)?;
+    let mut parser = Parser::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
-    let parser = Parser::new_ext(&markdown, Options::empty());
-    let events = parser.into_offset_iter().collect::<Vec<(_, _)>>();
-    let char_set = RwLock::new(HashSet::new());
+    check_metadata(&mut parser)?;
 
+    let mut char_set = HashSet::new();
     // TODO i18n output
-    events
-        .into_par_iter()
+    parser
+        .into_offset_iter()
         .for_each(|(event, range)| match event {
             Event::Start(tag) => match tag {
-                Tag::Heading(heading_level, _, _) => {
+                Tag::Heading { level, .. } => {
                     let title = markdown[range].trim_start_matches('#').trim();
 
-                    if heading_level == HeadingLevel::H1 && !check_volume_title(title) {
-                        println(format!("Irregular volume title format: `{title}`"));
-                    } else if heading_level == HeadingLevel::H2 && !check_chapter_title(title) {
-                        println(format!("Irregular chapter title format: `{title}`"));
+                    if level == HeadingLevel::H1 {
+                        if !check_volume_title(title) {
+                            println_msg(format!("Irregular volume title format: `{title}`"));
+                        }
+                    } else if level == HeadingLevel::H2 {
+                        if !check_chapter_title(title) {
+                            println_msg(format!("Irregular chapter title format: `{title}`"));
+                        }
+                    } else {
+                        println_msg(format!(
+                            "Irregular heading level: `{level:?}`, content: `{title}`"
+                        ));
                     }
                 }
-                Tag::Image(_, path, _) => {
-                    let image_path = PathBuf::from(&path.to_string());
+                Tag::Image { dest_url, .. } => {
+                    let image_path = Path::new(dest_url.as_ref());
 
                     if !image_path.is_file() {
-                        println(format!("Image `{}` does not exist", image_path.display()));
+                        println_msg(format!("Image `{}` does not exist", image_path.display()));
                     }
                 }
                 Tag::Paragraph => (),
@@ -80,10 +82,12 @@ pub fn execute(config: Check) -> Result<()> {
                 | Tag::Emphasis
                 | Tag::Strong
                 | Tag::Strikethrough
-                | Tag::Link(_, _, _) => {
-                    let content = &markdown[range].trim();
+                | Tag::Link { .. }
+                | Tag::HtmlBlock
+                | Tag::MetadataBlock(_) => {
+                    let content = markdown[range].trim();
 
-                    println(format!(
+                    println_msg(format!(
                         "Markdown tag that should not appear: `{tag:?}`, content: `{content}`"
                     ));
                 }
@@ -95,31 +99,32 @@ pub fn execute(config: Check) -> Result<()> {
                         && !c.is_ascii_alphanumeric()
                         && c != ' '
                     {
-                        if char_set.read().unwrap().contains(&c) {
+                        if char_set.contains(&c) {
                             continue;
                         } else {
-                            char_set.write().unwrap().insert(c);
+                            char_set.insert(c);
 
-                            println(format!(
+                            println_msg(format!(
                                 "Irregular char: `{}`, at `{}`",
                                 c,
-                                markdown[range.clone()].trim()
+                                &markdown[range.clone()]
                             ));
                         }
                     }
                 }
             }
             Event::End(_) => (),
-            Event::HardBreak => (),
-            Event::Code(_)
+            Event::HardBreak
+            | Event::Code(_)
             | Event::Html(_)
             | Event::FootnoteReference(_)
             | Event::SoftBreak
             | Event::Rule
-            | Event::TaskListMarker(_) => {
-                let content = &markdown[range].trim();
+            | Event::TaskListMarker(_)
+            | Event::InlineHtml(_) => {
+                let content = markdown[range].trim();
 
-                println(format!(
+                println_msg(format!(
                     "Markdown event that should not appear: `{event:?}`, content: `{content}`"
                 ));
             }
@@ -132,8 +137,24 @@ pub fn execute(config: Check) -> Result<()> {
     Ok(())
 }
 
-#[inline]
-fn println(msg: String) {
+fn check_metadata(parser: &mut Parser) -> Result<()> {
+    let metadata = utils::get_metadata(parser)?;
+
+    ensure!(
+        metadata.lang_is_ok(),
+        "The lang field must be zh-Hant or zh-Hans: `{}`",
+        metadata.lang
+    );
+    ensure!(
+        metadata.cover_image_is_ok(),
+        "Cover image does not exist: `{}`",
+        metadata.cover_image.unwrap().display()
+    );
+
+    Ok(())
+}
+
+fn println_msg(msg: String) {
     println!("{} {}", utils::emoji("⚠️"), msg);
 }
 
@@ -145,7 +166,6 @@ macro_rules! regex {
 }
 
 #[must_use]
-#[inline]
 fn check_chapter_title<T>(title: T) -> bool
 where
     T: AsRef<str>,
@@ -155,7 +175,6 @@ where
 }
 
 #[must_use]
-#[inline]
 fn check_volume_title<T>(title: T) -> bool
 where
     T: AsRef<str>,

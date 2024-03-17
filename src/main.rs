@@ -26,6 +26,9 @@ static ALLOC: SnMalloc = SnMalloc;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    if env::var("RUST_SPANTRACE").is_err() {
+        env::set_var("RUST_SPANTRACE", "0");
+    }
     color_eyre::install()?;
 
     let config = Config::parse();

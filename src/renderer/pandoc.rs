@@ -14,7 +14,7 @@ use tracing::{info, warn};
 
 use crate::{
     cmd::Convert,
-    utils::{self, Content, MetaData, Novel, UNIX_LINE_BREAK, WINDOWS_LINE_BREAK},
+    utils::{self, Content, Metadata, Novel},
 };
 
 pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> Result<()> {
@@ -41,9 +41,6 @@ pub async fn generate_pandoc_markdown(novel: Novel, convert: &Vec<Convert>) -> R
 
     let handles = save_image(novel, output_dir_path).await?;
 
-    if cfg!(windows) {
-        buf = buf.replace(UNIX_LINE_BREAK, WINDOWS_LINE_BREAK);
-    }
     fs::write(markdown_file_path, &buf).await?;
 
     for handle in handles {
@@ -71,7 +68,7 @@ where
 
     let mut cover_image = None;
     if novel.cover_image.read().await.is_some() {
-        let ext = utils::image_ext(novel.cover_image.read().await.as_ref().unwrap());
+        let ext = utils::new_image_ext(novel.cover_image.read().await.as_ref().unwrap());
 
         if ext.is_ok() {
             cover_image = Some(PathBuf::from(format!("cover.{}", ext.unwrap())));
@@ -80,7 +77,7 @@ where
         }
     }
 
-    let meta_data = MetaData {
+    let metadata = Metadata {
         title: novel.name.clone(),
         author: novel.author_name.clone(),
         lang: utils::lang(convert),
@@ -88,8 +85,8 @@ where
         cover_image,
     };
 
-    buf.write_str(&serde_yaml::to_string(&meta_data)?)?;
-    buf.write_str("...\n\n")?;
+    buf.write_str(&serde_yaml::to_string(&metadata)?)?;
+    buf.write_str("---\n\n")?;
 
     Ok(())
 }
@@ -170,7 +167,7 @@ where
         let cover_image = Arc::clone(&novel.cover_image);
 
         handles.push(task::spawn_blocking(move || {
-            let ext = utils::image_ext(cover_image.blocking_read().as_ref().unwrap());
+            let ext = utils::new_image_ext(cover_image.blocking_read().as_ref().unwrap());
 
             if ext.is_ok() {
                 let image_path = path.join(format!("cover.{}", ext.unwrap()));
