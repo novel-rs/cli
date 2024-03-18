@@ -140,7 +140,7 @@ open = { version = "5.1.2", default-features = false, features = [
 # https://github.com/dtolnay/serde-yaml
 serde_yaml = { version = "0.9.33", default-features = false }
 # https://github.com/toml-rs/toml
-toml = { version = "0.8.11", default-features = false, features = ["display"] }
+toml = { version = "0.8.12", default-features = false, features = ["display"] }
 # https://github.com/raphlinus/pulldown-cmark
 pulldown-cmark = { version = "0.10.0", default-features = false, features = [
   "simd",
