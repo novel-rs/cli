@@ -46,85 +46,7 @@ pub fn execute(config: Build) -> Result<()> {
     Ok(())
 }
 
-pub fn execute_pandoc(config: Build) -> Result<()> {
-    utils::ensure_executable_exists("pandoc")?;
-
-    let input_markdown_file_path;
-    let markdown_file_parent_path;
-    let mut in_directory = false;
-
-    if utils::is_markdown_file(&config.build_path)? {
-        input_markdown_file_path = dunce::canonicalize(&config.build_path)?;
-        markdown_file_parent_path = input_markdown_file_path.parent().unwrap().to_path_buf();
-    } else if utils::is_markdown_dir(&config.build_path)? {
-        let markdown_dir_path = dunce::canonicalize(&config.build_path)?;
-        input_markdown_file_path = markdown_dir_path
-            .join(markdown_dir_path.file_stem().unwrap())
-            .with_extension("md");
-        markdown_file_parent_path = markdown_dir_path;
-        in_directory = true;
-    } else {
-        bail!("Invalid input path: `{}`", config.build_path.display());
-    }
-    info!(
-        "Input markdown file path: `{}`",
-        input_markdown_file_path.display()
-    );
-    println!("{}", utils::locales_with_arg("build_msg", "📚", "Pandoc"));
-
-    let output_epub_file_path = env::current_dir()?.join(utils::read_markdown_to_epub_file_name(
-        &input_markdown_file_path,
-    )?);
-    info!(
-        "Output epub file path: `{}`",
-        output_epub_file_path.display()
-    );
-
-    if output_epub_file_path.try_exists()? {
-        warn!("The epub output file already exists and will be deleted");
-        utils::remove_file_or_dir(&output_epub_file_path)?;
-    }
-
-    let current_dir = CurrentDir::new(&markdown_file_parent_path)?;
-    let output = Command::new("pandoc")
-        .arg("--from=commonmark+yaml_metadata_block")
-        .arg("--to=epub3")
-        .arg("--split-level=2")
-        .arg("--epub-title-page=false")
-        .args(["-o", output_epub_file_path.to_str().unwrap()])
-        .arg(&input_markdown_file_path)
-        .output()?;
-
-    info!("{}", simdutf8::basic::from_utf8(&output.stdout)?);
-
-    if !output.status.success() {
-        error!("{}", simdutf8::basic::from_utf8(&output.stderr)?);
-        bail!("`pandoc` failed to execute");
-    }
-
-    if config.delete {
-        if in_directory {
-            // On Windows, the current working directory will be occupied and cannot be deleted
-            current_dir.restore()?;
-            utils::remove_file_or_dir(markdown_file_parent_path)?;
-        } else {
-            let images = utils::read_markdown_to_images(&input_markdown_file_path)?;
-            utils::remove_file_or_dir_all(&images)?;
-
-            utils::remove_file_or_dir(input_markdown_file_path)?;
-
-            current_dir.restore()?;
-        }
-    }
-
-    if config.open {
-        open::that(output_epub_file_path)?;
-    }
-
-    Ok(())
-}
-
-pub fn execute_mdbook(config: Build) -> Result<()> {
+fn execute_mdbook(config: Build) -> Result<()> {
     println!("{}", utils::locales_with_arg("build_msg", "📚", "mdBook"));
 
     let input_mdbook_dir_path = dunce::canonicalize(&config.build_path)?;
@@ -142,7 +64,7 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
 
     if let Ok(mdbook) = MDBook::load(&input_mdbook_dir_path) {
         if let Err(error) = mdbook.build() {
-            bail!("mdBook failed to build: {}", error);
+            bail!("mdBook failed to build: {error}");
         }
     } else {
         bail!("mdBook failed to load");
@@ -171,6 +93,91 @@ pub fn execute_mdbook(config: Build) -> Result<()> {
         };
 
         open::that(index_html_path)?;
+    }
+
+    Ok(())
+}
+
+fn execute_pandoc(config: Build) -> Result<()> {
+    utils::ensure_executable_exists("pandoc")?;
+
+    let input_markdown_file_path;
+    let input_markdown_file_parent_path;
+    let mut in_directory = false;
+
+    if utils::is_markdown_file(&config.build_path)? {
+        input_markdown_file_path = dunce::canonicalize(&config.build_path)?;
+        input_markdown_file_parent_path = input_markdown_file_path.parent().unwrap().to_path_buf();
+    } else if utils::is_markdown_dir(&config.build_path)? {
+        in_directory = true;
+
+        input_markdown_file_parent_path = dunce::canonicalize(&config.build_path)?;
+        input_markdown_file_path = input_markdown_file_parent_path
+            .join(input_markdown_file_parent_path.file_stem().unwrap())
+            .with_extension("md");
+
+        if !input_markdown_file_path.is_file() {
+            bail!(
+                "File `{}` does not exist",
+                input_markdown_file_path.display()
+            );
+        }
+    } else {
+        bail!("Invalid input path: `{}`", config.build_path.display());
+    }
+    info!(
+        "Input markdown file path: `{}`",
+        input_markdown_file_path.display()
+    );
+    println!("{}", utils::locales_with_arg("build_msg", "📚", "Pandoc"));
+
+    let output_epub_file_path = env::current_dir()?.join(utils::read_markdown_to_epub_file_name(
+        &input_markdown_file_path,
+    )?);
+    info!(
+        "Output epub file path: `{}`",
+        output_epub_file_path.display()
+    );
+
+    if output_epub_file_path.try_exists()? {
+        warn!("The epub output file already exists and will be deleted");
+        utils::remove_file_or_dir(&output_epub_file_path)?;
+    }
+
+    let current_dir = CurrentDir::new(&input_markdown_file_parent_path)?;
+    let output = Command::new("pandoc")
+        .arg("--from=commonmark+yaml_metadata_block")
+        .arg("--to=epub3")
+        .arg("--split-level=2")
+        .arg("--epub-title-page=false")
+        .args(["-o", output_epub_file_path.to_str().unwrap()])
+        .arg(&input_markdown_file_path)
+        .output()?;
+
+    info!("{}", simdutf8::basic::from_utf8(&output.stdout)?);
+
+    if !output.status.success() {
+        error!("{}", simdutf8::basic::from_utf8(&output.stderr)?);
+        bail!("`pandoc` failed to execute");
+    }
+
+    if config.delete {
+        if in_directory {
+            // On Windows, the current working directory will be occupied and cannot be deleted
+            current_dir.restore()?;
+            utils::remove_file_or_dir(input_markdown_file_parent_path)?;
+        } else {
+            let images = utils::read_markdown_to_images(&input_markdown_file_path)?;
+            utils::remove_file_or_dir_all(&images)?;
+
+            utils::remove_file_or_dir(input_markdown_file_path)?;
+
+            current_dir.restore()?;
+        }
+    }
+
+    if config.open {
+        open::that(output_epub_file_path)?;
     }
 
     Ok(())
