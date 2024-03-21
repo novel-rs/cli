@@ -41,7 +41,6 @@ pub fn execute(config: Check) -> Result<()> {
     check_metadata(&mut parser)?;
 
     let mut char_set = HashSet::new();
-    // TODO i18n output
     parser.for_each(|(event, range)| match event {
         Event::Start(tag) => match tag {
             Tag::Heading { level, .. } => {
