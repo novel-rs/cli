@@ -2,9 +2,9 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use clap::{value_parser, Args};
-use color_eyre::eyre::{Report, Result};
+use color_eyre::eyre::{Ok, Result};
 use fluent_templates::Loader;
-use novel_api::{CiweimaoClient, CiyuanjiClient, Client, NovelInfo, SfacgClient};
+use novel_api::{CiweimaoClient, CiyuanjiClient, Client, SfacgClient};
 use tokio::sync::Semaphore;
 use tracing::error;
 use url::Url;
@@ -74,16 +74,17 @@ async fn do_execute<T>(client: T, config: Bookshelf) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
-    let novel_ids = client.bookshelf_infos().await?;
-
-    let mut novel_infos = Vec::new();
-
     let client = Arc::new(client);
     super::handle_ctrl_c(&client);
 
-    let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
-    let mut handles = Vec::new();
+    let novel_ids = client.bookshelf_infos().await?;
+    if novel_ids.is_empty() {
+        println!("There are no books in the bookshelf");
+        return Ok(());
+    }
 
+    let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
+    let mut handles = Vec::with_capacity(16);
     for novel_id in novel_ids {
         let client = Arc::clone(&client);
         let permit = semaphore.clone().acquire_owned().await.unwrap();
@@ -91,10 +92,11 @@ where
         handles.push(tokio::spawn(async move {
             let novel_info = client.novel_info(novel_id).await?;
             drop(permit);
-            Ok::<Option<NovelInfo>, Report>(novel_info)
+            Ok(novel_info)
         }));
     }
 
+    let mut novel_infos = Vec::with_capacity(16);
     for handle in handles {
         let novel_info = handle.await??;
 
