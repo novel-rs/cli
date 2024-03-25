@@ -197,7 +197,7 @@ futures = { version = "0.3.30", default-features = false, features = [
 # https://github.com/zkat/supports-color
 supports-color = { version = "3.0.0", default-features = false }
 # https://github.com/harryfei/which-rs
-which = { version = "6.0.0", default-features = false }
+which = { version = "6.0.1", default-features = false }
 # https://gitlab.com/kornelski/dunce
 dunce = { version = "1.0.4", default-features = false }
 # https://github.com/stanislav-tkach/os_info
