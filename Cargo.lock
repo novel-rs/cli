@@ -5349,9 +5349,9 @@ dependencies = [
 
 [[package]]
 name = "trash"
-version = "4.0.0"
+version = "4.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e624eab7d472380d3e0321367d9bf0e931e91e1bd9b80422b9b4b64be2d7f328"
+checksum = "6a1a7a9a17d3b004898be42be29a4c18d5a4cf008b5cdf72d69b1945dfcb158a"
 dependencies = [
  "libc",
  "log",
