@@ -4,12 +4,12 @@ use std::{
 };
 
 use clap::Args;
-use color_eyre::eyre::{ensure, Result};
+use color_eyre::eyre::{bail, ensure, Result};
 use fluent_templates::Loader;
 use hashbrown::HashSet;
 use novel_api::Timing;
 use pulldown_cmark::{Event, HeadingLevel, Options, Tag, TextMergeWithOffset};
-use tracing::debug;
+use tracing::{debug, info};
 
 use crate::{
     utils::{self, CurrentDir},
@@ -28,12 +28,26 @@ pub struct Check {
 pub fn execute(config: Check) -> Result<()> {
     let mut timing = Timing::new();
 
-    utils::ensure_markdown_or_txt_file(&config.markdown_path)?;
+    let input_markdown_file_path;
+    let input_markdown_file_parent_path;
 
-    let markdown_path = dunce::canonicalize(&config.markdown_path)?;
-    let current_dir = CurrentDir::new(markdown_path.parent().unwrap())?;
+    if utils::is_markdown_or_txt_file(&config.markdown_path)? {
+        input_markdown_file_path = dunce::canonicalize(&config.markdown_path)?;
+        input_markdown_file_parent_path = input_markdown_file_path.parent().unwrap().to_path_buf();
+    } else if let Ok(Some(path)) = utils::try_get_markdown_filename_in_dir(&config.markdown_path) {
+        input_markdown_file_parent_path = dunce::canonicalize(&config.markdown_path)?;
+        input_markdown_file_path = path;
+    } else {
+        bail!("Invalid input path: `{}`", config.markdown_path.display());
+    }
+    info!(
+        "Input markdown file path: `{}`",
+        input_markdown_file_path.display()
+    );
 
-    let bytes = fs::read(&markdown_path)?;
+    let current_dir = CurrentDir::new(input_markdown_file_parent_path)?;
+
+    let bytes = fs::read(&input_markdown_file_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
     let mut parser =
         TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);

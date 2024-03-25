@@ -108,20 +108,11 @@ fn execute_pandoc(config: Build) -> Result<()> {
     if utils::is_markdown_file(&config.build_path)? {
         input_markdown_file_path = dunce::canonicalize(&config.build_path)?;
         input_markdown_file_parent_path = input_markdown_file_path.parent().unwrap().to_path_buf();
-    } else if utils::is_markdown_dir(&config.build_path)? {
+    } else if let Ok(Some(path)) = utils::try_get_markdown_filename_in_dir(&config.build_path) {
         in_directory = true;
 
         input_markdown_file_parent_path = dunce::canonicalize(&config.build_path)?;
-        input_markdown_file_path = input_markdown_file_parent_path
-            .join(input_markdown_file_parent_path.file_stem().unwrap())
-            .with_extension("md");
-
-        if !input_markdown_file_path.is_file() {
-            bail!(
-                "File `{}` does not exist",
-                input_markdown_file_path.display()
-            );
-        }
+        input_markdown_file_path = path;
     } else {
         bail!("Invalid input path: `{}`", config.build_path.display());
     }
