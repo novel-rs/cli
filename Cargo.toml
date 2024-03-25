@@ -138,7 +138,7 @@ open = { version = "5.1.2", default-features = false, features = [
   "shellexecute-on-windows",
 ] }
 # https://github.com/dtolnay/serde-yaml
-serde_yaml = { version = "0.9.33", default-features = false }
+serde_yaml = { version = "0.9.34", default-features = false }
 # https://github.com/toml-rs/toml
 toml = { version = "0.8.11", default-features = false, features = ["display"] }
 # https://github.com/raphlinus/pulldown-cmark
