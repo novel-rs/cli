@@ -174,10 +174,8 @@ pub fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
-    let mut path = to_novel_dir_name(novel_name);
-    path.set_extension("md");
-
-    path
+    let path = to_novel_dir_name(novel_name);
+    path.with_extension("md")
 }
 
 #[must_use]

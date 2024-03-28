@@ -1,14 +1,113 @@
 mod mdbook;
 mod pandoc;
 
+use std::path::Path;
+use std::{fs, thread};
+
+use color_eyre::eyre::Ok;
+use color_eyre::eyre::{bail, Result};
+use image::DynamicImage;
+use tracing::error;
+
+use crate::utils;
+use crate::utils::Content;
+use crate::utils::Novel;
+
 pub use self::mdbook::*;
 pub use self::pandoc::*;
 
-#[inline]
 #[must_use]
 fn image_markdown_str<T>(path: T) -> String
 where
     T: AsRef<str>,
 {
     format!("![]({})", path.as_ref())
+}
+
+fn cover_image_name(cover_image: &DynamicImage) -> Result<String> {
+    let image_ext = utils::new_image_ext(cover_image);
+
+    if image_ext.is_ok() {
+        Ok(format!("cover.{}", image_ext.unwrap()))
+    } else {
+        bail!("{}", image_ext.unwrap_err());
+    }
+}
+
+fn new_image_name(image: &DynamicImage, image_index: u16) -> Result<String> {
+    Ok(format!(
+        "{}.{}",
+        utils::num_to_str(image_index),
+        utils::new_image_ext(image)?
+    ))
+}
+
+fn save_image<T>(novel: &Novel, image_dir_path: T) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    let image_dir_path = image_dir_path.as_ref();
+    if !image_dir_path.exists() {
+        fs::create_dir_all(image_dir_path)?;
+    }
+
+    let mut image_exists = false;
+
+    if novel.cover_image.is_some() {
+        let cover_image = novel.cover_image.as_ref().unwrap();
+        let image_ext = utils::new_image_ext(cover_image);
+
+        if image_ext.is_ok() {
+            let image_path = image_dir_path.join(format!("cover.{}", image_ext.unwrap()));
+            cover_image.save(image_path)?;
+
+            image_exists = true;
+        } else {
+            bail!("{}", image_ext.unwrap_err());
+        }
+    }
+
+    let mut images = Vec::new();
+    for volume in &novel.volumes {
+        for chapter in &volume.chapters {
+            for content in &chapter.contents {
+                if let Content::Image(image) = content {
+                    images.push(image);
+                }
+            }
+        }
+    }
+
+    if !images.is_empty() {
+        image_exists = true;
+    }
+
+    thread::scope(|s| {
+        let mut image_index = 1;
+
+        for image in images {
+            let image_ext = utils::new_image_ext(image);
+
+            if image_ext.is_ok() {
+                let image_name =
+                    format!("{}.{}", utils::num_to_str(image_index), image_ext.unwrap());
+                image_index += 1;
+
+                let image_path = image_dir_path.join(image_name);
+
+                s.spawn(|| {
+                    image.save(image_path)?;
+                    Ok(())
+                });
+            } else {
+                error!("{}", image_ext.unwrap_err());
+            }
+        }
+    });
+
+    if !image_exists {
+        fs::remove_dir(image_dir_path)?;
+    }
+
+    Ok(())
 }

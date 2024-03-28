@@ -1,9 +1,9 @@
-use std::{path::Path, sync::Arc};
+use std::path::Path;
 
-use color_eyre::eyre::{bail, Report, Result};
+use color_eyre::eyre::Result;
 use novel_api::Timing;
 use serde::Serialize;
-use tokio::{fs, sync::Semaphore, task};
+use tokio::fs;
 use tracing::{debug, warn};
 
 use crate::{
@@ -13,17 +13,17 @@ use crate::{
 
 #[must_use]
 #[derive(Serialize)]
-struct Config {
-    book: Book,
+struct Config<'a> {
+    book: Book<'a>,
     output: Output,
 }
 
 #[must_use]
 #[derive(Serialize)]
-struct Book {
-    title: String,
+struct Book<'a> {
+    title: &'a str,
     description: Option<String>,
-    authors: Vec<String>,
+    authors: Vec<&'a str>,
     language: String,
 }
 
@@ -46,8 +46,6 @@ where
 {
     let mut timing = Timing::new();
 
-    let convert = convert.as_ref();
-
     let output_dir_path = utils::to_novel_dir_name(&novel.name);
     if output_dir_path.is_dir() {
         warn!("The mdBook output directory already exists and will be deleted");
@@ -57,12 +55,14 @@ where
     fs::create_dir_all(&output_dir_path).await?;
     let base_path = dunce::canonicalize(output_dir_path)?;
 
-    generate_book_toml(&novel, &base_path, convert).await?;
-    generate_summary(&novel, &base_path, convert).await?;
-    generate_cover(&novel, &base_path, convert).await?;
-    generate_introduction(&novel, &base_path, convert).await?;
+    generate_book_toml(&novel, &base_path, &convert).await?;
+    generate_summary(&novel, &base_path, &convert).await?;
+    generate_cover(&novel, &base_path, &convert).await?;
+    generate_introduction(&novel, &base_path, &convert).await?;
     generate_chapters(&novel, &base_path).await?;
-    generate_image(novel, &base_path).await?;
+
+    let image_path = base_path.join("src").join("images");
+    super::save_image(&novel, image_path)?;
 
     debug!("Time spent on `generate mdBook`: {}", timing.elapsed()?);
 
@@ -76,9 +76,9 @@ where
 {
     let config = Config {
         book: Book {
-            title: novel.name.clone(),
-            description: novel.introduction.clone().map(|v| v.join("\n")),
-            authors: vec![novel.author_name.clone()],
+            title: novel.name.as_str(),
+            description: novel.introduction.as_ref().map(|v| v.join("\n")),
+            authors: vec![novel.author_name.as_str()],
             language: utils::lang(convert),
         },
         output: Output {
@@ -106,10 +106,7 @@ where
 {
     let convert = convert.as_ref();
 
-    let mut path = base_path.as_ref().join("src");
-    fs::create_dir_all(&path).await?;
-    path.push("SUMMARY.md");
-
+    let path = base_path.as_ref().join("src").join("SUMMARY.md");
     let mut writer = Writer::new(path).await?;
 
     writer
@@ -117,7 +114,7 @@ where
         .await?;
     writer.ln().await?;
 
-    if novel.cover_image.read().await.is_some() {
+    if novel.cover_image.is_some() {
         writer
             .writeln(format!(
                 "- [{}](cover.md)",
@@ -171,34 +168,25 @@ where
     T: AsRef<Path>,
     E: AsRef<[Convert]>,
 {
-    if novel.cover_image.read().await.is_some() {
-        let mut src_path = base_path.as_ref().join("src");
-        fs::create_dir_all(&src_path).await?;
-        src_path.push("cover.md");
-
-        let mut writer = Writer::new(&src_path).await?;
+    if let Some(ref cover_image) = novel.cover_image {
+        let path = base_path.as_ref().join("src").join("cover.md");
+        let mut writer = Writer::new(&path).await?;
 
         writer
             .writeln(format!("# {}", utils::convert_str("封面", convert)?))
             .await?;
         writer.ln().await?;
 
-        let ext = utils::new_image_ext(novel.cover_image.read().await.as_ref().unwrap());
+        let image_path = path
+            .join("images")
+            .join(super::cover_image_name(cover_image)?);
 
-        if ext.is_ok() {
-            let image_path = src_path
-                .join("images")
-                .join(format!("cover.{}", ext.unwrap()));
+        let image_path = pathdiff::diff_paths(image_path, &path).unwrap();
+        let image_path_str = image_path.display().to_string().replace('\\', "/");
 
-            let image_path = pathdiff::diff_paths(image_path, &src_path).unwrap();
-            let image_path_str = image_path.display().to_string().replace('\\', "/");
-
-            writer
-                .writeln(&super::image_markdown_str(image_path_str))
-                .await?;
-        } else {
-            bail!("{}", ext.unwrap_err());
-        }
+        writer
+            .writeln(&super::image_markdown_str(image_path_str))
+            .await?;
 
         writer.flush().await?;
     }
@@ -212,10 +200,7 @@ where
     E: AsRef<[Convert]>,
 {
     if let Some(ref introduction) = novel.introduction {
-        let mut path = base_path.as_ref().join("src");
-        fs::create_dir_all(&path).await?;
-        path.push("introduction.md");
-
+        let path = base_path.as_ref().join("src").join("introduction.md");
         let mut writer = Writer::new(path).await?;
 
         writer
@@ -226,7 +211,7 @@ where
         let mut buf = String::with_capacity(4096);
         for line in introduction {
             buf.push_str(line);
-            buf.push_str(&format!("{0}{0}", '\n'));
+            buf.push_str("\n\n");
         }
         // last '\n'
         buf.pop();
@@ -243,141 +228,64 @@ where
     T: AsRef<Path>,
 {
     let src_path = base_path.as_ref().join("src");
-    fs::create_dir_all(&src_path).await?;
-
     let image_path = src_path.join("images");
 
-    let mut volume_count = 1;
-    let mut chapter_count = 1;
-
-    let mut handles = Vec::new();
-    let semaphore = Arc::new(Semaphore::new(utils::maximum_concurrency()));
+    let mut volume_index = 1;
+    let mut chapter_index = 1;
+    let mut image_index = 1;
 
     for volume in &novel.volumes {
-        let volume_path = src_path.join(format!("volume{}", utils::num_to_str(volume_count)));
-        volume_count += 1;
+        let volume_path = src_path.join(format!("volume{}", utils::num_to_str(volume_index)));
+        volume_index += 1;
 
         if !volume.chapters.is_empty() {
-            fs::create_dir_all(&volume_path).await?;
-
             let mut volume_writer = Writer::new(volume_path.join("README.md")).await?;
             volume_writer.writeln(format!("# {}", volume.title)).await?;
             volume_writer.flush().await?;
 
             for chapter in &volume.chapters {
                 let chapter_path = volume_path
-                    .join(format!("chapter{}", utils::num_to_str(chapter_count)))
+                    .join(format!("chapter{}", utils::num_to_str(chapter_index)))
                     .with_extension("md");
-                chapter_count += 1;
+                chapter_index += 1;
 
-                let image_path = image_path.clone();
-                let volume_path = volume_path.clone();
-                let contents = Arc::clone(&chapter.contents);
-                let permit = semaphore.clone().acquire_owned().await.unwrap();
-                let title = format!("# {}", chapter.title);
+                let mut chapter_writer = Writer::new(chapter_path).await?;
 
-                handles.push(tokio::spawn(async move {
-                    let mut chapter_writer = Writer::new(chapter_path).await?;
+                chapter_writer
+                    .writeln(format!("# {}", chapter.title))
+                    .await?;
+                chapter_writer.ln().await?;
 
-                    chapter_writer.writeln(title).await?;
-                    chapter_writer.ln().await?;
+                let mut buf = String::with_capacity(8192);
+                for content in &chapter.contents {
+                    match content {
+                        Content::Text(line) => {
+                            buf.push_str(line);
+                            buf.push_str("\n\n");
+                        }
+                        Content::Image(image) => {
+                            let image_name = super::new_image_name(image, image_index)?;
+                            image_index += 1;
 
-                    let mut buf = String::with_capacity(8192);
-                    for content in contents.read().await.iter() {
-                        match content {
-                            Content::Text(line) => {
-                                buf.push_str(line);
-                                buf.push_str(&format!("{0}{0}", '\n'));
-                            }
-                            Content::Image(image) => {
-                                let image_path = image_path.join(&image.file_name);
-                                let image_path =
-                                    pathdiff::diff_paths(image_path, &volume_path).unwrap();
-                                let image_path_str =
-                                    image_path.display().to_string().replace('\\', "/");
+                            let image_path = image_path.join(image_name);
+                            let image_path =
+                                pathdiff::diff_paths(image_path, &volume_path).unwrap();
+                            let image_path_str =
+                                image_path.display().to_string().replace('\\', "/");
 
-                                buf.push_str(&super::image_markdown_str(image_path_str));
-                                buf.push_str(&format!("{0}{0}", '\n'));
-                            }
+                            buf.push_str(&super::image_markdown_str(image_path_str));
+                            buf.push_str("\n\n");
                         }
                     }
-
-                    // last '\n'
-                    buf.pop();
-
-                    chapter_writer.write(buf).await?;
-                    chapter_writer.flush().await?;
-
-                    drop(permit);
-
-                    Ok::<(), Report>(())
-                }));
-            }
-        }
-    }
-
-    for handle in handles {
-        handle.await??;
-    }
-
-    Ok(())
-}
-
-async fn generate_image<T>(novel: Novel, base_path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    let image_path = base_path.as_ref().join("src").join("images");
-    fs::create_dir_all(&image_path).await?;
-
-    let mut handles = Vec::new();
-    let semaphore = Arc::new(Semaphore::new(utils::maximum_concurrency()));
-
-    for volume in novel.volumes {
-        for chapter in volume.chapters {
-            for index in 0..chapter.contents.read().await.len() {
-                if let Content::Image(ref image) = chapter.contents.read().await[index] {
-                    let path = image_path.join(&image.file_name);
-                    let permit = semaphore.clone().acquire_owned().await.unwrap();
-                    let contents = Arc::clone(&chapter.contents);
-
-                    handles.push(task::spawn_blocking(move || {
-                        if let Content::Image(ref image) = contents.blocking_read()[index] {
-                            image.content.save(path)?;
-                            drop(permit);
-                        }
-
-                        Ok(())
-                    }));
                 }
+
+                // last '\n'
+                buf.pop();
+
+                chapter_writer.write(buf).await?;
+                chapter_writer.flush().await?;
             }
         }
-    }
-
-    if novel.cover_image.read().await.is_some() {
-        let cover_image = Arc::clone(&novel.cover_image);
-        let image_path = image_path.clone();
-
-        handles.push(task::spawn_blocking(move || {
-            let ext = utils::new_image_ext(cover_image.blocking_read().as_ref().unwrap());
-
-            if ext.is_ok() {
-                let path = image_path.join(format!("cover.{}", ext.unwrap()));
-                cover_image.blocking_read().as_ref().unwrap().save(path)?;
-            } else {
-                bail!("{}", ext.unwrap_err());
-            }
-
-            Ok(())
-        }));
-    }
-
-    if handles.is_empty() {
-        utils::remove_file_or_dir(image_path)?;
-    }
-
-    for handle in handles {
-        handle.await??;
     }
 
     Ok(())

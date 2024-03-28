@@ -1,20 +1,18 @@
 use std::{path::PathBuf, sync::Arc};
 
 use clap::{value_parser, Args};
-use color_eyre::eyre::{bail, Result};
+use color_eyre::eyre::{self, bail, Result};
+use dashmap::DashMap;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, CiyuanjiClient, Client, ContentInfo, SfacgClient, VolumeInfos};
-use tokio::{
-    sync::{RwLock, Semaphore},
-    task::JoinHandle,
-};
+use tokio::sync::Semaphore;
 use tracing::{error, info, warn};
 use url::Url;
 
 use crate::{
     cmd::{Convert, Format, Source},
     renderer,
-    utils::{self, Chapter, Content, Image, Novel, ProgressBar, Volume},
+    utils::{self, Chapter, Content, Novel, ProgressBar, Volume},
     LANG_ID, LOCALES,
 };
 
@@ -64,7 +62,7 @@ pub struct Download {
 }
 
 pub async fn execute(config: Download) -> Result<()> {
-    check_skip_login(&config)?;
+    check_skip_login_flag(&config)?;
 
     match config.source {
         Source::Sfacg => {
@@ -87,11 +85,10 @@ pub async fn execute(config: Download) -> Result<()> {
     Ok(())
 }
 
-fn check_skip_login(config: &Download) -> Result<()> {
-    if config.skip_login {
-        if let Source::Ciweimao = config.source {
-            bail!("ciweimao cannot skip login");
-        }
+fn check_skip_login_flag(config: &Download) -> Result<()> {
+    if config.skip_login && (config.source == Source::Ciweimao || config.source == Source::Ciyuanji)
+    {
+        bail!("This source cannot skip login");
     }
 
     Ok(())
@@ -102,7 +99,7 @@ where
     T: Client + Send + Sync + 'static,
 {
     if !config.skip_login {
-        if matches!(config.source, Source::Ciyuanji) {
+        if config.source == Source::Ciyuanji {
             utils::log_in_without_password(&client).await?;
         } else {
             utils::log_in(&client, &config.source, config.ignore_keyring).await?;
@@ -115,30 +112,20 @@ where
         );
     }
 
-    let mut handles = Vec::new();
-    let mut novel = download_novel(client, &config, &mut handles).await?;
-
-    for handle in handles {
-        handle.await??;
-    }
-
+    let mut novel = download_novel(client, &config).await?;
     println!("{}", utils::locales("download_complete_msg", "👌"));
 
     utils::convert(&mut novel, &config.converts).await?;
 
     match config.format {
-        Format::Pandoc => renderer::generate_pandoc_markdown(novel, &config.converts).await?,
+        Format::Pandoc => renderer::generate_pandoc_markdown(novel, &config.converts)?,
         Format::Mdbook => renderer::generate_mdbook(novel, &config.converts).await?,
     };
 
     Ok(())
 }
 
-async fn download_novel<T>(
-    client: T,
-    config: &Download,
-    handles: &mut Vec<JoinHandle<Result<()>>>,
-) -> Result<Novel>
+async fn download_novel<T>(client: T, config: &Download) -> Result<Novel>
 where
     T: Client + Send + Sync + 'static,
 {
@@ -151,81 +138,68 @@ where
         name: novel_info.name,
         author_name: novel_info.author_name,
         introduction: novel_info.introduction,
-        cover_image: Arc::new(RwLock::new(None)),
+        cover_image: None,
         volumes: Vec::new(),
     };
-
-    if novel_info.cover_url.is_some() {
-        handles.push(download_cover_image(
-            &client,
-            novel_info.cover_url.unwrap(),
-            &novel,
-        )?);
-    }
 
     println!(
         "{}",
         utils::locales_with_arg("start_msg", "🚚", &novel.name)
     );
-    let volume_infos = client.volume_infos(config.novel_id).await?;
-    let volume_infos = volume_infos.unwrap_or_else(|| todo!());
 
+    if novel_info.cover_url.is_some() {
+        match client.image(&novel_info.cover_url.unwrap()).await {
+            Ok(image) => novel.cover_image = Some(image),
+            Err(error) => {
+                error!("Image download failed: {error}");
+            }
+        };
+    }
+
+    let Some(volume_infos) = client.volume_infos(config.novel_id).await? else {
+        bail!("Unable to get chapter information");
+    };
+
+    let mut handles = Vec::new();
     let pb = ProgressBar::new(chapter_count(&volume_infos))?;
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
-    let image_count = Arc::new(RwLock::new(1));
+    let chapter_map = Arc::new(DashMap::new());
 
     let mut exists_can_not_downloaded = false;
 
     for volume_info in volume_infos {
-        let mut volume = Volume {
+        novel.volumes.push(Volume {
             title: volume_info.title,
-            chapters: Vec::new(),
-        };
+            chapters: Vec::with_capacity(32),
+        });
+
+        let volume = novel.volumes.last_mut().unwrap();
 
         for chapter_info in volume_info.chapter_infos {
             if chapter_info.can_download() {
-                let chapter = Chapter {
+                volume.chapters.push(Chapter {
+                    id: chapter_info.id,
                     title: chapter_info.title.clone(),
-                    contents: Arc::new(RwLock::new(Vec::new())),
-                };
+                    contents: Vec::new(),
+                });
 
                 let client = Arc::clone(&client);
                 let permit = semaphore.clone().acquire_owned().await.unwrap();
                 let mut pb = pb.clone();
-                let contents = Arc::clone(&chapter.contents);
-                let image_count = Arc::clone(&image_count);
+                let chapter_map = Arc::clone(&chapter_map);
 
                 handles.push(tokio::spawn(async move {
                     pb.inc(&chapter_info.title);
                     let content_infos = client.content_infos(&chapter_info).await?;
                     drop(permit);
 
+                    let mut contents = Vec::with_capacity(64);
                     for content_info in content_infos {
                         match content_info {
-                            ContentInfo::Text(text) => {
-                                contents.write().await.push(Content::Text(text))
-                            }
+                            ContentInfo::Text(text) => contents.push(Content::Text(text)),
                             ContentInfo::Image(url) => match client.image(&url).await {
                                 Ok(image) => {
-                                    let ext = utils::new_image_ext(&image);
-
-                                    if ext.is_ok() {
-                                        let image_name = format!(
-                                            "{}.{}",
-                                            utils::num_to_str(*image_count.read().await),
-                                            ext.unwrap()
-                                        );
-                                        *image_count.write().await += 1;
-
-                                        let image = Image {
-                                            file_name: image_name,
-                                            content: image,
-                                        };
-
-                                        contents.write().await.push(Content::Image(image));
-                                    } else {
-                                        error!("{}, url: {url}", ext.unwrap_err())
-                                    }
+                                    contents.push(Content::Image(image));
                                 }
                                 Err(error) => {
                                     error!("Image download failed: {error}");
@@ -234,10 +208,10 @@ where
                         }
                     }
 
-                    Ok(())
-                }));
+                    chapter_map.insert(chapter_info.id, contents);
 
-                volume.chapters.push(chapter);
+                    eyre::Ok(())
+                }));
             } else {
                 info!(
                     "`{}-{}` can not be downloaded",
@@ -246,8 +220,19 @@ where
                 exists_can_not_downloaded = true;
             }
         }
+    }
 
-        novel.volumes.push(volume);
+    for handle in handles {
+        handle.await??;
+    }
+
+    let chapter_map = Arc::into_inner(chapter_map).unwrap();
+    for volume in &mut novel.volumes {
+        for chapter in &mut volume.chapters {
+            if let Some((_, contents)) = chapter_map.remove(&chapter.id) {
+                chapter.contents = contents;
+            }
+        }
     }
 
     pb.finish();
@@ -257,29 +242,6 @@ where
     }
 
     Ok(novel)
-}
-
-fn download_cover_image<T>(
-    client: &Arc<T>,
-    url: Url,
-    novel: &Novel,
-) -> Result<JoinHandle<Result<()>>>
-where
-    T: Client + Sync + Send + 'static,
-{
-    let client = Arc::clone(client);
-    let cover_image = Arc::clone(&novel.cover_image);
-
-    Ok(tokio::spawn(async move {
-        match client.image(&url).await {
-            Ok(image) => *cover_image.write().await = Some(image),
-            Err(error) => {
-                error!("Image download failed: {error}");
-            }
-        };
-
-        Ok(())
-    }))
 }
 
 #[must_use]

@@ -34,7 +34,7 @@ where
         for chapter in &mut volume.chapters {
             chapter.title = convert_str(&chapter.title, &converts)?;
 
-            for content in chapter.contents.write().await.iter_mut() {
+            for content in &mut chapter.contents {
                 if let Content::Text(line) = content {
                     *line = convert_str(&line, &converts)?;
                 }
