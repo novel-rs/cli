@@ -60,6 +60,7 @@ pub async fn execute(config: Info) -> Result<()> {
         Source::Ciyuanji => {
             let mut client = CiyuanjiClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            utils::log_in_without_password(&client).await?;
             do_execute(client, config).await?
         }
     }
@@ -76,14 +77,17 @@ where
 
     let novel_info = utils::novel_info(&client, config.novel_id).await?;
 
+    let mut cover_image = None;
     if let Some(ref url) = novel_info.cover_url {
         match client.image(url).await {
-            Ok(image) => utils::print_novel_info(Some(image), novel_info, &config.converts)?,
-            Err(error) => error!("Image download failed: {error}"),
+            Ok(image) => cover_image = Some(image),
+            Err(error) => {
+                error!("Image download failed: {error}");
+            }
         }
-    } else {
-        utils::print_novel_info(None, novel_info, &config.converts)?;
     }
+
+    utils::print_novel_info(cover_image, novel_info, &config.converts)?;
 
     Ok(())
 }
