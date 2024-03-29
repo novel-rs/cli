@@ -750,42 +750,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "cookie"
-version = "0.18.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ddef33a339a91ea89fb53151bd0a4689cfce27055c291dfa69945475d22c747"
-dependencies = [
- "percent-encoding",
- "time",
- "version_check",
-]
-
-[[package]]
 name = "cookie_store"
 version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "387461abbc748185c3a6e1673d826918b450b87ff22639429c694619a83b6cf6"
 dependencies = [
- "cookie 0.17.0",
+ "cookie",
  "idna 0.3.0",
  "log",
  "publicsuffix",
- "serde",
- "serde_derive",
- "serde_json",
- "time",
- "url",
-]
-
-[[package]]
-name = "cookie_store"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4934e6b7e8419148b6ef56950d277af8561060b56afd59e2aadf98b59fce6baa"
-dependencies = [
- "cookie 0.18.1",
- "idna 0.5.0",
- "log",
  "serde",
  "serde_derive",
  "serde_json",
@@ -1814,25 +1787,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "h2"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51ee2dd2e4f378392eeff5d51618cd9a63166a2513846bbc55f21cfacd9199d4"
-dependencies = [
- "bytes",
- "fnv",
- "futures-core",
- "futures-sink",
- "futures-util",
- "http 1.1.0",
- "indexmap 2.2.6",
- "slab",
- "tokio",
- "tokio-util",
- "tracing",
-]
-
-[[package]]
 name = "half"
 version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2108,7 +2062,7 @@ dependencies = [
  "futures-channel",
  "futures-core",
  "futures-util",
- "h2 0.3.25",
+ "h2",
  "http 0.2.12",
  "http-body 0.4.6",
  "httparse",
@@ -2131,7 +2085,6 @@ dependencies = [
  "bytes",
  "futures-channel",
  "futures-util",
- "h2 0.4.3",
  "http 1.1.0",
  "http-body 1.0.0",
  "httparse",
@@ -2140,7 +2093,6 @@ dependencies = [
  "pin-project-lite",
  "smallvec",
  "tokio",
- "want",
 ]
 
 [[package]]
@@ -2152,26 +2104,9 @@ dependencies = [
  "futures-util",
  "http 0.2.12",
  "hyper 0.14.28",
- "rustls 0.21.10",
+ "rustls",
  "tokio",
- "tokio-rustls 0.24.1",
-]
-
-[[package]]
-name = "hyper-rustls"
-version = "0.26.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a0bea761b46ae2b24eb4aef630d8d1c398157b6fc29e6350ecf090a0b70c952c"
-dependencies = [
- "futures-util",
- "http 1.1.0",
- "hyper 1.2.0",
- "hyper-util",
- "rustls 0.22.3",
- "rustls-pki-types",
- "tokio",
- "tokio-rustls 0.25.0",
- "tower-service",
+ "tokio-rustls",
 ]
 
 [[package]]
@@ -2181,7 +2116,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca38ef113da30126bbff9cd1705f9273e15d45498615d138b0c20279ac7a76aa"
 dependencies = [
  "bytes",
- "futures-channel",
  "futures-util",
  "http 1.1.0",
  "http-body 1.0.0",
@@ -2189,9 +2123,6 @@ dependencies = [
  "pin-project-lite",
  "socket2",
  "tokio",
- "tower",
- "tower-service",
- "tracing",
 ]
 
 [[package]]
@@ -2831,7 +2762,7 @@ dependencies = [
 [[package]]
 name = "novel-api"
 version = "0.9.0"
-source = "git+https://github.com/novel-rs/api#fb6458fb901b97e45ed3e0dcba67f99ee92a9280"
+source = "git+https://github.com/novel-rs/api#e5798687349613a94fb92fc916cccf7b346b658c"
 dependencies = [
  "aes",
  "askama",
@@ -2844,14 +2775,14 @@ dependencies = [
  "cbc",
  "chrono",
  "chrono-tz",
- "cookie_store 0.21.0",
+ "cookie_store",
  "des",
  "dialoguer",
  "directories",
  "ecb",
  "hashbrown 0.14.3",
  "hex-simd",
- "http 1.1.0",
+ "http 0.2.12",
  "image",
  "is_ci",
  "itertools",
@@ -2862,7 +2793,7 @@ dependencies = [
  "once_cell",
  "open",
  "portpicker",
- "reqwest 0.12.2",
+ "reqwest",
  "ring",
  "rust-embed",
  "scraper",
@@ -3815,63 +3746,20 @@ version = "0.11.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd67538700a17451e7cba03ac727fb961abb7607553461627b97de0b89cf4a62"
 dependencies = [
- "base64",
- "bytes",
- "encoding_rs",
- "futures-core",
- "futures-util",
- "h2 0.3.25",
- "http 0.2.12",
- "http-body 0.4.6",
- "hyper 0.14.28",
- "hyper-rustls 0.24.2",
- "ipnet",
- "js-sys",
- "log",
- "mime",
- "once_cell",
- "percent-encoding",
- "pin-project-lite",
- "rustls 0.21.10",
- "rustls-pemfile",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "sync_wrapper 0.1.2",
- "system-configuration",
- "tokio",
- "tokio-rustls 0.24.1",
- "tower-service",
- "url",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
- "webpki-roots 0.25.4",
- "winreg",
-]
-
-[[package]]
-name = "reqwest"
-version = "0.12.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d66674f2b6fb864665eea7a3c1ac4e3dfacd2fda83cf6f935a612e01b0e3338"
-dependencies = [
  "async-compression",
  "base64",
  "bytes",
- "cookie 0.17.0",
- "cookie_store 0.20.0",
+ "cookie",
+ "cookie_store",
  "encoding_rs",
  "futures-core",
  "futures-util",
- "h2 0.4.3",
+ "h2",
  "hickory-resolver",
- "http 1.1.0",
- "http-body 1.0.0",
- "http-body-util",
- "hyper 1.2.0",
- "hyper-rustls 0.26.0",
- "hyper-util",
+ "http 0.2.12",
+ "http-body 0.4.6",
+ "hyper 0.14.28",
+ "hyper-rustls",
  "ipnet",
  "js-sys",
  "log",
@@ -3879,23 +3767,22 @@ dependencies = [
  "once_cell",
  "percent-encoding",
  "pin-project-lite",
- "rustls 0.22.3",
+ "rustls",
  "rustls-pemfile",
- "rustls-pki-types",
  "serde",
  "serde_json",
  "serde_urlencoded",
  "sync_wrapper 0.1.2",
  "system-configuration",
  "tokio",
- "tokio-rustls 0.25.0",
+ "tokio-rustls",
  "tokio-util",
  "tower-service",
  "url",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
- "webpki-roots 0.26.1",
+ "webpki-roots",
  "winreg",
 ]
 
@@ -4056,22 +3943,8 @@ checksum = "f9d5a6813c0759e4609cd494e8e725babae6a2ca7b62a5536a13daaec6fcb7ba"
 dependencies = [
  "log",
  "ring",
- "rustls-webpki 0.101.7",
+ "rustls-webpki",
  "sct",
-]
-
-[[package]]
-name = "rustls"
-version = "0.22.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99008d7ad0bbbea527ec27bddbc0e432c5b87d8175178cee68d2eec9c4a1813c"
-dependencies = [
- "log",
- "ring",
- "rustls-pki-types",
- "rustls-webpki 0.102.2",
- "subtle",
- "zeroize",
 ]
 
 [[package]]
@@ -4084,29 +3957,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustls-pki-types"
-version = "1.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ecd36cc4259e3e4514335c4a138c6b43171a8d61d8f5c9348f9fc7529416f247"
-
-[[package]]
 name = "rustls-webpki"
 version = "0.101.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b6275d1ee7a1cd780b64aca7726599a1dbc893b1e64144529e55c3c2f745765"
 dependencies = [
  "ring",
- "untrusted",
-]
-
-[[package]]
-name = "rustls-webpki"
-version = "0.102.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "faaa0a62740bedb9b2ef5afa303da42764c012f743917351dc9a237ea1663610"
-dependencies = [
- "ring",
- "rustls-pki-types",
  "untrusted",
 ]
 
@@ -4375,7 +4231,7 @@ dependencies = [
  "log",
  "quick-xml",
  "regex",
- "reqwest 0.11.27",
+ "reqwest",
  "self-replace",
  "semver",
  "serde_json",
@@ -4775,7 +4631,7 @@ dependencies = [
  "once_cell",
  "paste",
  "percent-encoding",
- "rustls 0.21.10",
+ "rustls",
  "rustls-pemfile",
  "serde",
  "serde_json",
@@ -4787,7 +4643,7 @@ dependencies = [
  "tokio-stream",
  "tracing",
  "url",
- "webpki-roots 0.25.4",
+ "webpki-roots",
 ]
 
 [[package]]
@@ -5297,18 +5153,7 @@ version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c28327cf380ac148141087fbfb9de9d7bd4e84ab5d2c28fbc911d753de8a7081"
 dependencies = [
- "rustls 0.21.10",
- "tokio",
-]
-
-[[package]]
-name = "tokio-rustls"
-version = "0.25.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "775e0c0f0adb3a2f22a00c4745d728b479985fc15ee7ca6a2608388c5569860f"
-dependencies = [
- "rustls 0.22.3",
- "rustls-pki-types",
+ "rustls",
  "tokio",
 ]
 
@@ -5399,7 +5244,6 @@ dependencies = [
  "tokio",
  "tower-layer",
  "tower-service",
- "tracing",
 ]
 
 [[package]]
@@ -5883,15 +5727,6 @@ name = "webpki-roots"
 version = "0.25.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5f20c57d8d7db6d3b86154206ae5d8fba62dd39573114de97c2cb0578251f8e1"
-
-[[package]]
-name = "webpki-roots"
-version = "0.26.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3de34ae270483955a94f4b21bdaaeb83d508bb84a01435f393818edb0012009"
-dependencies = [
- "rustls-pki-types",
-]
 
 [[package]]
 name = "weezl"
