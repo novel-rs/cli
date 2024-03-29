@@ -27,4 +27,4 @@ jobs:
 
       # https://github.com/wagoid/commitlint-github-action
       - name: Run commitlint
-        uses: wagoid/commitlint-github-action@v5
+        uses: wagoid/commitlint-github-action@v6
