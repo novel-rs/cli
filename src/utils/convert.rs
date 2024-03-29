@@ -8,7 +8,7 @@ use crate::cmd::Convert;
 
 use super::{Content, Novel};
 
-pub async fn convert<T>(novel: &mut Novel, converts: T) -> Result<()>
+pub fn convert<T>(novel: &mut Novel, converts: T) -> Result<()>
 where
     T: AsRef<[Convert]>,
 {
@@ -177,28 +177,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
                 result.push('：');
             }
         } else if c == ';' {
-            // https://en.wikipedia.org/wiki/Non-breaking_space
-            if result.ends_with("&nbsp") {
-                result.truncate(result.len() - 5);
-                result.push(' ');
-            } else if result.ends_with("&lt") {
-                result.truncate(result.len() - 3);
-                result.push('<');
-            } else if result.ends_with("&gt") {
-                result.truncate(result.len() - 3);
-                result.push('>');
-            } else if result.ends_with("&quot") {
-                result.truncate(result.len() - 5);
-                result.push('"');
-            } else if result.ends_with("&apos") {
-                result.truncate(result.len() - 5);
-                result.push('\'');
-            } else if result.ends_with("&amp") {
-                result.truncate(result.len() - 4);
-                result.push('&');
-            } else {
-                result.push('；');
-            }
+            result.push('；');
         } else if c == '(' {
             result.push('（');
         } else if c == ')' {

@@ -15,12 +15,15 @@ where
     Ok(())
 }
 
-pub fn ensure_markdown_file<T>(path: T) -> Result<()>
+pub fn ensure_markdown_or_txt_file<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
 {
-    if !is_markdown_file(&path)? {
-        bail!("File `{}` is not markdown file", path.as_ref().display())
+    if !is_markdown_or_txt_file(&path)? {
+        bail!(
+            "File `{}` is not markdown or txt file",
+            path.as_ref().display()
+        )
     }
 
     Ok(())

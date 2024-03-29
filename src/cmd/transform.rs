@@ -37,7 +37,7 @@ pub struct Transform {
 pub fn execute(config: Transform) -> Result<()> {
     let mut timing = Timing::new();
 
-    utils::ensure_markdown_file(&config.markdown_path)?;
+    utils::ensure_markdown_or_txt_file(&config.markdown_path)?;
 
     let input_markdown_file_path = dunce::canonicalize(&config.markdown_path)?;
     let input_dir = input_markdown_file_path.parent().unwrap().to_path_buf();
@@ -48,7 +48,7 @@ pub fn execute(config: Transform) -> Result<()> {
         .unwrap()
         .to_string();
     info!(
-        "Input Markdown file path: `{}`",
+        "Input Markdown or txt file path: `{}`",
         input_markdown_file_path.display()
     );
 

@@ -62,12 +62,15 @@ fn execute_mdbook(config: Build) -> Result<()> {
         utils::remove_file_or_dir(&book_path)?;
     }
 
-    if let Ok(mdbook) = MDBook::load(&input_mdbook_dir_path) {
-        if let Err(error) = mdbook.build() {
-            bail!("mdBook failed to build: {error}");
+    match MDBook::load(&input_mdbook_dir_path) {
+        Ok(mdbook) => {
+            if let Err(error) = mdbook.build() {
+                bail!("mdBook failed to build: {error}");
+            }
         }
-    } else {
-        bail!("mdBook failed to load");
+        Err(error) => {
+            bail!("mdBook failed to load: {error}");
+        }
     }
 
     if config.delete {

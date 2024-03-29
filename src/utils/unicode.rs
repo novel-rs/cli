@@ -124,6 +124,7 @@ pub const fn is_cjk(c: char) -> bool {
         || range(c, '\u{2B740}', '\u{2B81D}')
         || range(c, '\u{2B820}', '\u{2CEA1}')
         || range(c, '\u{2CEB0}', '\u{2EBE0}')
+        || range(c, '\u{2EBF0}', '\u{2EE5F}')
         || range(c, '\u{30000}', '\u{3134A}')
         || range(c, '\u{31350}', '\u{323AF}')
 }

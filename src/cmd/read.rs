@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use clap::Args;
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{bail, Result};
 use cursive::event::Key;
 use cursive::theme::{BorderStyle, Color::TerminalDefault, Palette, PaletteColor::*, Theme};
 use cursive::view::Nameable;
@@ -94,8 +94,9 @@ where
     let mut select = SelectView::new();
     let select_width = (viuer::terminal_size().0 / 3) as usize;
 
-    let volume_infos = client.volume_infos(config.novel_id).await?;
-    let volume_infos = volume_infos.unwrap_or_else(|| todo!());
+    let Some(volume_infos) = client.volume_infos(config.novel_id).await? else {
+        bail!("Unable to get chapter information");
+    };
 
     for volume in volume_infos {
         let volume_title = utils::convert_str(volume.title, &config.converts)?;
@@ -111,7 +112,7 @@ where
             );
 
             select.add_item(
-                console::truncate_str(&chapter_title, select_width, "..."),
+                console::truncate_str(&chapter_title, select_width - 2, "..."),
                 Some(chapter),
             );
         }

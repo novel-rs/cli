@@ -16,7 +16,6 @@ impl Writer {
     where
         T: AsRef<Path>,
     {
-        // TODO really need?
         let parent = path.as_ref().parent().unwrap();
         if !fs::try_exists(parent).await? {
             fs::create_dir_all(parent).await?;

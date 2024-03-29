@@ -92,18 +92,18 @@ where
         handles.push(tokio::spawn(async move {
             let novel_info = client.novel_info(novel_id).await?;
             drop(permit);
-            Ok(novel_info)
+            Ok((novel_id, novel_info))
         }));
     }
 
-    let mut novel_infos = Vec::with_capacity(16);
+    let mut novel_infos = Vec::with_capacity(handles.len());
     for handle in handles {
-        let novel_info = handle.await??;
+        let (novel_id, novel_info) = handle.await??;
 
         if let Some(info) = novel_info {
             novel_infos.push(info);
         } else {
-            error!("The novel does not exist, and it may have been taken down");
+            error!("The novel does not exist, and it may have been taken down: {novel_id}");
         }
     }
 

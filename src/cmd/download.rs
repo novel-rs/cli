@@ -115,7 +115,7 @@ where
     let mut novel = download_novel(client, &config).await?;
     println!("{}", utils::locales("download_complete_msg", "👌"));
 
-    utils::convert(&mut novel, &config.converts).await?;
+    utils::convert(&mut novel, &config.converts)?;
 
     match config.format {
         Format::Pandoc => renderer::generate_pandoc_markdown(novel, &config.converts)?,

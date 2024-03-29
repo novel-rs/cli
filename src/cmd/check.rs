@@ -41,7 +41,7 @@ pub fn execute(config: Check) -> Result<()> {
         bail!("Invalid input path: `{}`", config.markdown_path.display());
     }
     info!(
-        "Input markdown file path: `{}`",
+        "Input markdown or txt file path: `{}`",
         input_markdown_file_path.display()
     );
 
@@ -54,6 +54,7 @@ pub fn execute(config: Check) -> Result<()> {
 
     check_metadata(&mut parser)?;
 
+    let max_width = (viuer::terminal_size().0 / 2) as usize;
     let mut char_set = HashSet::new();
     parser.for_each(|(event, range)| match event {
         Event::Start(tag) => match tag {
@@ -97,7 +98,7 @@ pub fn execute(config: Check) -> Result<()> {
             | Tag::Link { .. }
             | Tag::HtmlBlock
             | Tag::MetadataBlock(_) => {
-                let content = markdown[range].trim();
+                let content = console::truncate_str(markdown[range].trim(), max_width, "...");
 
                 println_msg(format!(
                     "Markdown tag that should not appear: `{tag:?}`, content: `{content}`"
@@ -119,7 +120,7 @@ pub fn execute(config: Check) -> Result<()> {
                         println_msg(format!(
                             "Irregular char: `{}`, at `{}`",
                             c,
-                            &markdown[range.clone()]
+                            console::truncate_str(markdown[range.clone()].trim(), max_width, "...")
                         ));
                     }
                 }
@@ -134,7 +135,7 @@ pub fn execute(config: Check) -> Result<()> {
         | Event::Rule
         | Event::TaskListMarker(_)
         | Event::InlineHtml(_) => {
-            let content = markdown[range].trim();
+            let content = console::truncate_str(markdown[range].trim(), max_width, "...");
 
             println_msg(format!(
                 "Markdown event that should not appear: `{event:?}`, content: `{content}`"

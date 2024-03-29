@@ -81,7 +81,6 @@ where
         error!("Failed to put file or folder into Trash: {}", error);
     }
 
-    // `trash::delete_all` may fail without error
     for path in paths {
         let path = path.as_ref();
 

@@ -7,7 +7,6 @@ use std::{fs, thread};
 use color_eyre::eyre::Ok;
 use color_eyre::eyre::{bail, Result};
 use image::DynamicImage;
-use tracing::error;
 
 use crate::utils;
 use crate::utils::Content;
@@ -100,7 +99,7 @@ where
                     Ok(())
                 });
             } else {
-                error!("{}", image_ext.unwrap_err());
+                panic!("{}", image_ext.unwrap_err());
             }
         }
     });

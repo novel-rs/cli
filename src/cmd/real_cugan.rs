@@ -6,7 +6,7 @@ use std::{
 
 use bytes::BytesMut;
 use clap::Args;
-use color_eyre::eyre::{bail, Report, Result};
+use color_eyre::eyre::{bail, Ok, Result};
 use fluent_templates::Loader;
 use image::io::Reader;
 use novel_api::Timing;
@@ -86,7 +86,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
 
             drop(permit);
 
-            Ok::<(), Report>(())
+            Ok(())
         }));
     }
 

@@ -104,13 +104,11 @@ where
     T: AsRef<Path>,
     E: AsRef<[Convert]>,
 {
-    let convert = convert.as_ref();
-
     let path = base_path.as_ref().join("src").join("SUMMARY.md");
     let mut writer = Writer::new(path).await?;
 
     writer
-        .writeln(format!("# {}", utils::convert_str("目录", convert)?))
+        .writeln(format!("# {}", utils::convert_str("目录", &convert)?))
         .await?;
     writer.ln().await?;
 
@@ -118,7 +116,7 @@ where
         writer
             .writeln(format!(
                 "- [{}](cover.md)",
-                utils::convert_str("封面", convert)?
+                utils::convert_str("封面", &convert)?
             ))
             .await?;
         writer.ln().await?;
@@ -128,7 +126,7 @@ where
         writer
             .writeln(format!(
                 "- [{}](introduction.md)",
-                utils::convert_str("简介", convert)?
+                utils::convert_str("简介", &convert)?
             ))
             .await?;
         writer.ln().await?;
