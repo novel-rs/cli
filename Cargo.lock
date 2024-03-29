@@ -2831,7 +2831,7 @@ dependencies = [
 [[package]]
 name = "novel-api"
 version = "0.9.0"
-source = "git+https://github.com/novel-rs/api#39178001fbce4c267ba398486684dd3d2949a200"
+source = "git+https://github.com/novel-rs/api#fb6458fb901b97e45ed3e0dcba67f99ee92a9280"
 dependencies = [
  "aes",
  "askama",

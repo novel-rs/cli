@@ -37,7 +37,7 @@ where
         );
 
         if new_image_ext == "webp" {
-            novel_api::save_as_webp(image, 75.0, &new_image_path)?;
+            novel_api::save_as_webp(&image, 75.0, &new_image_path)?;
         } else {
             image.save(&new_image_path)?;
         }

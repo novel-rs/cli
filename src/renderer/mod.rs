@@ -57,8 +57,14 @@ where
         let image_ext = utils::new_image_ext(cover_image);
 
         if image_ext.is_ok() {
-            let image_path = image_dir_path.join(format!("cover.{}", image_ext.unwrap()));
-            cover_image.save(image_path)?;
+            let image_ext = image_ext.unwrap();
+            let image_path = image_dir_path.join(format!("cover.{}", image_ext));
+
+            if image_ext == "webp" {
+                novel_api::save_as_webp(cover_image, 75.0, image_path)?;
+            } else {
+                cover_image.save(image_path)?;
+            }
 
             image_exists = true;
         } else {
@@ -88,16 +94,23 @@ where
             let image_ext = utils::new_image_ext(image);
 
             if image_ext.is_ok() {
-                let image_name =
-                    format!("{}.{}", utils::num_to_str(image_index), image_ext.unwrap());
+                let image_ext = image_ext.unwrap();
+                let image_name = format!("{}.{}", utils::num_to_str(image_index), image_ext);
                 image_index += 1;
 
                 let image_path = image_dir_path.join(image_name);
 
-                s.spawn(|| {
-                    image.save(image_path)?;
-                    Ok(())
-                });
+                if image_ext == "webp" {
+                    s.spawn(|| {
+                        novel_api::save_as_webp(image, 75.0, image_path)?;
+                        Ok(())
+                    });
+                } else {
+                    s.spawn(|| {
+                        image.save(image_path)?;
+                        Ok(())
+                    });
+                }
             } else {
                 panic!("{}", image_ext.unwrap_err());
             }
