@@ -29,7 +29,7 @@ serde = { version = "1.0.197", default-features = false, features = [
   "derive",
 ] }
 # https://github.com/tokio-rs/tokio
-tokio = { version = "1.36.0", default-features = false, features = [
+tokio = { version = "1.37.0", default-features = false, features = [
   "macros",
   "io-util",
   "fs",
@@ -238,10 +238,10 @@ serial_test = { version = "3.0.0", default-features = false, features = [
 ] }
 
 [profile.release]
-strip = true
-lto = true
-codegen-units = 1
-panic = 'abort'
+# strip = true
+# lto = true
+# codegen-units = 1
+# panic = 'abort'
 
 # https://github.com/eyre-rs/color-eyre?tab=readme-ov-file#improving-perf-on-debug-builds
 [profile.dev.package.backtrace]

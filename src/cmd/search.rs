@@ -1,10 +1,10 @@
-use std::{path::PathBuf, sync::Arc};
+use std::{cmp, path::PathBuf, sync::Arc};
 
 use clap::{value_parser, Args};
-use color_eyre::eyre::{bail, Report, Result};
+use color_eyre::eyre::{bail, Ok, Result};
 use fluent_templates::Loader;
 use novel_api::{
-    CiweimaoClient, CiyuanjiClient, Client, NovelInfo, Options, SfacgClient, Tag, WordCountRange,
+    CiweimaoClient, CiyuanjiClient, Client, Options, SfacgClient, Tag, WordCountRange,
 };
 use tokio::sync::Semaphore;
 use tracing::debug;
@@ -106,6 +106,7 @@ pub async fn execute(config: Search) -> Result<()> {
         Source::Ciyuanji => {
             let mut client = CiyuanjiClient::new().await?;
             super::set_options(&mut client, &config.proxy, &config.no_proxy, &config.cert);
+            utils::log_in_without_password(&client).await?;
             do_execute(client, config).await?;
         }
     }
@@ -117,6 +118,9 @@ async fn do_execute<T>(client: T, config: Search) -> Result<()>
 where
     T: Client + Send + Sync + 'static,
 {
+    let client = Arc::new(client);
+    super::handle_ctrl_c(&client);
+
     if config.show_categories {
         let categories = client.categories().await?;
         println!("{}", vec_to_string(categories)?);
@@ -124,25 +128,22 @@ where
         let tags = client.tags().await?;
         println!("{}", vec_to_string(tags)?);
     } else {
-        let client = Arc::new(client);
-        super::handle_ctrl_c(&client);
-
         let mut page = 0;
-        let size = 10;
         let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
 
         let options = create_options(&client, &config).await?;
-        debug!("{:#?}", options);
+        debug!("{options:#?}");
 
         let mut novel_infos = Vec::new();
         loop {
+            let size = cmp::max(config.limit as u16 - novel_infos.len() as u16, 10);
+
             let novel_ids = client.search_infos(&options, page, size).await?;
+            page += 1;
 
             if novel_ids.is_none() {
                 break;
             }
-
-            page += 1;
 
             let mut handles = Vec::new();
             for novel_id in novel_ids.unwrap() {
@@ -152,7 +153,7 @@ where
                 handles.push(tokio::spawn(async move {
                     let novel_info = utils::novel_info(&client, novel_id).await?;
                     drop(permit);
-                    Ok::<NovelInfo, Report>(novel_info)
+                    Ok(novel_info)
                 }));
             }
 
@@ -191,13 +192,16 @@ where
 
     if config.category.is_some() {
         let categories = client.categories().await?;
-        let name = config.category.as_ref().unwrap();
+        let categories_name = config.category.as_ref().unwrap();
 
-        match categories.iter().find(|category| category.name == *name) {
+        match categories
+            .iter()
+            .find(|category| category.name == *categories_name)
+        {
             Some(category) => options.category = Some(category.clone()),
             None => {
                 bail!(
-                    "The category was not found: `{name}`, all available categories are: `{}`",
+                    "The category was not found: `{categories_name}`, all available categories are: `{}`",
                     vec_to_string(categories)?
                 );
             }
@@ -225,19 +229,19 @@ where
     Ok(options)
 }
 
-async fn to_tags<T>(client: &Arc<T>, str: &Vec<String>) -> Result<Vec<Tag>>
+async fn to_tags<T>(client: &Arc<T>, tag_names: &Vec<String>) -> Result<Vec<Tag>>
 where
     T: Client,
 {
     let mut result = Vec::new();
 
     let tags = client.tags().await?;
-    for name in str {
-        match tags.iter().find(|tag| tag.name == *name) {
+    for tag_name in tag_names {
+        match tags.iter().find(|tag| tag.name == *tag_name) {
             Some(tag) => result.push(tag.clone()),
             None => {
                 bail!(
-                    "The tag was not found: `{name}`, all available tags are: `{}`",
+                    "The tag was not found: `{tag_name}`, all available tags are: `{}`",
                     vec_to_string(tags)?
                 );
             }

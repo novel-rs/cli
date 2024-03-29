@@ -64,7 +64,9 @@ where
     E: Write + Seek,
 {
     let mut zip = ZipWriter::new(writer);
-    let options = FileOptions::default().compression_method(CompressionMethod::Deflated);
+    let options = FileOptions::default()
+        .compression_method(CompressionMethod::Deflated)
+        .compression_level(Some(9));
 
     let mut buffer = Vec::new();
     for entry in iter {
