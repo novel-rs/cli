@@ -26,20 +26,6 @@ where
     Ok(())
 }
 
-pub fn ensure_markdown_or_txt_file<T>(path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    if !(is_markdown_file(&path)? || is_txt_file(&path)?) {
-        bail!(
-            "File `{}` is not markdown or txt file",
-            path.as_ref().display()
-        )
-    }
-
-    Ok(())
-}
-
 pub fn ensure_epub_file<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
@@ -65,46 +51,11 @@ where
     Ok(())
 }
 
-pub fn ensure_pandoc_dir<T>(path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    if !is_pandoc_dir(&path)? {
-        bail!(
-            "Directory `{}` is not pandoc directory",
-            path.as_ref().display()
-        )
-    }
-
-    Ok(())
-}
-
-pub fn ensure_mdbook_dir<T>(path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    if !is_mdbook_dir(&path)? {
-        bail!(
-            "Directory `{}` is not mdbook directory",
-            path.as_ref().display()
-        )
-    }
-
-    Ok(())
-}
-
 pub fn is_markdown_file<T>(path: T) -> Result<bool>
 where
     T: AsRef<Path>,
 {
     is_some_file(path, "md")
-}
-
-pub fn is_txt_file<T>(path: T) -> Result<bool>
-where
-    T: AsRef<Path>,
-{
-    is_some_file(path, "txt")
 }
 
 pub fn is_markdown_or_txt_file<T>(path: T) -> Result<bool>
@@ -157,23 +108,6 @@ where
     Ok(src_path.is_dir() && toml_path.is_file())
 }
 
-pub fn is_pandoc_dir<T>(path: T) -> Result<bool>
-where
-    T: AsRef<Path>,
-{
-    let path = path.as_ref();
-
-    ensure_exists(path)?;
-
-    if !path.is_dir() {
-        return Ok(false);
-    }
-
-    let markdown = path.join(path.file_stem().unwrap()).with_extension("md");
-
-    Ok(markdown.is_file())
-}
-
 pub fn is_epub_dir<T>(path: T) -> Result<bool>
 where
     T: AsRef<Path>,
@@ -224,4 +158,49 @@ where
     );
 
     Ok(())
+}
+
+pub fn ensure_pandoc_dir<T>(path: T) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    if !is_pandoc_dir(&path)? {
+        bail!(
+            "Directory `{}` is not pandoc directory",
+            path.as_ref().display()
+        )
+    }
+
+    Ok(())
+}
+
+pub fn ensure_mdbook_dir<T>(path: T) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    if !is_mdbook_dir(&path)? {
+        bail!(
+            "Directory `{}` is not mdbook directory",
+            path.as_ref().display()
+        )
+    }
+
+    Ok(())
+}
+
+pub fn is_pandoc_dir<T>(path: T) -> Result<bool>
+where
+    T: AsRef<Path>,
+{
+    let path = path.as_ref();
+
+    ensure_exists(path)?;
+
+    if !path.is_dir() {
+        return Ok(false);
+    }
+
+    let markdown = path.join(path.file_stem().unwrap()).with_extension("md");
+
+    Ok(markdown.is_file())
 }

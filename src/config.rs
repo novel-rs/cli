@@ -132,7 +132,7 @@ Data directory: {data_dir_path}"
     )
 }
 
-pub fn get_styles() -> Styles {
+fn get_styles() -> Styles {
     if supports_color::on(Stream::Stdout).is_some() {
         Styles::styled()
             .header(

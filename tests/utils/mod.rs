@@ -9,7 +9,7 @@ use color_eyre::eyre::{bail, Result};
 use fs_extra::dir::CopyOptions;
 
 #[allow(dead_code)]
-pub fn copy_to_temp_dir<T, F>(from: T, to: F) -> Result<PathBuf>
+pub(crate) fn copy_to_temp_dir<T, F>(from: T, to: F) -> Result<PathBuf>
 where
     T: AsRef<Path>,
     F: AsRef<Path>,
@@ -39,7 +39,7 @@ where
 }
 
 #[allow(dead_code)]
-pub fn same_file_content<T, E>(lhs: T, rhs: E) -> bool
+pub(crate) fn same_file_content<T, E>(lhs: T, rhs: E) -> bool
 where
     T: AsRef<Path>,
     E: AsRef<Path>,
@@ -68,7 +68,7 @@ where
     false
 }
 
-pub fn test_data_path() -> Result<PathBuf> {
+pub(crate) fn test_data_path() -> Result<PathBuf> {
     if let Ok(path) = env::var("CARGO_MANIFEST_DIR") {
         Ok(PathBuf::from(path).join("tests").join("data"))
     } else {
