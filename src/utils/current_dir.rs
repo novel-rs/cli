@@ -37,11 +37,12 @@ impl CurrentDir {
 #[cfg(test)]
 mod tests {
     use pretty_assertions::{assert_eq, assert_ne};
+    use testresult::TestResult;
 
     use super::*;
 
     #[test]
-    fn current_dir() -> Result<()> {
+    fn current_dir() -> TestResult {
         let temp_dir = tempfile::tempdir()?;
         let backup_dir = env::current_dir()?;
 

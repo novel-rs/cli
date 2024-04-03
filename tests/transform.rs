@@ -1,13 +1,13 @@
 use assert_cmd::Command;
-use color_eyre::eyre::Result;
 use rstest::rstest;
+use testresult::TestResult;
 
 mod utils;
 
 #[rstest]
 #[case(false)]
 #[case(true)]
-fn transform(#[case] delete: bool) -> Result<()> {
+fn transform(#[case] delete: bool) -> TestResult {
     let temp_dir = tempfile::tempdir()?;
     let input_path = utils::copy_to_temp_dir("pandoc", temp_dir.path())?.join("pandoc.md");
 

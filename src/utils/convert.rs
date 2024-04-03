@@ -199,11 +199,12 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
 #[cfg(test)]
 mod tests {
     use pretty_assertions::assert_eq;
+    use testresult::TestResult;
 
     use super::*;
 
     #[test]
-    fn convert() -> Result<()> {
+    fn convert() -> TestResult {
         let config = vec![Convert::JP2T2S, Convert::CUSTOM];
 
         assert_eq!(convert_str("顛覆", &config)?, "颠覆");

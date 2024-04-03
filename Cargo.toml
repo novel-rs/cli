@@ -142,7 +142,7 @@ serde_yaml = { version = "0.9.34", default-features = false }
 # https://github.com/toml-rs/toml
 toml = { version = "0.8.12", default-features = false, features = ["display"] }
 # https://github.com/raphlinus/pulldown-cmark
-pulldown-cmark = { version = "0.10.0", default-features = false, features = [
+pulldown-cmark = { version = "0.10.2", default-features = false, features = [
   "simd",
 ] }
 # https://github.com/Byron/pulldown-cmark-to-cmark
@@ -236,6 +236,8 @@ rstest = { version = "0.18.2", default-features = false }
 serial_test = { version = "3.0.0", default-features = false, features = [
   "file_locks",
 ] }
+# https://github.com/wiktor-k/testresult
+testresult = { version = "0.4.0", default-features = false }
 
 [profile.release]
 strip = true

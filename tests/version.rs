@@ -1,10 +1,10 @@
 use std::io::{self, Write};
 
 use assert_cmd::Command;
-use color_eyre::eyre::Result;
+use testresult::TestResult;
 
 #[test]
-fn version() -> Result<()> {
+fn version() -> TestResult {
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd.arg("-V").output()?;
     cmd.assert().success();

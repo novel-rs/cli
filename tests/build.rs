@@ -1,9 +1,9 @@
 use std::{env, fs};
 
 use assert_cmd::Command;
-use color_eyre::eyre::Result;
 use rstest::rstest;
 use serial_test::file_serial;
+use testresult::TestResult;
 
 mod utils;
 
@@ -13,7 +13,7 @@ mod utils;
 #[case(false, true)]
 #[case(true, true)]
 #[file_serial(build_pandoc)]
-fn build_pandoc(#[case] delete: bool, #[case] in_directory: bool) -> Result<()> {
+fn build_pandoc(#[case] delete: bool, #[case] in_directory: bool) -> TestResult {
     let temp_dir = tempfile::tempdir()?;
 
     let input_path;
@@ -56,7 +56,7 @@ fn build_pandoc(#[case] delete: bool, #[case] in_directory: bool) -> Result<()> 
 #[rstest]
 #[case(false)]
 #[case(true)]
-fn build_mdbook(#[case] delete: bool) -> Result<()> {
+fn build_mdbook(#[case] delete: bool) -> TestResult {
     let temp_dir = tempfile::tempdir()?;
     let input_path = utils::copy_to_temp_dir("mdbook", temp_dir.path())?;
     novel_cli::utils::ensure_mdbook_dir(&input_path)?;

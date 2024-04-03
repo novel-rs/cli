@@ -1,12 +1,12 @@
 use std::io::{self, Write};
 
 use assert_cmd::Command;
-use color_eyre::eyre::Result;
+use testresult::TestResult;
 
 mod utils;
 
 #[test]
-fn search_show_tags() -> Result<()> {
+fn search_show_tags() -> TestResult {
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd
         .args(["search", "--source=sfacg", "--show-tags"])
@@ -19,7 +19,7 @@ fn search_show_tags() -> Result<()> {
 }
 
 #[test]
-fn search_show_categories() -> Result<()> {
+fn search_show_categories() -> TestResult {
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd
         .args(["search", "--source=sfacg", "--show-categories"])
@@ -32,7 +32,7 @@ fn search_show_categories() -> Result<()> {
 }
 
 #[test]
-fn search() -> Result<()> {
+fn search() -> TestResult {
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd
         .args([

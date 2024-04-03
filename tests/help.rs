@@ -1,10 +1,10 @@
 use std::io::{self, Write};
 
 use assert_cmd::Command;
-use color_eyre::eyre::Result;
+use testresult::TestResult;
 
 #[test]
-fn help() -> Result<()> {
+fn help() -> TestResult {
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd.arg("-h").output()?;
     cmd.assert().success();
@@ -15,7 +15,7 @@ fn help() -> Result<()> {
 }
 
 #[test]
-fn download_help() -> Result<()> {
+fn download_help() -> TestResult {
     let mut cmd = Command::cargo_bin("novel-cli")?;
     let output = cmd.args(["download", "-h"]).output()?;
     cmd.assert().success();

@@ -1,12 +1,12 @@
 use std::io::{self, Write};
 
 use assert_cmd::Command;
-use color_eyre::eyre::Result;
+use testresult::TestResult;
 
 mod utils;
 
 #[test]
-fn check() -> Result<()> {
+fn check() -> TestResult {
     let temp_dir = tempfile::tempdir()?;
     let input_path = utils::copy_to_temp_dir("pandoc", temp_dir.path())?.join("pandoc.md");
 
