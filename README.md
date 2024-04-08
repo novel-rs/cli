@@ -28,6 +28,7 @@ cargo install novel-cli
 
 # Or download the source code from GitHub
 git clone https://github.com/novel-rs/cli
+cd cli
 cargo build --release
 ```
 
@@ -56,39 +57,40 @@ novel-cli [OPTIONS] <COMMAND> [COMMAND-OPTIONS] [ARGUMENTS]
 - **Download a novel from source in format**
 
 ```shell
-novel-cli download <bookid> --source <app-source> --format <output-format>
+novel-cli download <novel_id> --source <source> --format <output_format>
 ```
 
 - **Search for a novel from source**
 
 ```shell
-novel-cli search --source <SOURCE> <KEYWORD>
+novel-cli search --source <source> <keyword>
 ```
 
 ### Commands
 
-- `download`: Download novels from various sources.
-- `search`: Search for novels on various sources.
-- `info`: Print information about a novel on various sources.
-- `read`: Read novel from various sources.
-- `bookshelf`: Show saved favorite novels on various sources.
-- `transform`: Convert markdown files to pandoc style.
-- `check`: Check the format and content of pandoc style markdown files.
-- `build`: Build a novel from pandoc style markdown files or an mdBook folder.
-- `zip`: Compress an epub folder.
-- `unzip`: Decompress an epub file.
-- `real-cugan`: Run the realcugan-ncnn-vulkan program.
-- `update`: Check for updates, download files from GitHub, and replace them.
-- `completions`: Generate shell completions to standard output.
-- `help`: Print this message or the help of the given subcommand(s).
+- `sign`: Sign in and display the current amount of money
+- `download`: Download novel
+- `search`: Search novels
+- `info`: Show novel information
+- `read`: Read novel
+- `bookshelf`: Show novels in the bookshelf
+- `transform`: Transform pandoc-style markdown file
+- `check`: Check pandoc-style markdown file format and content
+- `build`: Build novel from pandoc-style markdown file or mdBook folder
+- `zip`: Zip an EPUB folder
+- `unzip`: Unzip an EPUB file
+- `real-cugan`: Run realcugan-ncnn-vulkan to super-resolution images
+- `update`: Check for updates, download file from GitHub, and replace
+- `completions`: Generate shell completion to stdout
+- `help`: Print this message or the help of the given subcommand(s)
 
 ### Options
 
-- `-v, --verbose`: Use verbose output. This option provides more detailed output.
-- `-q, --quiet`: Do not print logs (default: **false**). This option suppresses logging output.
-- `--backtrace`: Print backtrace information. This option displays the backtrace information.
-- `-h, --help`: Print help. This option displays the help information.
-- `-V, --version`: Print version. This option prints the version information.
+- `-v, --verbose`: Use verbose output. This option provides more detailed output
+- `-q, --quiet`: Do not print logs (default: **false**). This option suppresses logging output
+- `--backtrace`: Print backtrace information. This option displays the backtrace information
+- `-h, --help`: Print help. This option displays the help information
+- `-V, --version`: Print version. This option prints the version information
 
 ## Contributing
 

@@ -1,6 +1,6 @@
 sign_command = sign in and display the current amount of money
 download_command = Download novel
-search_command = Search novel
+search_command = Search novels
 info_command = Show novel information
 read_command = Read novel
 bookshelf_command = Show novels in the bookshelf
