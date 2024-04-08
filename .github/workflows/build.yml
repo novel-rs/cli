@@ -58,17 +58,17 @@ jobs:
           tool: cargo-nextest
 
       - name: Install pandoc for Linux
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: |
           curl -fsSL https://github.com/jgm/pandoc/releases/download/3.1.12.3/pandoc-3.1.12.3-1-amd64.deb -o pandoc.deb
           sudo dpkg -i pandoc.deb
 
       - name: Install pandoc for Windows
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ startsWith(matrix.os, 'windows') }}
         run: choco install pandoc
 
       - name: Install pandoc for macOS
-        if: ${{ matrix.os == 'macos-14' }}
+        if: ${{ startsWith(matrix.os, 'macos') }}
         run: brew install pandoc
 
       - name: Run cargo build

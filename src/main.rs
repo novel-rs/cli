@@ -15,7 +15,7 @@ use tracing_subscriber::EnvFilter;
 
 use novel_cli::{
     cmd::{
-        self, bookshelf, build, check, completions, download, info, read, real_cugan, search,
+        self, bookshelf, build, check, completions, download, info, read, real_cugan, search, sign,
         transform, unzip, update,
     },
     config::{Backtrace, Commands, Config},
@@ -42,6 +42,7 @@ async fn main() -> Result<()> {
     }
 
     match config.command {
+        Commands::Sign(config) => sign::execute(config).await?,
         Commands::Download(config) => download::execute(config).await?,
         Commands::Search(config) => search::execute(config).await?,
         Commands::Info(config) => info::execute(config).await?,

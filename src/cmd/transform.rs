@@ -5,7 +5,7 @@ use std::{
 };
 
 use clap::Args;
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{bail, Result};
 use fluent_templates::Loader;
 use novel_api::Timing;
 use pulldown_cmark::{Event, MetadataBlockKind, Options, Tag, TagEnd, TextMergeWithOffset};
@@ -22,8 +22,8 @@ use crate::{
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "transform_command"))]
 pub struct Transform {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path"))]
-    pub markdown_path: PathBuf,
+    #[arg(help = LOCALES.lookup(&LANG_ID, "file_path"))]
+    pub file_path: PathBuf,
 
     #[arg(short, long, value_enum, value_delimiter = ',',
         help = LOCALES.lookup(&LANG_ID, "converts"))]
@@ -37,28 +37,36 @@ pub struct Transform {
 pub fn execute(config: Transform) -> Result<()> {
     let mut timing = Timing::new();
 
-    utils::ensure_markdown_or_txt_file(&config.markdown_path)?;
+    let input_file_path;
+    let input_file_parent_path;
 
-    let input_markdown_file_path = dunce::canonicalize(&config.markdown_path)?;
-    let input_dir = input_markdown_file_path.parent().unwrap().to_path_buf();
-    let input_file_stem = input_markdown_file_path
-        .file_stem()
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .to_string();
-    info!(
-        "Input Markdown or txt file path: `{}`",
-        input_markdown_file_path.display()
-    );
+    if utils::is_markdown_or_txt_file(&config.file_path)? {
+        input_file_path = dunce::canonicalize(&config.file_path)?;
+        input_file_parent_path = input_file_path.parent().unwrap().to_path_buf();
+    } else if let Ok(Some(path)) = utils::try_get_markdown_or_txt_filename_in_dir(&config.file_path)
+    {
+        input_file_path = path;
+        input_file_parent_path = dunce::canonicalize(&config.file_path)?;
+    } else {
+        bail!("Invalid input path: `{}`", config.file_path.display());
+    }
+    info!("Input file path: `{}`", input_file_path.display());
 
-    let bytes = fs::read(&input_markdown_file_path)?;
+    let input_file_stem = input_file_path.file_stem().unwrap().to_str().unwrap();
+    let input_file_ext = input_file_path.extension().unwrap().to_str().unwrap();
+
+    let bytes = fs::read(&input_file_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
     let mut parser =
         TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
     let mut metadata = utils::get_metadata(&mut parser)?;
-    convert_metadata(&mut metadata, &config.converts, &input_dir, config.delete)?;
+    convert_metadata(
+        &mut metadata,
+        &config.converts,
+        &input_file_parent_path,
+        config.delete,
+    )?;
 
     let parser = parser.map(|(event, _)| match event {
         Event::Text(text) => {
@@ -70,8 +78,11 @@ pub fn execute(config: Transform) -> Result<()> {
             title,
             id,
         }) => {
-            let new_image_path =
-                utils::convert_image(input_dir.join(dest_url.as_ref()), config.delete).unwrap();
+            let new_image_path = utils::convert_image(
+                input_file_parent_path.join(dest_url.as_ref()),
+                config.delete,
+            )
+            .unwrap();
 
             Event::Start(Tag::Image {
                 link_type,
@@ -95,36 +106,32 @@ pub fn execute(config: Transform) -> Result<()> {
         Event::End(TagEnd::MetadataBlock(MetadataBlockKind::YamlStyle)),
     ];
 
-    let mut markdown_buf = String::with_capacity(markdown.len());
-    pulldown_cmark_to_cmark::cmark(metadata_block.iter(), &mut markdown_buf)?;
-    markdown_buf.write_char('\n')?;
-    pulldown_cmark_to_cmark::cmark(parser, &mut markdown_buf)?;
-    markdown_buf.write_char('\n')?;
+    let mut buf = String::with_capacity(markdown.len());
+    pulldown_cmark_to_cmark::cmark(metadata_block.iter(), &mut buf)?;
+    buf.write_char('\n')?;
+    pulldown_cmark_to_cmark::cmark(parser, &mut buf)?;
+    buf.write_char('\n')?;
 
     if config.delete {
-        utils::remove_file_or_dir(input_markdown_file_path)?;
+        utils::remove_file_or_dir(&input_file_path)?;
     } else {
-        let backup_markdown_file_path = input_dir.join(format!("{input_file_stem}.old.md"));
-        info!(
-            "Backup Markdown file path: `{}`",
-            backup_markdown_file_path.display()
-        );
+        let backup_file_path =
+            input_file_parent_path.join(format!("{input_file_stem}.old.{input_file_ext}"));
+        info!("Backup file path: `{}`", backup_file_path.display());
 
-        fs::rename(&input_markdown_file_path, backup_markdown_file_path)?;
+        fs::rename(&input_file_path, backup_file_path)?;
     }
 
     let new_file_name =
-        utils::to_markdown_file_name(utils::convert_str(&metadata.title, &config.converts)?);
-    let output_markdown_file_path = input_dir.join(new_file_name);
-    info!(
-        "Output Markdown file path: `{}`",
-        output_markdown_file_path.display()
-    );
+        utils::to_novel_dir_name(utils::convert_str(&metadata.title, &config.converts)?)
+            .with_extension(input_file_ext);
+    let output_file_path = input_file_parent_path.join(new_file_name);
+    info!("Output file path: `{}`", output_file_path.display());
 
     if cfg!(windows) {
-        markdown_buf = markdown_buf.replace('\n', "\r\n");
+        buf = buf.replace('\n', "\r\n");
     }
-    fs::write(output_markdown_file_path, markdown_buf)?;
+    fs::write(output_file_path, buf)?;
 
     debug!("Time spent on `transform`: {}", timing.elapsed()?);
 

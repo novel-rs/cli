@@ -15,20 +15,6 @@ where
     Ok(())
 }
 
-pub fn ensure_markdown_or_txt_file<T>(path: T) -> Result<()>
-where
-    T: AsRef<Path>,
-{
-    if !is_markdown_or_txt_file(&path)? {
-        bail!(
-            "File `{}` is not markdown or txt file",
-            path.as_ref().display()
-        )
-    }
-
-    Ok(())
-}
-
 pub fn ensure_epub_file<T>(path: T) -> Result<()>
 where
     T: AsRef<Path>,
@@ -54,13 +40,6 @@ where
     Ok(())
 }
 
-pub fn is_markdown_file<T>(path: T) -> Result<bool>
-where
-    T: AsRef<Path>,
-{
-    is_some_file(path, "md")
-}
-
 pub fn is_markdown_or_txt_file<T>(path: T) -> Result<bool>
 where
     T: AsRef<Path>,
@@ -75,7 +54,7 @@ where
     is_some_file(path, "epub")
 }
 
-pub fn try_get_markdown_filename_in_dir<T>(path: T) -> Result<Option<PathBuf>>
+pub fn try_get_markdown_or_txt_filename_in_dir<T>(path: T) -> Result<Option<PathBuf>>
 where
     T: AsRef<Path>,
 {
@@ -86,8 +65,13 @@ where
     let markdown_file_name = PathBuf::from(path.file_stem().unwrap()).with_extension("md");
     let markdown_file_path = path.join(markdown_file_name);
 
+    let txt_file_name = PathBuf::from(path.file_stem().unwrap()).with_extension("txt");
+    let txt_file_path = path.join(txt_file_name);
+
     if markdown_file_path.is_file() {
         Ok(Some(dunce::canonicalize(markdown_file_path)?))
+    } else if txt_file_path.is_file() {
+        Ok(Some(dunce::canonicalize(txt_file_path)?))
     } else {
         Ok(None)
     }

@@ -16,7 +16,7 @@ use crate::{
     cmd::{
         bookshelf::Bookshelf, build::Build, check::Check, completions::Completions,
         download::Download, info::Info, read::Read, real_cugan::RealCugan, search::Search,
-        transform::Transform, unzip::Unzip, update::Update, zip::Zip,
+        sign::Sign, transform::Transform, unzip::Unzip, update::Update, zip::Zip,
     },
     LANG_ID, LOCALES,
 };
@@ -48,6 +48,7 @@ pub struct Config {
 #[must_use]
 #[derive(Subcommand)]
 pub enum Commands {
+    Sign(Sign),
     Download(Download),
     Search(Search),
     Info(Info),

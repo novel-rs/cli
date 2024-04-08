@@ -21,33 +21,31 @@ use crate::{
 #[command(arg_required_else_help = true,
     about = LOCALES.lookup(&LANG_ID, "check_command"))]
 pub struct Check {
-    #[arg(help = LOCALES.lookup(&LANG_ID, "markdown_path"))]
-    pub markdown_path: PathBuf,
+    #[arg(help = LOCALES.lookup(&LANG_ID, "file_path"))]
+    pub file_path: PathBuf,
 }
 
 pub fn execute(config: Check) -> Result<()> {
     let mut timing = Timing::new();
 
-    let input_markdown_file_path;
-    let input_markdown_file_parent_path;
+    let input_file_path;
+    let input_file_parent_path;
 
-    if utils::is_markdown_or_txt_file(&config.markdown_path)? {
-        input_markdown_file_path = dunce::canonicalize(&config.markdown_path)?;
-        input_markdown_file_parent_path = input_markdown_file_path.parent().unwrap().to_path_buf();
-    } else if let Ok(Some(path)) = utils::try_get_markdown_filename_in_dir(&config.markdown_path) {
-        input_markdown_file_parent_path = dunce::canonicalize(&config.markdown_path)?;
-        input_markdown_file_path = path;
+    if utils::is_markdown_or_txt_file(&config.file_path)? {
+        input_file_path = dunce::canonicalize(&config.file_path)?;
+        input_file_parent_path = input_file_path.parent().unwrap().to_path_buf();
+    } else if let Ok(Some(path)) = utils::try_get_markdown_or_txt_filename_in_dir(&config.file_path)
+    {
+        input_file_path = path;
+        input_file_parent_path = dunce::canonicalize(&config.file_path)?;
     } else {
-        bail!("Invalid input path: `{}`", config.markdown_path.display());
+        bail!("Invalid input path: `{}`", config.file_path.display());
     }
-    info!(
-        "Input markdown or txt file path: `{}`",
-        input_markdown_file_path.display()
-    );
+    info!("Input file path: `{}`", input_file_path.display());
 
-    let current_dir = CurrentDir::new(input_markdown_file_parent_path)?;
+    let current_dir = CurrentDir::new(input_file_parent_path)?;
 
-    let bytes = fs::read(&input_markdown_file_path)?;
+    let bytes = fs::read(&input_file_path)?;
     let markdown = simdutf8::basic::from_utf8(&bytes)?;
     let mut parser =
         TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);

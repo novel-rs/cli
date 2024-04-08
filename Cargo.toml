@@ -111,7 +111,7 @@ console = { version = "0.15.8", default-features = false, features = [
   "unicode-width",
 ] }
 # https://github.com/nukesor/comfy-table
-comfy-table = { version = "7.1.0", default-features = false, features = [
+comfy-table = { version = "7.1.1", default-features = false, features = [
   "tty",
 ] }
 # https://github.com/atanunq/viuer
