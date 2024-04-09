@@ -239,6 +239,9 @@ serial_test = { version = "3.0.0", default-features = false, features = [
 # https://github.com/wiktor-k/testresult
 testresult = { version = "0.4.0", default-features = false }
 
+[profile.dev]
+opt-level = 1
+
 [profile.release]
 strip = true
 lto = true
