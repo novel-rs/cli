@@ -291,7 +291,7 @@ where
 {
     let novel_info = utils::novel_info(client, novel_id).await?;
 
-    let mut introduction = String::with_capacity(4096);
+    let mut introduction = String::with_capacity(512);
     if let Some(lines) = novel_info.introduction {
         for line in lines {
             introduction.push_str(&utils::convert_str(&line, &converts)?);

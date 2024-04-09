@@ -68,6 +68,10 @@ where
     let txt_file_name = PathBuf::from(path.file_stem().unwrap()).with_extension("txt");
     let txt_file_path = path.join(txt_file_name);
 
+    if markdown_file_path.is_file() && txt_file_path.is_file() {
+        bail!("Both markdown and txt files exist in the directory");
+    }
+
     if markdown_file_path.is_file() {
         Ok(Some(dunce::canonicalize(markdown_file_path)?))
     } else if txt_file_path.is_file() {

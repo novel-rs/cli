@@ -88,7 +88,10 @@ pub async fn execute(config: Download) -> Result<()> {
 fn check_skip_login_flag(config: &Download) -> Result<()> {
     if config.skip_login && (config.source == Source::Ciweimao || config.source == Source::Ciyuanji)
     {
-        bail!("This source cannot skip login");
+        bail!(
+            "This source cannot skip login: `{}`",
+            config.source.as_ref()
+        );
     }
 
     Ok(())
@@ -151,7 +154,7 @@ where
         match client.image(&novel_info.cover_url.unwrap()).await {
             Ok(image) => novel.cover_image = Some(image),
             Err(error) => {
-                error!("Image download failed: {error}");
+                error!("Cover image download failed: `{error}`");
             }
         };
     }
@@ -160,10 +163,10 @@ where
         bail!("Unable to get chapter information");
     };
 
-    let mut handles = Vec::new();
+    let mut handles = Vec::with_capacity(128);
     let pb = ProgressBar::new(chapter_count(&volume_infos))?;
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
-    let chapter_map = Arc::new(DashMap::new());
+    let chapter_map = Arc::new(DashMap::with_capacity(128));
 
     let mut exists_can_not_downloaded = false;
 
@@ -193,7 +196,7 @@ where
                     let content_infos = client.content_infos(&chapter_info).await?;
                     drop(permit);
 
-                    let mut contents = Vec::with_capacity(64);
+                    let mut contents = Vec::with_capacity(32);
                     for content_info in content_infos {
                         match content_info {
                             ContentInfo::Text(text) => contents.push(Content::Text(text)),
@@ -202,7 +205,7 @@ where
                                     contents.push(Content::Image(image));
                                 }
                                 Err(error) => {
-                                    error!("Image download failed: {error}");
+                                    error!("Image download failed: `{error}`, url: `{url}`");
                                 }
                             },
                         }

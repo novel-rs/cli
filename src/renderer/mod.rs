@@ -50,8 +50,6 @@ where
         fs::create_dir_all(image_dir_path)?;
     }
 
-    let mut image_exists = false;
-
     if novel.cover_image.is_some() {
         let cover_image = novel.cover_image.as_ref().unwrap();
         let image_ext = utils::new_image_ext(cover_image);
@@ -65,10 +63,6 @@ where
             } else {
                 cover_image.save(image_path)?;
             }
-
-            image_exists = true;
-        } else {
-            bail!("{}", image_ext.unwrap_err());
         }
     }
 
@@ -81,10 +75,6 @@ where
                 }
             }
         }
-    }
-
-    if !images.is_empty() {
-        image_exists = true;
     }
 
     thread::scope(|s| {
@@ -111,15 +101,9 @@ where
                         Ok(())
                     });
                 }
-            } else {
-                panic!("{}", image_ext.unwrap_err());
             }
         }
     });
-
-    if !image_exists {
-        fs::remove_dir(image_dir_path)?;
-    }
 
     Ok(())
 }

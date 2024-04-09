@@ -99,11 +99,26 @@ pub static CONVERT_MAP: Lazy<HashMap<char, char>> = Lazy::new(|| {
         ('﹑', '、'),
         ('〜', '～'),
         ('︰', '：'),
+        ('?', '？'),
+        ('!', '！'),
+        (',', '，'),
+        (';', '；'),
+        ('(', '（'),
+        (')', '）'),
     ])
 });
 
-pub static CONVERT_T2S_MAP: Lazy<HashMap<char, char>> =
-    Lazy::new(|| HashMap::from([('妳', '你'), ('姊', '姐'), ('擡', '抬')]));
+// https://zh.wiktionary.org/wiki/
+pub static CONVERT_T2S_MAP: Lazy<HashMap<char, char>> = Lazy::new(|| {
+    HashMap::from([
+        ('妳', '你'),
+        ('姊', '姐'),
+        ('擡', '抬'),
+        ('牠', '它'),
+        ('緖', '绪'),
+        ('揹', '背'),
+    ])
+});
 
 // https://zh.wikipedia.org/wiki/%E4%B8%AD%E6%97%A5%E9%9F%93%E7%B5%B1%E4%B8%80%E8%A1%A8%E6%84%8F%E6%96%87%E5%AD%97
 #[must_use]

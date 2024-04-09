@@ -82,7 +82,7 @@ where
         match client.image(url).await {
             Ok(image) => cover_image = Some(image),
             Err(error) => {
-                error!("Image download failed: {error}");
+                error!("Cover image download failed: `{error}`");
             }
         }
     }

@@ -149,6 +149,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
         || c == '\u{2060}'
         // https://en.wikipedia.org/wiki/Byte_order_mark
         || c == '\u{FEFF}'
+        // https://en.wikipedia.org/wiki/Unicode_control_characters
         || c.is_control()
     {
         // do nothing
@@ -161,13 +162,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
             result.pop();
         }
 
-        if c == '?' {
-            result.push('？');
-        } else if c == '!' {
-            result.push('！');
-        } else if c == ',' {
-            result.push('，');
-        } else if c == ':' {
+        if c == ':' {
             // e.g. 08:00
             if last.is_some_and(|c| c.is_ascii_digit())
                 && next_c.is_some_and(|c| c.is_ascii_digit())
@@ -175,18 +170,6 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
                 result.push(':');
             } else {
                 result.push('：');
-            }
-        } else if c == ';' {
-            result.push('；');
-        } else if c == '(' {
-            result.push('（');
-        } else if c == ')' {
-            result.push('）');
-        } else if c == '。' || c == '，' || c == '、' {
-            if last.is_some_and(|last_char| last_char == c) {
-                // do nothing
-            } else {
-                result.push(c);
             }
         } else {
             result.push(c);
@@ -207,14 +190,12 @@ mod tests {
     fn convert() -> TestResult {
         let config = vec![Convert::JP2T2S, Convert::CUSTOM];
 
-        assert_eq!(convert_str("顛覆", &config)?, "颠覆");
         assert_eq!(convert_str("幺", &config)?, "幺");
         assert_eq!(convert_str("妳", &config)?, "你");
         assert_eq!(convert_str("Ｑ０", &config)?, "Q0");
         assert_eq!(convert_str("“安装后”", &config)?, "“安装后”");
         assert_eq!(convert_str("&amp;", &config)?, "&");
         assert_eq!(convert_str("安裝後?", &config)?, "安装后？");
-        assert_eq!(convert_str("，，，", &config)?, "，");
         assert_eq!(convert_str("安　装", &config)?, "安 装");
         assert_eq!(convert_str("你\n好", &config)?, "你好");
         assert_eq!(convert_str("08:00", &config)?, "08:00");

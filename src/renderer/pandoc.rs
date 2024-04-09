@@ -3,7 +3,7 @@ use std::{fmt, fs, path::PathBuf};
 use color_eyre::eyre::Result;
 use novel_api::Timing;
 use pulldown_cmark::{Event, MetadataBlockKind, Tag, TagEnd};
-use tracing::{info, warn};
+use tracing::{error, info, warn};
 
 use crate::{
     cmd::Convert,
@@ -60,7 +60,13 @@ where
         .map(|introduction| introduction.join("\n"));
 
     let cover_image = if let Some(ref cover_image) = novel.cover_image {
-        Some(PathBuf::from(super::cover_image_name(cover_image)?))
+        match super::cover_image_name(cover_image) {
+            Ok(cover_image_name) => Some(PathBuf::from(cover_image_name)),
+            Err(err) => {
+                error!("Failed to get cover image name: {err}");
+                None
+            }
+        }
     } else {
         None
     };
@@ -121,13 +127,15 @@ where
                             buf.write_str(line)?;
                             buf.write_str("\n\n")?;
                         }
-                        Content::Image(image) => {
-                            let image_name = super::new_image_name(image, image_index)?;
-                            image_index += 1;
+                        Content::Image(image) => match super::new_image_name(image, image_index) {
+                            Ok(image_name) => {
+                                image_index += 1;
 
-                            buf.write_str(&super::image_markdown_str(image_name))?;
-                            buf.write_str("\n\n")?;
-                        }
+                                buf.write_str(&super::image_markdown_str(image_name))?;
+                                buf.write_str("\n\n")?;
+                            }
+                            Err(err) => error!("Failed to get image name: {err}"),
+                        },
                     }
                 }
             }

@@ -4,7 +4,7 @@ use color_eyre::eyre::Result;
 use novel_api::Timing;
 use serde::Serialize;
 use tokio::fs;
-use tracing::{debug, warn};
+use tracing::{debug, error, warn};
 
 use crate::{
     cmd::Convert,
@@ -139,20 +139,22 @@ where
         let volume_dir = format!("volume{}", utils::num_to_str(volume_count));
         volume_count += 1;
 
-        writer
-            .writeln(format!("- [{}]({}/README.md)", volume.title, volume_dir))
-            .await?;
-
-        for chapter in &volume.chapters {
-            let chapter_file_name = format!("chapter{}.md", utils::num_to_str(chapter_count));
-            chapter_count += 1;
-
+        if !volume.chapters.is_empty() {
             writer
-                .writeln(format!(
-                    "  - [{}]({}/{})",
-                    chapter.title, volume_dir, chapter_file_name
-                ))
+                .writeln(format!("- [{}]({}/README.md)", volume.title, volume_dir))
                 .await?;
+
+            for chapter in &volume.chapters {
+                let chapter_file_name = format!("chapter{}.md", utils::num_to_str(chapter_count));
+                chapter_count += 1;
+
+                writer
+                    .writeln(format!(
+                        "  - [{}]({}/{})",
+                        chapter.title, volume_dir, chapter_file_name
+                    ))
+                    .await?;
+            }
         }
     }
 
@@ -173,18 +175,20 @@ where
         writer
             .writeln(format!("# {}", utils::convert_str("封面", convert)?))
             .await?;
-        writer.ln().await?;
 
-        let image_path = path
-            .join("images")
-            .join(super::cover_image_name(cover_image)?);
+        match super::cover_image_name(cover_image) {
+            Ok(cover_image_name) => {
+                let image_path = path.join("images").join(cover_image_name);
+                let image_path = pathdiff::diff_paths(image_path, &path).unwrap();
+                let image_path_str = image_path.display().to_string().replace('\\', "/");
 
-        let image_path = pathdiff::diff_paths(image_path, &path).unwrap();
-        let image_path_str = image_path.display().to_string().replace('\\', "/");
-
-        writer
-            .writeln(&super::image_markdown_str(image_path_str))
-            .await?;
+                writer.ln().await?;
+                writer
+                    .writeln(&super::image_markdown_str(image_path_str))
+                    .await?;
+            }
+            Err(err) => error!("Failed to get cover image name: {err}"),
+        }
 
         writer.flush().await?;
     }
@@ -206,7 +210,7 @@ where
             .await?;
         writer.ln().await?;
 
-        let mut buf = String::with_capacity(4096);
+        let mut buf = String::with_capacity(512);
         for line in introduction {
             buf.push_str(line);
             buf.push_str("\n\n");
@@ -261,19 +265,21 @@ where
                             buf.push_str(line);
                             buf.push_str("\n\n");
                         }
-                        Content::Image(image) => {
-                            let image_name = super::new_image_name(image, image_index)?;
-                            image_index += 1;
+                        Content::Image(image) => match super::new_image_name(image, image_index) {
+                            Ok(image_name) => {
+                                image_index += 1;
 
-                            let image_path = image_path.join(image_name);
-                            let image_path =
-                                pathdiff::diff_paths(image_path, &volume_path).unwrap();
-                            let image_path_str =
-                                image_path.display().to_string().replace('\\', "/");
+                                let image_path = image_path.join(image_name);
+                                let image_path =
+                                    pathdiff::diff_paths(image_path, &volume_path).unwrap();
+                                let image_path_str =
+                                    image_path.display().to_string().replace('\\', "/");
 
-                            buf.push_str(&super::image_markdown_str(image_path_str));
-                            buf.push_str("\n\n");
-                        }
+                                buf.push_str(&super::image_markdown_str(image_path_str));
+                                buf.push_str("\n\n");
+                            }
+                            Err(err) => error!("Failed to get image name: {err}"),
+                        },
                     }
                 }
 

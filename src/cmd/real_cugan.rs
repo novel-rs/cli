@@ -94,11 +94,11 @@ pub async fn execute(config: RealCugan) -> Result<()> {
         handle.await??;
     }
 
-    pb.finish();
-
     for path in to_delete {
         utils::remove_file_or_dir(path)?;
     }
+
+    pb.finish();
 
     debug!("Time spent on `real_cugan`: {}", timing.elapsed()?);
 
@@ -106,12 +106,10 @@ pub async fn execute(config: RealCugan) -> Result<()> {
 }
 
 async fn image_paths(config: RealCugan) -> Result<Vec<PathBuf>> {
-    let curr_path = env::current_dir()?;
-
     let image_path = if config.image_path.is_some() {
         config.image_path.unwrap()
     } else {
-        curr_path
+        env::current_dir()?
     };
 
     let mut result = Vec::new();
