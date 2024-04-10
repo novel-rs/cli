@@ -11,7 +11,7 @@ build_command = 從 pandoc 風格的 markdown 文件（擴展名爲 txt 或者 m
 zip_command = 壓縮 EPUB 文件夾
 unzip_command = 解壓縮 EPUB 文件
 real_cugan_command = 運行 realcugan-ncnn-vulkan 來超分辨率圖片
-update_command = 檢測更新，從GitHub上下載文件，並替換
+update_command = 檢測更新，從 GitHub 上下載文件，並替換
 completions_command = 生成 shell 補全到標準輸出
 
 novel_id = 小說的編號
