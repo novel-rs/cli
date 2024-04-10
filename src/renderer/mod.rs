@@ -7,6 +7,7 @@ use std::{fs, thread};
 use color_eyre::eyre::Ok;
 use color_eyre::eyre::{bail, Result};
 use image::DynamicImage;
+use tracing::error;
 
 use crate::utils;
 use crate::utils::Content;
@@ -59,9 +60,13 @@ where
             let image_path = image_dir_path.join(format!("cover.{}", image_ext));
 
             if image_ext == "webp" {
-                novel_api::save_as_webp(cover_image, 75.0, image_path)?;
+                novel_api::save_as_webp(cover_image, 75.0, image_path).unwrap_or_else(|err| {
+                    error!("Failed to save cover image: {err}");
+                });
             } else {
-                cover_image.save(image_path)?;
+                cover_image.save(image_path).unwrap_or_else(|err| {
+                    error!("Failed to save image: {err}");
+                });
             }
         }
     }
@@ -92,13 +97,15 @@ where
 
                 if image_ext == "webp" {
                     s.spawn(|| {
-                        novel_api::save_as_webp(image, 75.0, image_path)?;
-                        Ok(())
+                        novel_api::save_as_webp(image, 75.0, image_path).unwrap_or_else(|err| {
+                            error!("Failed to save cover image: {err}");
+                        });
                     });
                 } else {
                     s.spawn(|| {
-                        image.save(image_path)?;
-                        Ok(())
+                        image.save(image_path).unwrap_or_else(|err| {
+                            error!("Failed to save image: {err}");
+                        });
                     });
                 }
             }

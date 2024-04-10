@@ -8,6 +8,7 @@ pub mod read;
 pub mod real_cugan;
 pub mod search;
 pub mod sign;
+pub mod template;
 pub mod transform;
 pub mod unzip;
 pub mod update;

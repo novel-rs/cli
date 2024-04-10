@@ -16,6 +16,8 @@ where
 {
     let mut timing = Timing::new();
 
+    assert!(!novel.name.is_empty(), "The novel name is empty");
+
     let output_dir_path = utils::to_novel_dir_name(&novel.name);
     if output_dir_path.is_dir() {
         warn!("The Pandoc output directory already exists and will be deleted");

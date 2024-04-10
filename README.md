@@ -74,6 +74,7 @@ novel-cli search --source <source> <keyword>
 - `info`: Show novel information
 - `read`: Read novel
 - `bookshelf`: Show novels in the bookshelf
+- `template`: Generate pandoc-style markdown file template
 - `transform`: Transform pandoc-style markdown file
 - `check`: Check pandoc-style markdown file format and content
 - `build`: Build novel from pandoc-style markdown file or mdBook folder

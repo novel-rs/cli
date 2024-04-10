@@ -16,7 +16,8 @@ use crate::{
     cmd::{
         bookshelf::Bookshelf, build::Build, check::Check, completions::Completions,
         download::Download, info::Info, read::Read, real_cugan::RealCugan, search::Search,
-        sign::Sign, transform::Transform, unzip::Unzip, update::Update, zip::Zip,
+        sign::Sign, template::Template, transform::Transform, unzip::Unzip, update::Update,
+        zip::Zip,
     },
     LANG_ID, LOCALES,
 };
@@ -54,6 +55,7 @@ pub enum Commands {
     Info(Info),
     Read(Read),
     Bookshelf(Bookshelf),
+    Template(Template),
     Transform(Transform),
     Check(Check),
     Build(Build),

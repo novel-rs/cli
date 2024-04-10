@@ -16,7 +16,7 @@ use tracing_subscriber::EnvFilter;
 use novel_cli::{
     cmd::{
         self, bookshelf, build, check, completions, download, info, read, real_cugan, search, sign,
-        transform, unzip, update,
+        template, transform, unzip, update,
     },
     config::{Backtrace, Commands, Config},
 };
@@ -48,6 +48,7 @@ async fn main() -> Result<()> {
         Commands::Info(config) => info::execute(config).await?,
         Commands::Read(config) => read::execute(config).await?,
         Commands::Bookshelf(config) => bookshelf::execute(config).await?,
+        Commands::Template(config) => template::execute(config)?,
         Commands::Transform(config) => transform::execute(config)?,
         Commands::Check(config) => check::execute(config)?,
         Commands::Build(config) => build::execute(config)?,

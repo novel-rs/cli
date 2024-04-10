@@ -4,6 +4,7 @@ search_command = 搜索小说
 info_command = 显示小说信息
 read_command = 阅读小说
 bookshelf_command = 显示书架中的小说
+template_command = 生成 pandoc 风格的 markdown 文件模板
 transform_command = 转换 pandoc 风格的 markdown 文件（扩展名为 txt 或者 md）
 check_command = 检查 pandoc 风格的 markdown 文件的格式和内容（扩展名为 txt 或者 md）
 build_command = 从 pandoc 风格的 markdown 文件（扩展名为 txt 或者 md）或 mdBook 文件夹构建小说
@@ -46,6 +47,8 @@ backtrace = 打印 backtrace 信息
 source = 小说的来源
 image_path = 要运行 realcugan-ncnn-vulkan 的图片所在路径，如果不指定，则为当前目录
 skip_login = 跳过下载小说时的登录
+novel_name = 小说的名字
+cover_image = 小说的封面图片
 
 login_msg = {$emoji} 登录成功，昵称：{$arg}
 start_msg = {$emoji} 开始下载小说：{$arg}

@@ -4,6 +4,7 @@ search_command = Search novels
 info_command = Show novel information
 read_command = Read novel
 bookshelf_command = Show novels in the bookshelf
+template_command = Generate pandoc-style markdown file template
 transform_command = Transform pandoc-style markdown file (with a txt or md extension)
 check_command = Check pandoc-style markdown file format and content (with a txt or md extension)
 build_command = Build novel from pandoc-style markdown file (with a txt or md extension) or mdBook folder
@@ -46,6 +47,8 @@ backtrace = Print backtrace information
 source = Source of novels
 image_path = The path of the image to run realcugan-ncnn-vulkan, if not specified, it is the current directory
 skip_login = Skip login when downloading novels
+novel_name = The name of the novel
+cover_image = The cover image of novel
 
 login_msg = {$emoji} Login successful, nickname: {$arg}
 start_msg = {$emoji} Start downloading novel: {$arg}
