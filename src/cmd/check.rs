@@ -23,6 +23,10 @@ use crate::{
 pub struct Check {
     #[arg(help = LOCALES.lookup(&LANG_ID, "file_path"))]
     pub file_path: PathBuf,
+
+    #[arg(long, default_value_t = false,
+        help = LOCALES.lookup(&LANG_ID, "basic_check"))]
+    pub basic_check: bool,
 }
 
 pub fn execute(config: Check) -> Result<()> {
@@ -97,30 +101,38 @@ pub fn execute(config: Check) -> Result<()> {
             | Tag::Link { .. }
             | Tag::HtmlBlock
             | Tag::MetadataBlock(_) => {
-                let content = console::truncate_str(markdown[range].trim(), max_width, "...");
+                if !config.basic_check {
+                    let content = console::truncate_str(markdown[range].trim(), max_width, "...");
 
-                println_msg(format!(
-                    "Markdown tag that should not appear: `{tag:?}`, content: `{content}`"
-                ));
+                    println_msg(format!(
+                        "Markdown tag that should not appear: `{tag:?}`, content: `{content}`"
+                    ));
+                }
             }
         },
         Event::Text(text) => {
-            for c in text.chars() {
-                if !utils::is_cjk(c)
-                    && !utils::is_punctuation(c)
-                    && !c.is_ascii_alphanumeric()
-                    && c != ' '
-                {
-                    if char_set.contains(&c) {
-                        continue;
-                    } else {
-                        char_set.insert(c);
+            if !config.basic_check {
+                for c in text.chars() {
+                    if !utils::is_cjk(c)
+                        && !utils::is_punctuation(c)
+                        && !c.is_ascii_alphanumeric()
+                        && c != ' '
+                    {
+                        if char_set.contains(&c) {
+                            continue;
+                        } else {
+                            char_set.insert(c);
 
-                        println_msg(format!(
-                            "Irregular char: `{}`, at `{}`",
-                            c,
-                            console::truncate_str(markdown[range.clone()].trim(), max_width, "...")
-                        ));
+                            println_msg(format!(
+                                "Irregular char: `{}`, at `{}`",
+                                c,
+                                console::truncate_str(
+                                    markdown[range.clone()].trim(),
+                                    max_width,
+                                    "..."
+                                )
+                            ));
+                        }
                     }
                 }
             }
@@ -134,11 +146,13 @@ pub fn execute(config: Check) -> Result<()> {
         | Event::Rule
         | Event::TaskListMarker(_)
         | Event::InlineHtml(_) => {
-            let content = console::truncate_str(markdown[range].trim(), max_width, "...");
+            if !config.basic_check {
+                let content = console::truncate_str(markdown[range].trim(), max_width, "...");
 
-            println_msg(format!(
-                "Markdown event that should not appear: `{event:?}`, content: `{content}`"
-            ));
+                println_msg(format!(
+                    "Markdown event that should not appear: `{event:?}`, content: `{content}`"
+                ));
+            }
         }
     });
 

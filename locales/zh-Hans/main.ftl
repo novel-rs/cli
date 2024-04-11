@@ -49,6 +49,7 @@ image_path = 要运行 realcugan-ncnn-vulkan 的图片所在路径，如果不�
 skip_login = 跳过下载小说时的登录
 novel_name = 小说的名字
 cover_image = 小说的封面图片
+basic_check = 只进行基本检查
 
 login_msg = {$emoji} 登录成功，昵称：{$arg}
 start_msg = {$emoji} 开始下载小说：{$arg}

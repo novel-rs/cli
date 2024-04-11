@@ -49,6 +49,7 @@ image_path = The path of the image to run realcugan-ncnn-vulkan, if not specifie
 skip_login = Skip login when downloading novels
 novel_name = The name of the novel
 cover_image = The cover image of novel
+basic_check = Only basic checks are performed
 
 login_msg = {$emoji} Login successful, nickname: {$arg}
 start_msg = {$emoji} Start downloading novel: {$arg}
