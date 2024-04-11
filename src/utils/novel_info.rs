@@ -52,52 +52,52 @@ where
 
     println!(
         "{}：{}",
-        utils::convert_str("名字", converts)?,
-        utils::convert_str(&novel_info.name, converts)?
+        utils::convert_str("名字", converts, false)?,
+        utils::convert_str(&novel_info.name, converts, false)?
     );
 
     println!(
         "{}：{}",
-        utils::convert_str("作者", converts)?,
-        utils::convert_str(&novel_info.author_name, converts)?
+        utils::convert_str("作者", converts, false)?,
+        utils::convert_str(&novel_info.author_name, converts, false)?
     );
 
     if novel_info.category.is_some() {
         println!(
             "{}：{}",
-            utils::convert_str("类型", converts)?,
-            utils::convert_str(try_get_category(&novel_info), converts)?
+            utils::convert_str("类型", converts, false)?,
+            utils::convert_str(try_get_category(&novel_info), converts, false)?
         );
     }
 
     if novel_info.tags.is_some() {
         println!(
             "{}：{}",
-            utils::convert_str("标签", converts)?,
-            utils::convert_str(try_get_tags(&novel_info), converts)?
+            utils::convert_str("标签", converts, false)?,
+            utils::convert_str(try_get_tags(&novel_info), converts, false)?
         );
     }
 
     if novel_info.word_count.is_some() {
         println!(
             "{}：{}",
-            utils::convert_str("字数", converts)?,
-            utils::convert_str(try_get_word_count(&novel_info), converts)?
+            utils::convert_str("字数", converts, false)?,
+            utils::convert_str(try_get_word_count(&novel_info), converts, false)?
         );
     }
 
     if novel_info.is_finished.is_some() {
         println!(
             "{}：{}",
-            utils::convert_str("状态", converts)?,
-            utils::convert_str(try_get_is_finished(&novel_info), converts)?
+            utils::convert_str("状态", converts, false)?,
+            utils::convert_str(try_get_is_finished(&novel_info), converts, false)?
         );
     }
 
     if novel_info.create_time.is_some() {
         println!(
             "{}：{}",
-            utils::convert_str("创建时间", converts)?,
+            utils::convert_str("创建时间", converts, false)?,
             try_get_create_time(&novel_info)
         );
     }
@@ -105,7 +105,7 @@ where
     if novel_info.update_time.is_some() {
         println!(
             "{}：{}",
-            utils::convert_str("更新时间", converts)?,
+            utils::convert_str("更新时间", converts, false)?,
             try_get_update_time(&novel_info)
         );
     }
@@ -113,8 +113,8 @@ where
     if novel_info.introduction.is_some() {
         println!(
             "{}：{}",
-            utils::convert_str("简介", converts)?,
-            utils::convert_str(try_get_introduction(&novel_info), converts)?
+            utils::convert_str("简介", converts, false)?,
+            utils::convert_str(try_get_introduction(&novel_info), converts, false)?
         );
     }
 
@@ -128,52 +128,52 @@ where
     let converts = converts.as_ref();
 
     let mut row = vec![
-        utils::convert_str("序号", converts)?,
-        utils::convert_str("编号", converts)?,
-        utils::convert_str("名字", converts)?,
-        utils::convert_str("作者", converts)?,
+        utils::convert_str("序号", converts, false)?,
+        utils::convert_str("编号", converts, false)?,
+        utils::convert_str("名字", converts, false)?,
+        utils::convert_str("作者", converts, false)?,
     ];
 
     let category = novel_infos
         .iter()
         .any(|novel_info| novel_info.category.is_some());
     if category {
-        row.push(utils::convert_str("类型", converts)?);
+        row.push(utils::convert_str("类型", converts, false)?);
     }
 
     let tags = novel_infos
         .iter()
         .any(|novel_info| novel_info.tags.is_some());
     if tags {
-        row.push(utils::convert_str("标签", converts)?);
+        row.push(utils::convert_str("标签", converts, false)?);
     }
 
     let word_count = novel_infos
         .iter()
         .any(|novel_info| novel_info.word_count.is_some());
     if word_count {
-        row.push(utils::convert_str("字数", converts)?);
+        row.push(utils::convert_str("字数", converts, false)?);
     }
 
     let is_finished = novel_infos
         .iter()
         .any(|novel_info| novel_info.is_finished.is_some());
     if is_finished {
-        row.push(utils::convert_str("状态", converts)?);
+        row.push(utils::convert_str("状态", converts, false)?);
     }
 
     let create_time = novel_infos
         .iter()
         .any(|novel_info| novel_info.create_time.is_some());
     if create_time {
-        row.push(utils::convert_str("创建时间", converts)?);
+        row.push(utils::convert_str("创建时间", converts, false)?);
     }
 
     let update_time = novel_infos
         .iter()
         .any(|novel_info| novel_info.update_time.is_some());
     if update_time {
-        row.push(utils::convert_str("更新时间", converts)?);
+        row.push(utils::convert_str("更新时间", converts, false)?);
     }
 
     let mut table = Table::new();
@@ -188,14 +188,19 @@ where
         let mut row = vec![
             Cell::new(index.to_string()),
             Cell::new(novel_info.id.to_string()),
-            Cell::new(utils::convert_str(&novel_info.name, converts)?),
-            Cell::new(utils::convert_str(&novel_info.author_name, converts)?),
+            Cell::new(utils::convert_str(&novel_info.name, converts, false)?),
+            Cell::new(utils::convert_str(
+                &novel_info.author_name,
+                converts,
+                false,
+            )?),
         ];
 
         if category {
             row.push(Cell::new(utils::convert_str(
                 try_get_category(&novel_info),
                 converts,
+                false,
             )?));
         }
 
@@ -203,6 +208,7 @@ where
             row.push(Cell::new(utils::convert_str(
                 try_get_tags(&novel_info),
                 converts,
+                false,
             )?));
         }
 
@@ -211,6 +217,7 @@ where
                 Cell::new(utils::convert_str(
                     try_get_word_count(&novel_info),
                     converts,
+                    false,
                 )?)
                 .set_alignment(CellAlignment::Right),
             );
@@ -220,6 +227,7 @@ where
             row.push(Cell::new(utils::convert_str(
                 try_get_is_finished(&novel_info),
                 converts,
+                false,
             )?));
         }
 

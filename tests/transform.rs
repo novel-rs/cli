@@ -37,7 +37,7 @@ fn transform(#[case] delete: bool) -> TestResult {
     }
 
     let novel_name =
-        novel_cli::utils::convert_str(metadata.title, [novel_cli::cmd::Convert::CUSTOM])?;
+        novel_cli::utils::convert_str(metadata.title, [novel_cli::cmd::Convert::CUSTOM], false)?;
     let output_file_name = temp_dir
         .path()
         .join("pandoc")

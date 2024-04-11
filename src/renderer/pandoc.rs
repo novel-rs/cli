@@ -99,7 +99,10 @@ where
     C: AsRef<[Convert]>,
 {
     if let Some(ref introduction) = novel.introduction {
-        buf.write_str(&format!("# {}\n\n", utils::convert_str("简介", convert)?))?;
+        buf.write_str(&format!(
+            "# {}\n\n",
+            utils::convert_str("简介", convert, false)?
+        ))?;
 
         for line in introduction {
             buf.write_str(line)?;

@@ -66,10 +66,31 @@ pub fn execute(config: Transform) -> Result<()> {
     convert_metadata(&mut metadata, &config.converts, &input_file_parent_path)?;
 
     let mut image_index = 1;
+    let mut in_heading = false;
     let parser = parser.map(|(event, _)| match event {
-        Event::Text(text) => {
-            Event::Text(utils::convert_str(text, &config.converts).unwrap().into())
+        Event::Start(Tag::Heading {
+            level,
+            id,
+            classes,
+            attrs,
+        }) => {
+            in_heading = true;
+            Event::Start(Tag::Heading {
+                level,
+                id,
+                classes,
+                attrs,
+            })
         }
+        Event::End(TagEnd::Heading(level)) => {
+            in_heading = false;
+            Event::End(TagEnd::Heading(level))
+        }
+        Event::Text(text) => Event::Text(
+            utils::convert_str(text, &config.converts, in_heading)
+                .unwrap()
+                .into(),
+        ),
         Event::Start(Tag::Image {
             link_type,
             dest_url,
@@ -122,9 +143,12 @@ pub fn execute(config: Transform) -> Result<()> {
         fs::rename(&input_file_path, backup_file_path)?;
     }
 
-    let new_file_name =
-        utils::to_novel_dir_name(utils::convert_str(&metadata.title, &config.converts)?)
-            .with_extension(input_file_ext);
+    let new_file_name = utils::to_novel_dir_name(utils::convert_str(
+        &metadata.title,
+        &config.converts,
+        false,
+    )?)
+    .with_extension(input_file_ext);
     let output_file_path = input_file_parent_path.join(new_file_name);
     info!("Output file path: `{}`", output_file_path.display());
 
@@ -157,15 +181,15 @@ pub fn execute(config: Transform) -> Result<()> {
 }
 
 fn convert_metadata(metadata: &mut Metadata, converts: &[Convert], input_dir: &Path) -> Result<()> {
-    metadata.title = utils::convert_str(&metadata.title, converts)?;
-    metadata.author = utils::convert_str(&metadata.author, converts)?;
+    metadata.title = utils::convert_str(&metadata.title, converts, false)?;
+    metadata.author = utils::convert_str(&metadata.author, converts, false)?;
     metadata.lang = utils::lang(converts);
 
     if metadata.description.is_some() {
         let mut description = Vec::with_capacity(4);
 
         for line in metadata.description.as_ref().unwrap().split('\n') {
-            description.push(utils::convert_str(line, converts).unwrap());
+            description.push(utils::convert_str(line, converts, false).unwrap());
         }
 
         metadata.description = Some(description.join("\n"));

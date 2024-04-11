@@ -18,25 +18,25 @@ where
 
     let mut timing = Timing::new();
 
-    novel.name = convert_str(&novel.name, &converts)?;
+    novel.name = convert_str(&novel.name, &converts, false)?;
 
-    novel.author_name = convert_str(&novel.author_name, &converts)?;
+    novel.author_name = convert_str(&novel.author_name, &converts, false)?;
 
     if novel.introduction.is_some() {
         for line in novel.introduction.as_mut().unwrap() {
-            *line = convert_str(&line, &converts)?;
+            *line = convert_str(&line, &converts, false)?;
         }
     }
 
     for volume in &mut novel.volumes {
-        volume.title = convert_str(&volume.title, &converts)?;
+        volume.title = convert_str(&volume.title, &converts, true)?;
 
         for chapter in &mut volume.chapters {
-            chapter.title = convert_str(&chapter.title, &converts)?;
+            chapter.title = convert_str(&chapter.title, &converts, true)?;
 
             for content in &mut chapter.contents {
                 if let Content::Text(line) = content {
-                    *line = convert_str(&line, &converts)?;
+                    *line = convert_str(&line, &converts, false)?;
                 }
             }
         }
@@ -47,7 +47,7 @@ where
     Ok(())
 }
 
-pub fn convert_str<T, E>(str: T, converts: E) -> Result<String>
+pub fn convert_str<T, E>(str: T, converts: E, in_heading: bool) -> Result<String>
 where
     T: AsRef<str>,
     E: AsRef<[Convert]>,
@@ -79,9 +79,9 @@ where
 
         if converts.contains(&Convert::CUSTOM) {
             if result.is_empty() {
-                result = custom_convert(str);
+                result = custom_convert(str, in_heading);
             } else {
-                result = custom_convert(result);
+                result = custom_convert(result, in_heading);
             }
 
             if converts.contains(&Convert::JP2T2S) || converts.contains(&Convert::T2S) {
@@ -104,7 +104,7 @@ where
 }
 
 #[must_use]
-fn custom_convert<T>(str: T) -> String
+fn custom_convert<T>(str: T, in_heading: bool) -> String
 where
     T: AsRef<str>,
 {
@@ -127,14 +127,14 @@ where
 
     let mut result = String::new();
     for (c, next_c) in s.chars().zip(s.chars().skip(1)) {
-        do_custom_convert(c, Some(next_c), &mut result);
+        do_custom_convert(c, Some(next_c), &mut result, in_heading);
     }
-    do_custom_convert(s.chars().last().unwrap(), None, &mut result);
+    do_custom_convert(s.chars().last().unwrap(), None, &mut result, in_heading);
 
     result
 }
 
-fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
+fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String, in_heading: bool) {
     let space = ' ';
     let last = result.chars().last();
 
@@ -158,7 +158,7 @@ fn do_custom_convert(c: char, next_c: Option<char>, result: &mut String) {
             result.push(space)
         }
     } else if super::is_punctuation(c) {
-        if last.is_some_and(|c| c.is_whitespace()) {
+        if !in_heading && last.is_some_and(|c| c.is_whitespace()) {
             result.pop();
         }
 
@@ -190,16 +190,24 @@ mod tests {
     fn convert() -> TestResult {
         let config = vec![Convert::JP2T2S, Convert::CUSTOM];
 
-        assert_eq!(convert_str("幺", &config)?, "幺");
-        assert_eq!(convert_str("妳", &config)?, "你");
-        assert_eq!(convert_str("Ｑ０", &config)?, "Q0");
-        assert_eq!(convert_str("“安装后”", &config)?, "“安装后”");
-        assert_eq!(convert_str("&amp;", &config)?, "&");
-        assert_eq!(convert_str("安裝後?", &config)?, "安装后？");
-        assert_eq!(convert_str("安　装", &config)?, "安 装");
-        assert_eq!(convert_str("你\n好", &config)?, "你好");
-        assert_eq!(convert_str("08:00", &config)?, "08:00");
-        assert_eq!(convert_str("接著", &config)?, "接着");
+        assert_eq!(convert_str("幺", &config, false)?, "幺");
+        assert_eq!(convert_str("妳", &config, false)?, "你");
+        assert_eq!(convert_str("Ｑ０", &config, false)?, "Q0");
+        assert_eq!(convert_str("“安装后”", &config, false)?, "“安装后”");
+        assert_eq!(convert_str("&amp;", &config, false)?, "&");
+        assert_eq!(convert_str("安裝後?", &config, false)?, "安装后？");
+        assert_eq!(convert_str("安　装", &config, false)?, "安 装");
+        assert_eq!(convert_str("你\n好", &config, false)?, "你好");
+        assert_eq!(convert_str("08:00", &config, false)?, "08:00");
+        assert_eq!(convert_str("接著", &config, false)?, "接着");
+        assert_eq!(
+            convert_str("第一章 “你好”", &config, false)?,
+            "第一章“你好”"
+        );
+        assert_eq!(
+            convert_str("第一章 “你好”", &config, true)?,
+            "第一章 “你好”"
+        );
 
         Ok(())
     }

@@ -99,7 +99,7 @@ where
     };
 
     for volume in volume_infos {
-        let volume_title = utils::convert_str(volume.title, &config.converts)?;
+        let volume_title = utils::convert_str(volume.title, &config.converts, true)?;
         select.add_item(
             console::truncate_str(&volume_title, select_width, "..."),
             None,
@@ -108,7 +108,7 @@ where
         for chapter in volume.chapter_infos {
             let chapter_title = format!(
                 "  {}",
-                utils::convert_str(&chapter.title, &config.converts)?
+                utils::convert_str(&chapter.title, &config.converts, true)?
             );
 
             select.add_item(
@@ -266,12 +266,12 @@ where
     E: AsRef<[Convert]>,
 {
     let mut result = String::with_capacity(8192);
-    result.push_str(&utils::convert_str(&chapter_info.title, &converts)?);
+    result.push_str(&utils::convert_str(&chapter_info.title, &converts, true)?);
     result.push_str("\n\n");
 
     for info in executor::block_on(client.content_infos(chapter_info))? {
         if let ContentInfo::Text(text) = info {
-            result.push_str(&utils::convert_str(&text, &converts)?);
+            result.push_str(&utils::convert_str(&text, &converts, false)?);
             result.push_str("\n\n");
         } else if let ContentInfo::Image(url) = info {
             result.push_str(url.to_string().as_str());
@@ -294,7 +294,7 @@ where
     let mut introduction = String::with_capacity(512);
     if let Some(lines) = novel_info.introduction {
         for line in lines {
-            introduction.push_str(&utils::convert_str(&line, &converts)?);
+            introduction.push_str(&utils::convert_str(&line, &converts, false)?);
             introduction.push_str("\n\n");
         }
     }

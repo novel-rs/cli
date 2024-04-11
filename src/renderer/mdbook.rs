@@ -110,7 +110,10 @@ where
     let mut writer = Writer::new(path).await?;
 
     writer
-        .writeln(format!("# {}", utils::convert_str("目录", &convert)?))
+        .writeln(format!(
+            "# {}",
+            utils::convert_str("目录", &convert, false)?
+        ))
         .await?;
     writer.ln().await?;
 
@@ -118,7 +121,7 @@ where
         writer
             .writeln(format!(
                 "- [{}](cover.md)",
-                utils::convert_str("封面", &convert)?
+                utils::convert_str("封面", &convert, false)?
             ))
             .await?;
         writer.ln().await?;
@@ -128,7 +131,7 @@ where
         writer
             .writeln(format!(
                 "- [{}](introduction.md)",
-                utils::convert_str("简介", &convert)?
+                utils::convert_str("简介", &convert, false)?
             ))
             .await?;
         writer.ln().await?;
@@ -175,7 +178,7 @@ where
         let mut writer = Writer::new(&path).await?;
 
         writer
-            .writeln(format!("# {}", utils::convert_str("封面", convert)?))
+            .writeln(format!("# {}", utils::convert_str("封面", convert, false)?))
             .await?;
 
         match super::cover_image_name(cover_image) {
@@ -208,7 +211,7 @@ where
         let mut writer = Writer::new(path).await?;
 
         writer
-            .writeln(format!("# {}", utils::convert_str("简介", convert)?))
+            .writeln(format!("# {}", utils::convert_str("简介", convert, false)?))
             .await?;
         writer.ln().await?;
 
