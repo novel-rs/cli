@@ -112,7 +112,7 @@ fn execute_pandoc(config: Build) -> Result<()> {
         input_file_path = dunce::canonicalize(&config.build_path)?;
         input_file_parent_path = input_file_path.parent().unwrap().to_path_buf();
     } else if let Ok(Some(path)) =
-        utils::try_get_markdown_or_txt_filename_in_dir(&config.build_path)
+        utils::try_get_markdown_or_txt_file_name_in_dir(&config.build_path)
     {
         in_directory = true;
 

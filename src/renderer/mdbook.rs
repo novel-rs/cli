@@ -8,7 +8,7 @@ use tracing::{debug, error, warn};
 
 use crate::{
     cmd::Convert,
-    utils::{self, Content, Novel, Writer},
+    utils::{self, Content, Lang, Novel, Writer},
 };
 
 #[must_use]
@@ -24,7 +24,7 @@ struct Book<'a> {
     title: &'a str,
     description: Option<String>,
     authors: Vec<&'a str>,
-    language: String,
+    language: Lang,
 }
 
 #[must_use]

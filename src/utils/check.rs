@@ -54,7 +54,7 @@ where
     is_some_file(path, "epub")
 }
 
-pub fn try_get_markdown_or_txt_filename_in_dir<T>(path: T) -> Result<Option<PathBuf>>
+pub fn try_get_markdown_or_txt_file_name_in_dir<T>(path: T) -> Result<Option<PathBuf>>
 where
     T: AsRef<Path>,
 {

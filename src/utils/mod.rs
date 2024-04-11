@@ -101,15 +101,14 @@ where
     Ok(())
 }
 
-#[must_use]
-pub fn lang<T>(convert: T) -> String
+pub fn lang<T>(convert: T) -> Lang
 where
     T: AsRef<[Convert]>,
 {
     if convert.as_ref().contains(&Convert::S2T) {
-        String::from("zh-Hant")
+        Lang::ZhHant
     } else {
-        String::from("zh-Hans")
+        Lang::ZhHans
     }
 }
 

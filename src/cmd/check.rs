@@ -12,7 +12,7 @@ use pulldown_cmark::{Event, HeadingLevel, Options, Tag, TextMergeWithOffset};
 use tracing::{debug, info};
 
 use crate::{
-    utils::{self, CurrentDir},
+    utils::{self, CurrentDir, Lang},
     LANG_ID, LOCALES,
 };
 
@@ -34,7 +34,8 @@ pub fn execute(config: Check) -> Result<()> {
     if utils::is_markdown_or_txt_file(&config.file_path)? {
         input_file_path = dunce::canonicalize(&config.file_path)?;
         input_file_parent_path = input_file_path.parent().unwrap().to_path_buf();
-    } else if let Ok(Some(path)) = utils::try_get_markdown_or_txt_filename_in_dir(&config.file_path)
+    } else if let Ok(Some(path)) =
+        utils::try_get_markdown_or_txt_file_name_in_dir(&config.file_path)
     {
         input_file_path = path;
         input_file_parent_path = dunce::canonicalize(&config.file_path)?;
@@ -50,7 +51,7 @@ pub fn execute(config: Check) -> Result<()> {
     let mut parser =
         TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
-    check_metadata(&mut parser)?;
+    let lang = check_metadata(&mut parser)?;
 
     let max_width = (viuer::terminal_size().0 / 2) as usize;
     let mut char_set = HashSet::new();
@@ -60,11 +61,11 @@ pub fn execute(config: Check) -> Result<()> {
                 let title = markdown[range].trim_start_matches('#').trim();
 
                 if level == HeadingLevel::H1 {
-                    if !check_volume_title(title) {
+                    if !check_volume_title(title, lang) {
                         println_msg(format!("Irregular volume title format: `{title}`"));
                     }
                 } else if level == HeadingLevel::H2 {
-                    if !check_chapter_title(title) {
+                    if !check_chapter_title(title, lang) {
                         println_msg(format!("Irregular chapter title format: `{title}`"));
                     }
                 } else {
@@ -148,21 +149,16 @@ pub fn execute(config: Check) -> Result<()> {
     Ok(())
 }
 
-fn check_metadata(parser: &mut TextMergeWithOffset) -> Result<()> {
+fn check_metadata(parser: &mut TextMergeWithOffset) -> Result<Lang> {
     let metadata = utils::get_metadata(parser)?;
 
-    ensure!(
-        metadata.lang_is_ok(),
-        "The lang field must be zh-Hant or zh-Hans: `{}`",
-        metadata.lang
-    );
     ensure!(
         metadata.cover_image_is_ok(),
         "Cover image does not exist: `{}`",
         metadata.cover_image.unwrap().display()
     );
 
-    Ok(())
+    Ok(metadata.lang)
 }
 
 fn println_msg(msg: String) {
@@ -177,21 +173,41 @@ macro_rules! regex {
 }
 
 #[must_use]
-fn check_chapter_title<T>(title: T) -> bool
+fn check_chapter_title<T>(title: T, lang: Lang) -> bool
 where
     T: AsRef<str>,
 {
-    let regex = regex!(r"第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+");
-    regex.is_match(title.as_ref())
+    let title = title.as_ref();
+
+    match lang {
+        Lang::ZhHant => {
+            let regex = regex!(r"第([零一二三四五六七八九十百千]|[0-9]){1,7}[章話] .+");
+            regex.is_match(title.as_ref())
+        }
+        Lang::ZhHans => {
+            let regex = regex!(r"第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+");
+            regex.is_match(title.as_ref())
+        }
+    }
 }
 
 #[must_use]
-fn check_volume_title<T>(title: T) -> bool
+fn check_volume_title<T>(title: T, lang: Lang) -> bool
 where
     T: AsRef<str>,
 {
-    let regex = regex!(r"第([一二三四五六七八九十]|[0-9]){1,3}卷 .+");
-    regex.is_match(title.as_ref())
+    let title = title.as_ref();
+
+    match lang {
+        Lang::ZhHant => {
+            let regex = regex!(r"第([一二三四五六七八九十]|[0-9]){1,3}卷 .+");
+            regex.is_match(title) || title == "簡介"
+        }
+        Lang::ZhHans => {
+            let regex = regex!(r"第([一二三四五六七八九十]|[0-9]){1,3}卷 .+");
+            regex.is_match(title) || title == "简介"
+        }
+    }
 }
 
 #[cfg(test)]
@@ -200,19 +216,25 @@ mod tests {
 
     #[test]
     fn check_chapter_title_test() {
-        assert!(check_chapter_title("第一章 被俘虏的开始"));
-        assert!(check_chapter_title("第一百三十二章 标标标标标标标标标"));
-        assert!(check_chapter_title("第123章 标题标标标标"));
-        assert!(!check_chapter_title("第一章 "));
-        assert!(!check_chapter_title("第1二3话"));
-        assert!(!check_chapter_title("第123话标题"));
-        assert!(!check_chapter_title("123话 标题"));
+        assert!(check_chapter_title("第一章 被俘虏的开始", Lang::ZhHans));
+        assert!(check_chapter_title(
+            "第一百三十二章 标标标标标标标标标",
+            Lang::ZhHans
+        ));
+        assert!(check_chapter_title("第123章 标题标标标标", Lang::ZhHans));
+        assert!(!check_chapter_title("第一章 ", Lang::ZhHans));
+        assert!(!check_chapter_title("第1二3话", Lang::ZhHans));
+        assert!(!check_chapter_title("第123话标题", Lang::ZhHans));
+        assert!(!check_chapter_title("123话 标题", Lang::ZhHans));
     }
 
     #[test]
     fn check_volume_title_test() {
-        assert!(check_volume_title("第三十二卷 标标标标标标标标标"));
-        assert!(!check_volume_title("第123话 标题标标标标"));
-        assert!(!check_volume_title("第1卷 "));
+        assert!(check_volume_title(
+            "第三十二卷 标标标标标标标标标",
+            Lang::ZhHans
+        ));
+        assert!(!check_volume_title("第123话 标题标标标标", Lang::ZhHans));
+        assert!(!check_volume_title("第1卷 ", Lang::ZhHans));
     }
 }

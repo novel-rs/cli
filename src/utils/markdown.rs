@@ -15,16 +15,21 @@ use serde_with::skip_serializing_none;
 pub struct Metadata {
     pub title: String,
     pub author: String,
-    pub lang: String,
+    pub lang: Lang,
     pub description: Option<String>,
     pub cover_image: Option<PathBuf>,
 }
 
-impl Metadata {
-    pub fn lang_is_ok(&self) -> bool {
-        self.lang == "zh-Hant" || self.lang == "zh-Hans"
-    }
+#[must_use]
+#[derive(Clone, Copy, Serialize, Deserialize)]
+pub enum Lang {
+    #[serde(rename = "zh-Hant")]
+    ZhHant,
+    #[serde(rename = "zh-Hans")]
+    ZhHans,
+}
 
+impl Metadata {
     pub fn cover_image_is_ok(&self) -> bool {
         !self
             .cover_image
