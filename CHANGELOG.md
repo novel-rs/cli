@@ -2,11 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.6.0] - 2024-04-11
+
+### ⛰️ Features
+
+- _(check)_ Add basic_check flag
+- _(check)_ Consider the metadata.lang attribute
+- _(transform)_ Better image convert
+- Add template command
+- _(check)_ Allow input directory
+- Support ciyuanji
 
 ### 🐛 Bug Fixes
 
+- _(transform)_ Title is missing spaces
+- Saving webp images uses lossy encoding
+- _(info)_ Ciyuanji need login
+- Fix parse markdown failed on windows again
+- Fix parse markdown failed on windows
 - Fix ambiguous path display
+
+### 🚜 Refactor
+
+- Refactor code
+- Refactor code and update dependencies
+- Use testresult
+- Some small improvements
+- Remove some dead code
+- Some small improvements
+- Simplify download and generated code
+- _(build)_ Some small improvements
+- _(bookshelf)_ Some small improvements
+- _(check,transform)_ Upgrade pulldown-cmark and use new features
+
+### 🧪 Testing
+
+- Fix transform test
+
+### ⚙️ Miscellaneous Tasks
+
+- _(locales)_ Update translation
+- Change opt-level when dev
+- Upgrade various project files
+- Rename commitlint.config.js
+- Upgrade various project files
+- Remove a todo
+- _(ci)_ Fix install pandoc for macOS
+- Upgrade various project files
 
 ## [0.5.0] - 2023-07-31
 
