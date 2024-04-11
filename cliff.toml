@@ -62,7 +62,7 @@ commit_parsers = [
   { message = "^refactor", group = "<!-- 2 -->🚜 Refactor" },
   { message = "^perf", group = "<!-- 4 -->⚡ Performance" },
   { message = "^test", group = "<!-- 6 -->🧪 Testing" },
-  { message = "^chore\\(release\\): prepare for", skip = true },
+  { message = "^chore\\(release\\): prepare", skip = true },
   { message = "^chore\\(deps.*\\)", skip = true },
   { message = "^chore: pre-commit autoupdate", skip = true },
   { message = "^chore", group = "<!-- 7 -->⚙️ Miscellaneous Tasks" },

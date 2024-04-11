@@ -2760,8 +2760,9 @@ dependencies = [
 
 [[package]]
 name = "novel-api"
-version = "0.9.0"
-source = "git+https://github.com/novel-rs/api#ea573bf0285b3d1e07da77eb897e9d691d4a1a08"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3363a695a38ce2a44430cd300dabb13f899d6656409915ed9e53f45a1ccd200"
 dependencies = [
  "aes",
  "askama",
@@ -2815,7 +2816,7 @@ dependencies = [
 
 [[package]]
 name = "novel-cli"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "assert_cmd",
  "bytes",
@@ -3037,8 +3038,9 @@ dependencies = [
 
 [[package]]
 name = "opencc-rs"
-version = "0.3.2"
-source = "git+https://github.com/novel-rs/opencc-rs#d4d2c41839c10165c95a0e9e751aebfbeecf13b8"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77c95a0e023d3d155d2b0d24b7ba64b7b3c013bbe57d38cf836338109855c27f"
 dependencies = [
  "libc",
  "opencc-sys",
@@ -3048,8 +3050,9 @@ dependencies = [
 
 [[package]]
 name = "opencc-sys"
-version = "0.1.9+1.1.7"
-source = "git+https://github.com/novel-rs/opencc-rs#d4d2c41839c10165c95a0e9e751aebfbeecf13b8"
+version = "0.2.0+1.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25dbc6052450344b995197a89f63ec41fefae7c4b16f20252e2c020ccfc9d0a6"
 dependencies = [
  "bindgen 0.69.4",
  "cmake",
