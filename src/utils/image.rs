@@ -7,7 +7,7 @@ use color_eyre::eyre::{bail, Result};
 use image::{ColorType, DynamicImage};
 use tracing::{error, info};
 
-pub fn convert_image<T>(image_path: T, delete: bool) -> Result<PathBuf>
+pub fn convert_image_ext<T>(image_path: T) -> Result<PathBuf>
 where
     T: AsRef<Path>,
 {
@@ -18,7 +18,6 @@ where
     }
 
     let image_path = dunce::canonicalize(image_path)?;
-    let image_dir = image_path.parent().unwrap();
 
     let image_ext = image_path.extension().unwrap().to_str().unwrap();
     if image_ext == "webp" {
@@ -43,14 +42,6 @@ where
                     image.save(&new_image_path)?;
                 }
 
-                if delete {
-                    fs::remove_file(image_path)?;
-                } else {
-                    let file_stem = image_path.file_stem().unwrap().to_str().unwrap();
-                    let backup_file_name = format!("{file_stem}.old.{image_ext}");
-                    fs::rename(&image_path, image_dir.join(backup_file_name))?;
-                }
-
                 Ok(new_image_path)
             } else {
                 Ok(image_path)
@@ -60,6 +51,39 @@ where
             error!("Failed to convert image: {err}");
             Ok(image_path)
         }
+    }
+}
+
+pub fn convert_image_file_stem<T, E>(image_path: T, new_image_stem: E) -> Result<PathBuf>
+where
+    T: AsRef<Path>,
+    E: AsRef<str>,
+{
+    let image_path = image_path.as_ref();
+
+    if !image_path.is_file() {
+        bail!("Image does not exist: {}", image_path.display());
+    }
+
+    let image_path = dunce::canonicalize(image_path)?;
+    let image_dir = image_path.parent().unwrap();
+    let image_file_stem = image_path.file_stem().unwrap().to_str().unwrap();
+    let image_ext = image_path.extension().unwrap().to_str().unwrap();
+
+    if new_image_stem.as_ref() != image_file_stem {
+        let new_image_path = image_dir.join(format!("{}.{image_ext}", new_image_stem.as_ref()));
+
+        info!(
+            "Perform image copy: from `{}` to `{}`",
+            image_path.display(),
+            new_image_path.display()
+        );
+
+        fs::copy(image_path, &new_image_path)?;
+
+        Ok(new_image_path)
+    } else {
+        Ok(image_path)
     }
 }
 

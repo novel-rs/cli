@@ -10,6 +10,7 @@ use fluent_templates::Loader;
 use novel_api::Timing;
 use pulldown_cmark::{Event, MetadataBlockKind, Options, Tag, TagEnd, TextMergeWithOffset};
 use tracing::{debug, info};
+use walkdir::WalkDir;
 
 use crate::{
     cmd::Convert,
@@ -61,13 +62,9 @@ pub fn execute(config: Transform) -> Result<()> {
         TextMergeWithOffset::new_ext(markdown, Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
 
     let mut metadata = utils::get_metadata(&mut parser)?;
-    convert_metadata(
-        &mut metadata,
-        &config.converts,
-        &input_file_parent_path,
-        config.delete,
-    )?;
+    convert_metadata(&mut metadata, &config.converts, &input_file_parent_path)?;
 
+    let mut image_index = 1;
     let parser = parser.map(|(event, _)| match event {
         Event::Text(text) => {
             Event::Text(utils::convert_str(text, &config.converts).unwrap().into())
@@ -78,11 +75,13 @@ pub fn execute(config: Transform) -> Result<()> {
             title,
             id,
         }) => {
-            let new_image_path = utils::convert_image(
-                input_file_parent_path.join(dest_url.as_ref()),
-                config.delete,
-            )
-            .unwrap();
+            let new_image_path =
+                utils::convert_image_ext(input_file_parent_path.join(dest_url.as_ref())).unwrap();
+
+            let new_image_path =
+                utils::convert_image_file_stem(new_image_path, utils::num_to_str(image_index))
+                    .unwrap();
+            image_index += 1;
 
             Event::Start(Tag::Image {
                 link_type,
@@ -131,19 +130,32 @@ pub fn execute(config: Transform) -> Result<()> {
     if cfg!(windows) {
         buf = buf.replace('\n', "\r\n");
     }
-    fs::write(output_file_path, buf)?;
+    fs::write(&output_file_path, buf)?;
+
+    if config.delete {
+        let image_paths = utils::read_markdown_to_images(&output_file_path)?;
+
+        let mut to_remove = Vec::new();
+        for entry in WalkDir::new(&input_file_parent_path).max_depth(1) {
+            let path = entry?.path().to_path_buf();
+
+            if path != output_file_path && path != input_file_parent_path {
+                let file_name = path.file_name().unwrap().to_str().unwrap();
+                if !image_paths.contains(&PathBuf::from(file_name)) {
+                    to_remove.push(path);
+                }
+            }
+        }
+
+        utils::remove_file_or_dir_all(&to_remove)?;
+    }
 
     debug!("Time spent on `transform`: {}", timing.elapsed()?);
 
     Ok(())
 }
 
-fn convert_metadata(
-    metadata: &mut Metadata,
-    converts: &[Convert],
-    input_dir: &Path,
-    delete: bool,
-) -> Result<()> {
+fn convert_metadata(metadata: &mut Metadata, converts: &[Convert], input_dir: &Path) -> Result<()> {
     metadata.title = utils::convert_str(&metadata.title, converts)?;
     metadata.author = utils::convert_str(&metadata.author, converts)?;
     metadata.lang = utils::lang(converts);
@@ -159,15 +171,14 @@ fn convert_metadata(
     }
 
     if metadata.cover_image.is_some() {
+        let new_image_path =
+            utils::convert_image_ext(input_dir.join(metadata.cover_image.as_ref().unwrap()))
+                .unwrap();
+
+        let new_image_path = utils::convert_image_file_stem(new_image_path, "cover").unwrap();
+
         metadata.cover_image = Some(PathBuf::from(
-            utils::convert_image(
-                input_dir.join(metadata.cover_image.as_ref().unwrap()),
-                delete,
-            )?
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap(),
+            new_image_path.file_name().unwrap().to_str().unwrap(),
         ));
     }
 
