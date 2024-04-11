@@ -136,9 +136,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.81"
+version = "1.0.82"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0952808a6c2afd1aa8947271f3a60f1a6763c7b912d210184c5149b5cf147247"
+checksum = "f538837af36e6f6a9be0faa67f9a314f8119e4e4b5867c6ab40ed60360142519"
 
 [[package]]
 name = "arc-swap"
@@ -1269,9 +1269,9 @@ checksum = "a357d28ed41a50f9c765dbfe56cbc04a64e53e5fc58ba79fbc34c10ef3df831f"
 
 [[package]]
 name = "encoding_rs"
-version = "0.8.33"
+version = "0.8.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7268b386296a025e474d5140678f75d6de9493ae55a5d709eeb9dd08149945e1"
+checksum = "b45de904aa0b010bce2ab45264d0631681847fa7b6f2eaa7dab7619943bc4f59"
 dependencies = [
  "cfg-if",
 ]
@@ -2761,7 +2761,7 @@ dependencies = [
 [[package]]
 name = "novel-api"
 version = "0.9.0"
-source = "git+https://github.com/novel-rs/api#cb70620248a7d78f98b22f605d7b700b4f569a9e"
+source = "git+https://github.com/novel-rs/api#ea573bf0285b3d1e07da77eb897e9d691d4a1a08"
 dependencies = [
  "aes",
  "askama",
@@ -3038,7 +3038,7 @@ dependencies = [
 [[package]]
 name = "opencc-rs"
 version = "0.3.2"
-source = "git+https://github.com/novel-rs/opencc-rs#38bb939a05646e4c801b6e2b387e19eb8f83aa7b"
+source = "git+https://github.com/novel-rs/opencc-rs#d4d2c41839c10165c95a0e9e751aebfbeecf13b8"
 dependencies = [
  "libc",
  "opencc-sys",
@@ -3049,7 +3049,7 @@ dependencies = [
 [[package]]
 name = "opencc-sys"
 version = "0.1.9+1.1.7"
-source = "git+https://github.com/novel-rs/opencc-rs#38bb939a05646e4c801b6e2b387e19eb8f83aa7b"
+source = "git+https://github.com/novel-rs/opencc-rs#d4d2c41839c10165c95a0e9e751aebfbeecf13b8"
 dependencies = [
  "bindgen 0.69.4",
  "cmake",
@@ -3613,9 +3613,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.35"
+version = "1.0.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "291ec9ab5efd934aaf503a6466c5d5251535d108ee747472c3977cc5acc868ef"
+checksum = "0fa76aaf39101c457836aec0ce2316dbdc3ab723cdda1c6bd4e6ad4208acaca7"
 dependencies = [
  "proc-macro2",
 ]
@@ -5056,9 +5056,9 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.3.34"
+version = "0.3.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c8248b6521bb14bc45b4067159b9b6ad792e2d6d754d6c41fb50e29fefe38749"
+checksum = "5dfd88e563464686c916c7e46e623e520ddc6d79fa6641390f2e3fa86e83e885"
 dependencies = [
  "deranged",
  "itoa",
@@ -5079,9 +5079,9 @@ checksum = "ef927ca75afb808a4d64dd374f00a2adf8d0fcff8e7b184af886c3c87ec4a3f3"
 
 [[package]]
 name = "time-macros"
-version = "0.2.17"
+version = "0.2.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ba3a3ef41e6672a2f0f001392bb5dcd3ff0a9992d618ca761a11c3121547774"
+checksum = "3f252a68540fde3a3877aeea552b832b40ab9a69e318efd078774a01ddee1ccf"
 dependencies = [
  "num-conv",
  "time-core",
