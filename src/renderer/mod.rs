@@ -74,9 +74,11 @@ where
     let mut images = Vec::new();
     for volume in &novel.volumes {
         for chapter in &volume.chapters {
-            for content in &chapter.contents {
-                if let Content::Image(image) = content {
-                    images.push(image);
+            if chapter.contents.is_some() {
+                for content in chapter.contents.as_ref().unwrap() {
+                    if let Content::Image(image) = content {
+                        images.push(image);
+                    }
                 }
             }
         }

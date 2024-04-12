@@ -183,7 +183,7 @@ where
                 volume.chapters.push(Chapter {
                     id: chapter_info.id,
                     title: chapter_info.title.clone(),
-                    contents: Vec::new(),
+                    contents: None,
                 });
 
                 let client = Arc::clone(&client);
@@ -193,25 +193,30 @@ where
 
                 handles.push(tokio::spawn(async move {
                     pb.inc(&chapter_info.title);
-                    let content_infos = client.content_infos(&chapter_info).await?;
+                    let content_infos = client.content_infos(&chapter_info).await;
                     drop(permit);
 
-                    let mut contents = Vec::with_capacity(32);
-                    for content_info in content_infos {
-                        match content_info {
-                            ContentInfo::Text(text) => contents.push(Content::Text(text)),
-                            ContentInfo::Image(url) => match client.image(&url).await {
-                                Ok(image) => {
-                                    contents.push(Content::Image(image));
-                                }
-                                Err(error) => {
-                                    error!("Image download failed: `{error}`, url: `{url}`");
-                                }
-                            },
+                    if let Ok(content_infos) = content_infos {
+                        let mut contents = Vec::with_capacity(32);
+                        for content_info in content_infos {
+                            match content_info {
+                                ContentInfo::Text(text) => contents.push(Content::Text(text)),
+                                ContentInfo::Image(url) => match client.image(&url).await {
+                                    Ok(image) => {
+                                        contents.push(Content::Image(image));
+                                    }
+                                    Err(error) => {
+                                        error!("Image download failed: `{error}`, url: `{url}`");
+                                    }
+                                },
+                            }
                         }
-                    }
 
-                    chapter_map.insert(chapter_info.id, contents);
+                        chapter_map.insert(chapter_info.id, Some(contents));
+                    } else {
+                        error!("Chapter content download failed: {}", chapter_info.title);
+                        chapter_map.insert(chapter_info.id, None);
+                    }
 
                     eyre::Ok(())
                 }));

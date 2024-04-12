@@ -19,7 +19,7 @@ pub struct Volume {
 pub struct Chapter {
     pub id: u32,
     pub title: String,
-    pub contents: Vec<Content>,
+    pub contents: Option<Vec<Content>>,
 }
 
 #[must_use]

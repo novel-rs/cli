@@ -32,10 +32,10 @@ pub fn execute(config: Template) -> Result<()> {
     let chapter = Chapter {
         id: 0,
         title: String::from("Chapter 1"),
-        contents: vec![
+        contents: Some(vec![
             Content::Text(String::from("◇◇◇")),
             Content::Text(String::from("![](001.webp)")),
-        ],
+        ]),
     };
 
     let volume = Volume {

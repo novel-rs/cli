@@ -141,24 +141,27 @@ where
     let mut chapter_count = 1;
 
     for volume in &novel.volumes {
-        let volume_dir = format!("volume{}", utils::num_to_str(volume_count));
-        volume_count += 1;
-
         if !volume.chapters.is_empty() {
+            let volume_dir = format!("volume{}", utils::num_to_str(volume_count));
+            volume_count += 1;
+
             writer
                 .writeln(format!("- [{}]({}/README.md)", volume.title, volume_dir))
                 .await?;
 
             for chapter in &volume.chapters {
-                let chapter_file_name = format!("chapter{}.md", utils::num_to_str(chapter_count));
-                chapter_count += 1;
+                if chapter.contents.is_some() {
+                    let chapter_file_name =
+                        format!("chapter{}.md", utils::num_to_str(chapter_count));
+                    chapter_count += 1;
 
-                writer
-                    .writeln(format!(
-                        "  - [{}]({}/{})",
-                        chapter.title, volume_dir, chapter_file_name
-                    ))
-                    .await?;
+                    writer
+                        .writeln(format!(
+                            "  - [{}]({}/{})",
+                            chapter.title, volume_dir, chapter_file_name
+                        ))
+                        .await?;
+                }
             }
         }
     }
@@ -242,57 +245,61 @@ where
     let mut image_index = 1;
 
     for volume in &novel.volumes {
-        let volume_path = src_path.join(format!("volume{}", utils::num_to_str(volume_index)));
-        volume_index += 1;
-
         if !volume.chapters.is_empty() {
+            let volume_path = src_path.join(format!("volume{}", utils::num_to_str(volume_index)));
+            volume_index += 1;
+
             let mut volume_writer = Writer::new(volume_path.join("README.md")).await?;
             volume_writer.writeln(format!("# {}", volume.title)).await?;
             volume_writer.flush().await?;
 
             for chapter in &volume.chapters {
-                let chapter_path = volume_path
-                    .join(format!("chapter{}", utils::num_to_str(chapter_index)))
-                    .with_extension("md");
-                chapter_index += 1;
+                if chapter.contents.is_some() {
+                    let chapter_path = volume_path
+                        .join(format!("chapter{}", utils::num_to_str(chapter_index)))
+                        .with_extension("md");
+                    chapter_index += 1;
 
-                let mut chapter_writer = Writer::new(chapter_path).await?;
+                    let mut chapter_writer = Writer::new(chapter_path).await?;
 
-                chapter_writer
-                    .writeln(format!("# {}", chapter.title))
-                    .await?;
-                chapter_writer.ln().await?;
+                    chapter_writer
+                        .writeln(format!("# {}", chapter.title))
+                        .await?;
+                    chapter_writer.ln().await?;
 
-                let mut buf = String::with_capacity(8192);
-                for content in &chapter.contents {
-                    match content {
-                        Content::Text(line) => {
-                            buf.push_str(line);
-                            buf.push_str("\n\n");
-                        }
-                        Content::Image(image) => match super::new_image_name(image, image_index) {
-                            Ok(image_name) => {
-                                image_index += 1;
-
-                                let image_path = image_path.join(image_name);
-                                let image_path =
-                                    pathdiff::diff_paths(image_path, &volume_path).unwrap();
-                                let image_path_str =
-                                    image_path.display().to_string().replace('\\', "/");
-
-                                buf.push_str(&super::image_markdown_str(image_path_str));
+                    let mut buf = String::with_capacity(8192);
+                    for content in chapter.contents.as_ref().unwrap() {
+                        match content {
+                            Content::Text(line) => {
+                                buf.push_str(line);
                                 buf.push_str("\n\n");
                             }
-                            Err(err) => error!("Failed to get image name: {err}"),
-                        },
+                            Content::Image(image) => {
+                                match super::new_image_name(image, image_index) {
+                                    Ok(image_name) => {
+                                        image_index += 1;
+
+                                        let image_path = image_path.join(image_name);
+                                        let image_path =
+                                            pathdiff::diff_paths(image_path, &volume_path).unwrap();
+                                        let image_path_str =
+                                            image_path.display().to_string().replace('\\', "/");
+
+                                        buf.push_str(&super::image_markdown_str(image_path_str));
+                                        buf.push_str("\n\n");
+                                    }
+                                    Err(err) => error!("Failed to get image name: {err}"),
+                                }
+                            }
+                        }
                     }
+
+                    // last '\n'
+                    buf.pop();
+                    chapter_writer.write(buf).await?;
+
+                    chapter_writer.flush().await?;
                 }
-
-                // last '\n'
-                buf.pop();
-
-                chapter_writer.write(buf).await?;
-                chapter_writer.flush().await?;
             }
         }
     }

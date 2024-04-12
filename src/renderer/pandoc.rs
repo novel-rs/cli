@@ -124,23 +124,27 @@ where
             buf.write_str(&format!("# {}\n\n", volume.title))?;
 
             for chapter in &volume.chapters {
-                buf.write_str(&format!("## {}\n\n", chapter.title))?;
+                if chapter.contents.is_some() {
+                    buf.write_str(&format!("## {}\n\n", chapter.title))?;
 
-                for content in &chapter.contents {
-                    match content {
-                        Content::Text(line) => {
-                            buf.write_str(line)?;
-                            buf.write_str("\n\n")?;
-                        }
-                        Content::Image(image) => match super::new_image_name(image, image_index) {
-                            Ok(image_name) => {
-                                image_index += 1;
-
-                                buf.write_str(&super::image_markdown_str(image_name))?;
+                    for content in chapter.contents.as_ref().unwrap() {
+                        match content {
+                            Content::Text(line) => {
+                                buf.write_str(line)?;
                                 buf.write_str("\n\n")?;
                             }
-                            Err(err) => error!("Failed to get image name: {err}"),
-                        },
+                            Content::Image(image) => {
+                                match super::new_image_name(image, image_index) {
+                                    Ok(image_name) => {
+                                        image_index += 1;
+
+                                        buf.write_str(&super::image_markdown_str(image_name))?;
+                                        buf.write_str("\n\n")?;
+                                    }
+                                    Err(err) => error!("Failed to get image name: {err}"),
+                                }
+                            }
+                        }
                     }
                 }
             }

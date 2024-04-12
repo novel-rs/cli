@@ -34,10 +34,16 @@ where
         for chapter in &mut volume.chapters {
             chapter.title = convert_str(&chapter.title, &converts, true)?;
 
-            for content in &mut chapter.contents {
-                if let Content::Text(line) = content {
-                    *line = convert_str(&line, &converts, false)?;
+            if chapter.contents.is_some() {
+                let mut contents = chapter.contents.take().unwrap();
+
+                for content in &mut contents {
+                    if let Content::Text(line) = content {
+                        *line = convert_str(&line, &converts, false)?;
+                    }
                 }
+
+                chapter.contents = Some(contents);
             }
         }
     }
