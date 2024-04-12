@@ -136,7 +136,10 @@ where
 
         let mut novel_infos = Vec::new();
         loop {
-            let size = cmp::max(config.limit as u16 - novel_infos.len() as u16, 10);
+            let mut size = cmp::max(config.limit as u16 - novel_infos.len() as u16, 10);
+            if size > 50 {
+                size = 50;
+            }
 
             let novel_ids = client.search_infos(&options, page, size).await?;
             page += 1;
