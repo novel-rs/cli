@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2024-04-12
+
+### ⛰️ Features
+
+- _(download)_ Chapter download failure no longer exits the program
+
+### 🐛 Bug Fixes
+
+- _(search)_ Limit search size
+
 ## [0.6.0] - 2024-04-11
 
 ### ⛰️ Features
