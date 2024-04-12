@@ -1,6 +1,6 @@
 [package]
 name = "novel-cli"
-version = "0.6.0"
+version = "0.7.0"
 edition = "2021"
 rust-version = "1.75"
 license = "MIT OR Apache-2.0"
@@ -8,9 +8,9 @@ authors = ["Terakomari <im.terakomari@icloud.com>"]
 repository = "https://github.com/novel-rs/cli"
 homepage = "https://github.com/novel-rs/cli"
 documentation = "https://docs.rs/novel-cli"
-description = "Download novels from sfacg and ciweimao"
+description = "A set of tools for downloading novels from the web, manipulating text, and generating EPUB"
 readme = "README.md"
-keywords = ["novel", "sfacg", "ciweimao"]
+keywords = ["novel", "epub", "sfacg", "ciweimao", "ciyuanji"]
 categories = ["command-line-utilities"]
 exclude = ["/tests/data"]
 build = "build.rs"
@@ -19,7 +19,7 @@ build = "build.rs"
 # https://github.com/novel-rs/opencc-rs
 opencc-rs = { version = "0.3.3", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { version = "0.10.0", default-features = false }
+novel-api = { version = "0.10.1", default-features = false }
 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.3", default-features = false }
