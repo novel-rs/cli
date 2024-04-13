@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.1] - 2024-04-13
+
+### 🐛 Bug Fixes
+
+- _(ciyuanji)_ Some chapters failed to download
+
+### 📚 Documentation
+
+- Update README.md
+
 ## [0.7.0] - 2024-04-12
 
 ### ⛰️ Features
