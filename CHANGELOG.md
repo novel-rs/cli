@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🐛 Bug Fixes
 
+- _(ci)_ Add semver-checks to .gitignore
 - _(ciweimao)_ Downgrade app version
 
 ### ⚙️ Miscellaneous Tasks
