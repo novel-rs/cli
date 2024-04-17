@@ -2759,9 +2759,9 @@ dependencies = [
 
 [[package]]
 name = "novel-api"
-version = "0.10.2"
+version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4281f0c182f84c938d0c7f54e98621d1ff5edd58ebbe2ccf2e6a6984bc4f7092"
+checksum = "44a50cff73ab206815b80c989e9e8942ba153d084d3ff3fddd9d248a9166a59b"
 dependencies = [
  "aes",
  "askama",
