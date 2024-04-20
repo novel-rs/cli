@@ -19,7 +19,7 @@ build = "build.rs"
 # https://github.com/novel-rs/opencc-rs
 opencc-rs = { version = "0.3.3", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { version = "0.10.3", default-features = false }
+novel-api = { version = "0.10.4", default-features = false }
 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.3", default-features = false }
