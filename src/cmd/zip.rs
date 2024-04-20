@@ -11,7 +11,7 @@ use fluent_templates::Loader;
 use novel_api::Timing;
 use tracing::{debug, warn};
 use walkdir::{DirEntry, WalkDir};
-use zip::{write::FileOptions, CompressionMethod, ZipWriter};
+use zip::{write::SimpleFileOptions, CompressionMethod, ZipWriter};
 
 use crate::{utils, LANG_ID, LOCALES};
 
@@ -64,7 +64,7 @@ where
     E: Write + Seek,
 {
     let mut zip = ZipWriter::new(writer);
-    let options = FileOptions::default()
+    let options = SimpleFileOptions::default()
         .compression_method(CompressionMethod::Deflated)
         .compression_level(Some(9));
 
