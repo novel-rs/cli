@@ -66,7 +66,7 @@ commit_parsers = [
   { message = "^chore\\(deps.*\\)", skip = true },
   { message = "^chore: pre-commit autoupdate", skip = true },
   { message = "^chore", group = "<!-- 7 -->⚙️ Miscellaneous Tasks" },
-  { message = "^revert", group = "<!-- 9 -->◀️ Revert" },
+  { message = "^revert", group = "<!-- 8 -->◀️ Revert" },
 ]
 # protect breaking changes from being skipped due to matching a skipping commit_parser
 protect_breaking_commits = false
