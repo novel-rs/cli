@@ -4,7 +4,7 @@ use std::{
 };
 
 use color_eyre::eyre::{bail, Result};
-use image::{ColorType, DynamicImage};
+use image::{io::Reader, ColorType, DynamicImage};
 use tracing::{error, info};
 
 pub fn convert_image_ext<T>(image_path: T) -> Result<PathBuf>
@@ -24,7 +24,7 @@ where
         return Ok(image_path);
     }
 
-    let image = image::open(&image_path)?;
+    let image = Reader::open(&image_path)?.with_guessed_format()?.decode()?;
 
     match new_image_ext(&image) {
         Ok(new_image_ext) => {

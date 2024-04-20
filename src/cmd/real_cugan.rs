@@ -51,7 +51,7 @@ pub async fn execute(config: RealCugan) -> Result<()> {
     let curr_path = env::current_dir()?;
 
     for input_path in image_paths {
-        let image = Reader::open(&input_path)?.decode()?;
+        let image = Reader::open(&input_path)?.with_guessed_format()?.decode()?;
         let scale = calc_scale(image.width(), image.height());
 
         let ext = utils::new_image_ext(&image);

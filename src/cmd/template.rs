@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use clap::Args;
 use color_eyre::eyre::Result;
 use fluent_templates::Loader;
+use image::io::Reader;
 
 use crate::{
     renderer,
@@ -44,7 +45,9 @@ pub fn execute(config: Template) -> Result<()> {
     };
 
     let cover_image = if config.cover_image.is_some() {
-        let image = image::open(config.cover_image.unwrap())?;
+        let image = Reader::open(config.cover_image.unwrap())?
+            .with_guessed_format()?
+            .decode()?;
         Some(image)
     } else {
         None
