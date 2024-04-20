@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.3] - 2024-04-20
+
+### ⛰️ Features
+
+- _(search)_ Add a non-system tag for ciweimao
+
+### ⚙️ Miscellaneous Tasks
+
+- _(ci)_ Strip when using upx
+
 ## [0.7.2] - 2024-04-17
 
 ### 🐛 Bug Fixes
