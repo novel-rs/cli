@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.4] - 2024-04-20
+
+### 🐛 Bug Fixes
+
+- Guess the format based on image content
+
+### ⚙️ Miscellaneous Tasks
+
+- Update cliff.toml
+
 ## [0.7.3] - 2024-04-20
 
 ### ⛰️ Features
