@@ -2,9 +2,9 @@ use std::{path::PathBuf, sync::Arc};
 
 use clap::{value_parser, Args};
 use color_eyre::eyre::{self, bail, Result};
-use dashmap::DashMap;
 use fluent_templates::Loader;
 use novel_api::{CiweimaoClient, CiyuanjiClient, Client, ContentInfo, SfacgClient, VolumeInfos};
+use scc::HashMap;
 use tokio::sync::Semaphore;
 use tracing::{error, info, warn};
 use url::Url;
@@ -166,7 +166,7 @@ where
     let mut handles = Vec::with_capacity(128);
     let pb = ProgressBar::new(chapter_count(&volume_infos))?;
     let semaphore = Arc::new(Semaphore::new(config.maximum_concurrency as usize));
-    let chapter_map = Arc::new(DashMap::with_capacity(128));
+    let chapter_map = Arc::new(HashMap::with_capacity(128));
 
     let mut exists_can_not_downloaded = false;
 
@@ -212,10 +212,19 @@ where
                             }
                         }
 
-                        chapter_map.insert(chapter_info.id, Some(contents));
+                        chapter_map
+                            .insert(chapter_info.id, Some(contents))
+                            .unwrap_or_else(|_| {
+                                error!("Chapter content download failed: {}", chapter_info.title);
+                            });
                     } else {
                         error!("Chapter content download failed: {}", chapter_info.title);
-                        chapter_map.insert(chapter_info.id, None);
+
+                        chapter_map
+                            .insert(chapter_info.id, None)
+                            .unwrap_or_else(|_| {
+                                error!("Chapter content download failed: {}", chapter_info.title);
+                            });
                     }
 
                     eyre::Ok(())

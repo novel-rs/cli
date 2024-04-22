@@ -209,8 +209,8 @@ serde_with = { version = "3.7.0", default-features = false, features = [
   "std",
   "macros",
 ] }
-# https://github.com/xacrimon/dashmap
-dashmap = { version = "5.5.3", default-features = false, features = ["inline"] }
+# https://github.com/wvwwvwwv/scalable-concurrent-containers
+scc = { version = "2.1.0", default-features = false }
 
 [build-dependencies]
 # https://github.com/baoyachi/shadow-rs
