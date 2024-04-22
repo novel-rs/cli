@@ -12,7 +12,7 @@ pub struct ProgressBar {
 
 impl ProgressBar {
     pub fn new(total_size: u64) -> Result<Self> {
-        let message_width = (viuer::terminal_size().0 / 3) as usize;
+        let message_width = (super::terminal_size().0 / 3) as usize;
 
         let pb = indicatif::ProgressBar::new(total_size);
 

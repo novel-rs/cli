@@ -92,7 +92,7 @@ where
     set_shortcut_keys(&mut siv);
 
     let mut select = SelectView::new();
-    let select_width = (viuer::terminal_size().0 / 3) as usize;
+    let select_width = (utils::terminal_size().0 / 3) as usize;
 
     let Some(volume_infos) = client.volume_infos(config.novel_id).await? else {
         bail!("Unable to get chapter information");

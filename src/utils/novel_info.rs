@@ -7,7 +7,6 @@ use comfy_table::{
 };
 use image::DynamicImage;
 use novel_api::{Client, NovelInfo};
-use viuer::{Config, KittySupport};
 
 use crate::{cmd::Convert, utils};
 
@@ -33,19 +32,8 @@ pub fn print_novel_info<T>(
 where
     T: AsRef<[Convert]>,
 {
-    if viuer::is_iterm_supported() || viuer::get_kitty_support() != KittySupport::None {
-        if let Some(image) = image {
-            let (width, height) = viuer::terminal_size();
-
-            let config = Config {
-                absolute_offset: false,
-                width: Some(width as u32 / 2),
-                height: Some(height as u32 / 2),
-                ..Default::default()
-            };
-
-            viuer::print(&image, &config)?;
-        }
+    if let Some(image) = image {
+        utils::print_image(&image)?;
     }
 
     let converts = converts.as_ref();

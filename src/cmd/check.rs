@@ -57,7 +57,7 @@ pub fn execute(config: Check) -> Result<()> {
 
     let lang = check_metadata(&mut parser)?;
 
-    let max_width = (viuer::terminal_size().0 / 2) as usize;
+    let max_width = (utils::terminal_size().0 / 2) as usize;
     let mut char_set = HashSet::new();
     parser.for_each(|(event, range)| match event {
         Event::Start(tag) => match tag {

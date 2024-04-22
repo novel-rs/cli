@@ -1,10 +1,12 @@
 use std::{
-    fs,
+    env, fs,
+    io::{self, Write},
     path::{Path, PathBuf},
 };
 
 use color_eyre::eyre::{bail, Result};
-use image::{io::Reader, ColorType, DynamicImage};
+use crossterm::terminal;
+use image::{codecs::jpeg::JpegEncoder, io::Reader, ColorType, DynamicImage};
 use tracing::{error, info};
 
 pub fn convert_image_ext<T>(image_path: T) -> Result<PathBuf>
@@ -98,4 +100,44 @@ pub fn new_image_ext(image: &DynamicImage) -> Result<&'static str> {
         | ColorType::Rgba16 => Ok("png"),
         other => bail!("This color type is not supported: {other:?}"),
     }
+}
+
+pub fn print_image(img: &DynamicImage) -> Result<()> {
+    if is_iterm_supported() {
+        let mut jpg = Vec::new();
+        JpegEncoder::new_with_quality(&mut jpg, 75).encode_image(img)?;
+        let data = base64_simd::STANDARD.encode_to_string(&jpg);
+
+        let (width, height) = terminal_size();
+
+        let mut stdout = io::stdout();
+        writeln!(
+            stdout,
+            "\x1b]1337;File=inline=1;preserveAspectRatio=1;size={};width={};height={}:{data}\x07",
+            jpg.len(),
+            width / 2,
+            height / 2
+        )?;
+        stdout.flush()?;
+    }
+
+    Ok(())
+}
+
+fn is_iterm_supported() -> bool {
+    if let Ok(term) = env::var("TERM_PROGRAM") {
+        if term.contains("iTerm") || term.contains("WezTerm") || term.contains("mintty") {
+            return true;
+        }
+    }
+    if let Ok(lc_term) = env::var("LC_TERMINAL") {
+        if lc_term.contains("iTerm") || lc_term.contains("WezTerm") || lc_term.contains("mintty") {
+            return true;
+        }
+    }
+    false
+}
+
+pub fn terminal_size() -> (u16, u16) {
+    terminal::size().unwrap_or((80, 24))
 }
