@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.5] - 2024-04-22
+
+### 🚜 Refactor
+
+- Remove viuer
+- Replace dashmap with scc
+
 ## [0.7.4] - 2024-04-20
 
 ### 🐛 Bug Fixes
