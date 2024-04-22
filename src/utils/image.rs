@@ -7,7 +7,7 @@ use std::{
 use color_eyre::eyre::{bail, Result};
 use crossterm::terminal;
 use image::{codecs::jpeg::JpegEncoder, io::Reader, ColorType, DynamicImage};
-use tracing::{error, info};
+use tracing::{debug, error, info};
 
 pub fn convert_image_ext<T>(image_path: T) -> Result<PathBuf>
 where
@@ -102,15 +102,18 @@ pub fn new_image_ext(image: &DynamicImage) -> Result<&'static str> {
     }
 }
 
+// TODO try to support Kitty unicode placeholders
 pub fn print_image(img: &DynamicImage) -> Result<()> {
-    if is_iterm_supported() {
+    if inline_images_protocol_supported() {
         let mut jpg = Vec::new();
         JpegEncoder::new_with_quality(&mut jpg, 75).encode_image(img)?;
         let data = base64_simd::STANDARD.encode_to_string(&jpg);
 
         let (width, height) = terminal_size();
+        debug!("Terminal size: {}x{}", width, height);
 
         let mut stdout = io::stdout();
+        // https://iterm2.com/documentation-images.html
         writeln!(
             stdout,
             "\x1b]1337;File=inline=1;preserveAspectRatio=1;size={};width={};height={}:{data}\x07",
@@ -124,17 +127,19 @@ pub fn print_image(img: &DynamicImage) -> Result<()> {
     Ok(())
 }
 
-fn is_iterm_supported() -> bool {
+fn inline_images_protocol_supported() -> bool {
     if let Ok(term) = env::var("TERM_PROGRAM") {
-        if term.contains("iTerm") || term.contains("WezTerm") || term.contains("mintty") {
+        if term == "iTerm.app"
+            || term == "WezTerm"
+            || term == "mintty"
+            || term == "vscode"
+            || term == "Tabby"
+            || term == "Hyper"
+        {
             return true;
         }
     }
-    if let Ok(lc_term) = env::var("LC_TERMINAL") {
-        if lc_term.contains("iTerm") || lc_term.contains("WezTerm") || lc_term.contains("mintty") {
-            return true;
-        }
-    }
+
     false
 }
 
