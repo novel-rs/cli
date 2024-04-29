@@ -2714,7 +2714,7 @@ dependencies = [
 
 [[package]]
 name = "novel-cli"
-version = "0.7.5"
+version = "0.7.6"
 dependencies = [
  "assert_cmd",
  "base64-simd",
