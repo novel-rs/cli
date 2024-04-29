@@ -11,8 +11,9 @@ use cursive::views::{
 };
 use cursive::{Cursive, CursiveRunnable, With};
 use fluent_templates::Loader;
-use futures::executor;
 use novel_api::{ChapterInfo, CiweimaoClient, CiyuanjiClient, Client, ContentInfo, SfacgClient};
+use tokio::runtime::Handle;
+use tokio::task;
 use url::Url;
 
 use crate::cmd::{Convert, Source};
@@ -269,7 +270,12 @@ where
     result.push_str(&utils::convert_str(&chapter_info.title, &converts, true)?);
     result.push_str("\n\n");
 
-    for info in executor::block_on(client.content_infos(chapter_info))? {
+    let client = Arc::clone(client);
+    let content_info = task::block_in_place(move || {
+        Handle::current().block_on(async move { client.content_infos(chapter_info).await })
+    })?;
+
+    for info in content_info {
         if let ContentInfo::Text(text) = info {
             result.push_str(&utils::convert_str(&text, &converts, false)?);
             result.push_str("\n\n");
