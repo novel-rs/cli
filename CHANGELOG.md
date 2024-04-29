@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.6] - 2024-04-29
+
+### 🐛 Bug Fixes
+
+- _(read)_ Avoid deadlock and update deps
+
+### 🚜 Refactor
+
+- Optimize image printing
+
+### ⚙️ Miscellaneous Tasks
+
+- _(ci)_ Coverage is no longer run during pull_request
+
 ## [0.7.5] - 2024-04-22
 
 ### 🚜 Refactor
