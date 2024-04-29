@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.7] - 2024-04-29
+
+### ⚙️ Miscellaneous Tasks
+
+- _(ci)_ Remove upx
+
 ## [0.7.6] - 2024-04-29
 
 ### 🐛 Bug Fixes
