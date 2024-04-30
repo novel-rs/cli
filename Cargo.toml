@@ -210,6 +210,11 @@ serde_with = { version = "3.8.1", default-features = false, features = [
 ] }
 # https://github.com/wvwwvwwv/scalable-concurrent-containers
 scc = { version = "2.1.0", default-features = false }
+# https://github.com/rust-phf/rust-phf
+phf = { version = "0.11.2", default-features = false, features = [
+  "std",
+  "macros",
+] }
 
 [build-dependencies]
 # https://github.com/baoyachi/shadow-rs
