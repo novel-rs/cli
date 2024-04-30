@@ -1,4 +1,4 @@
-use std::{cmp, path::PathBuf, sync::Arc};
+use std::{path::PathBuf, sync::Arc};
 
 use clap::{value_parser, Args};
 use color_eyre::eyre::{bail, Ok, Result};
@@ -136,10 +136,7 @@ where
 
         let mut novel_infos = Vec::new();
         loop {
-            let mut size = cmp::max(config.limit as u16 - novel_infos.len() as u16, 10);
-            if size > 50 {
-                size = 50;
-            }
+            let size = u16::clamp(config.limit as u16 - novel_infos.len() as u16, 10, 50);
 
             let novel_ids = client.search_infos(&options, page, size).await?;
             page += 1;
