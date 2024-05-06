@@ -24,7 +24,7 @@ novel-api = { version = "0.10.7", default-features = false }
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.3", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.199", default-features = false, features = [
+serde = { version = "1.0.200", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -126,7 +126,7 @@ walkdir = { version = "2.5.0", default-features = false }
 fs_extra = { version = "1.3.0", default-features = false }
 # https://github.com/Byron/trash-rs
 # See https://learn.microsoft.com/en-us/windows/win32/api/objbase/ne-objbase-coinit
-trash = { version = "4.1.0", default-features = false, features = [
+trash = { version = "4.1.1", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Byron/open-rs
@@ -209,7 +209,7 @@ serde_with = { version = "3.8.1", default-features = false, features = [
   "macros",
 ] }
 # https://github.com/wvwwvwwv/scalable-concurrent-containers
-scc = { version = "2.1.0", default-features = false }
+scc = { version = "2.1.1", default-features = false }
 # https://github.com/rust-phf/rust-phf
 phf = { version = "0.11.2", default-features = false, features = [
   "std",
