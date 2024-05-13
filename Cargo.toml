@@ -24,7 +24,7 @@ novel-api = { version = "0.10.7", default-features = false }
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.3", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.200", default-features = false, features = [
+serde = { version = "1.0.201", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -150,7 +150,7 @@ zip = { version = "=0.6", default-features = false, features = [
 # https://github.com/1Password/sys-locale
 sys-locale = { version = "0.3.1", default-features = false }
 # https://github.com/zbraniecki/unic-locale
-unic-langid = { version = "0.9.4", default-features = false }
+unic-langid = { version = "0.9.5", default-features = false }
 # https://github.com/XAMPPRocky/fluent-templates
 fluent-templates = { version = "0.9.4", default-features = false, features = [
   "macros",
