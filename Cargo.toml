@@ -24,7 +24,7 @@ novel-api = { version = "0.10.7", default-features = false }
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.3", default-features = false }
 # https://github.com/serde-rs/serde
-serde = { version = "1.0.201", default-features = false, features = [
+serde = { version = "1.0.202", default-features = false, features = [
   "std",
   "derive",
 ] }
@@ -69,7 +69,7 @@ tracing-log = { version = "0.2.0", default-features = false, features = [
   "log-tracer",
 ] }
 # https://github.com/rust-lang/libc
-libc = { version = "0.2.154", default-features = false, features = ["std"] }
+libc = { version = "0.2.153", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
 bytes = { version = "1.6.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
@@ -130,15 +130,16 @@ trash = { version = "4.1.1", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Byron/open-rs
-open = { version = "5.1.2", default-features = false, features = [
+open = { version = "5.1.3", default-features = false, features = [
   "shellexecute-on-windows",
 ] }
 # https://github.com/dtolnay/serde-yaml
 serde_yaml = { version = "0.9.34", default-features = false }
 # https://github.com/toml-rs/toml
-toml = { version = "0.8.12", default-features = false, features = ["display"] }
+toml = { version = "0.8.13", default-features = false, features = ["display"] }
+# pin for pulldown-cmark-to-cmark
 # https://github.com/raphlinus/pulldown-cmark
-pulldown-cmark = { version = "0.10.3", default-features = false }
+pulldown-cmark = { version = "=0.10", default-features = false }
 # https://github.com/Byron/pulldown-cmark-to-cmark
 pulldown-cmark-to-cmark = { version = "13.0.0", default-features = false }
 # https://github.com/zip-rs/zip-old
@@ -162,8 +163,9 @@ infer = { version = "0.15.0", default-features = false, features = ["std"] }
 memory-stats = { version = "1.1.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.3.0", default-features = false }
+# pin for pulldown-cmark
 # https://github.com/rust-lang/mdBook
-mdbook = { version = "0.4.37", default-features = false }
+mdbook = { version = "=0.4.37", default-features = false }
 # https://github.com/kardeiz/sanitize-filename
 sanitize-filename = { version = "0.5.0", default-features = false }
 # https://github.com/magiclen/html-escape
