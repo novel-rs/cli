@@ -204,7 +204,7 @@ dunce = { version = "1.0.4", default-features = false }
 # https://github.com/stanislav-tkach/os_info
 os_info = { version = "3.8.2", default-features = false }
 # https://github.com/baoyachi/shadow-rs
-shadow-rs = { version = "0.27.1", default-features = false }
+shadow-rs = { version = "0.28.0", default-features = false }
 # https://github.com/jonasbb/serde_with
 serde_with = { version = "3.8.1", default-features = false, features = [
   "std",
@@ -220,7 +220,7 @@ phf = { version = "0.11.2", default-features = false, features = [
 
 [build-dependencies]
 # https://github.com/baoyachi/shadow-rs
-shadow-rs = { version = "0.27.1", default-features = false, features = [
+shadow-rs = { version = "0.28.0", default-features = false, features = [
   "git2",
   "tzdb",
 ] }
