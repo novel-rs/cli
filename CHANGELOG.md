@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.1] - 2024-05-25
+
+### 🐛 Bug Fixes
+
+- Occasional chapter download failures
+
 ## [0.8.0] - 2024-05-25
 
 ### 🐛 Bug Fixes
