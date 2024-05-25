@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2024-05-25
+
+### 🐛 Bug Fixes
+
+- _(sfacg)_ Handling content encryption
+
+### 🚜 Refactor
+
+- Use clamp
+- Use phf to save static data
+
 ## [0.7.7] - 2024-04-29
 
 ### 🐛 Bug Fixes
