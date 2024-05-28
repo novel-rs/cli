@@ -172,8 +172,7 @@ pub fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
-    let path = to_novel_dir_name(novel_name);
-    path.with_extension("md")
+    PathBuf::from(sanitize_filename::sanitize(novel_name)).with_extension("md")
 }
 
 #[must_use]
@@ -181,10 +180,7 @@ pub fn to_epub_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
-    let mut path = to_novel_dir_name(novel_name);
-    path.set_extension("epub");
-
-    path
+    PathBuf::from(sanitize_filename::sanitize(novel_name)).with_extension("epub")
 }
 
 pub fn read_markdown_to_epub_file_name<T>(markdown_path: T) -> Result<PathBuf>
