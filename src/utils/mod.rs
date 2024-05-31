@@ -33,6 +33,7 @@ use std::{
 use color_eyre::eyre::{bail, Result};
 use console::{Alignment, Emoji};
 use fluent_templates::Loader;
+use sanitize_filename::Options;
 use tracing::{error, info, warn};
 
 use crate::{cmd::Convert, LANG_ID, LOCALES};
@@ -158,13 +159,11 @@ pub fn to_novel_dir_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
-    let novel_name = novel_name.as_ref();
-
-    if !sanitize_filename::is_sanitized(novel_name) {
+    if !sanitize_filename::is_sanitized(&novel_name) {
         warn!("The output file name is invalid and has been modified");
     }
 
-    PathBuf::from(sanitize_filename::sanitize(novel_name))
+    do_sanitize(novel_name)
 }
 
 #[must_use]
@@ -172,7 +171,7 @@ pub fn to_markdown_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
-    PathBuf::from(sanitize_filename::sanitize(novel_name)).with_extension("md")
+    do_sanitize(novel_name).with_extension("md")
 }
 
 #[must_use]
@@ -180,7 +179,19 @@ pub fn to_epub_file_name<T>(novel_name: T) -> PathBuf
 where
     T: AsRef<str>,
 {
-    PathBuf::from(sanitize_filename::sanitize(novel_name)).with_extension("epub")
+    do_sanitize(novel_name).with_extension("epub")
+}
+
+fn do_sanitize<T>(novel_name: T) -> PathBuf
+where
+    T: AsRef<str>,
+{
+    let option = Options {
+        replacement: " ",
+        ..Default::default()
+    };
+
+    PathBuf::from(sanitize_filename::sanitize_with_options(novel_name, option))
 }
 
 pub fn read_markdown_to_epub_file_name<T>(markdown_path: T) -> Result<PathBuf>
