@@ -136,7 +136,7 @@ open = { version = "5.1.3", default-features = false, features = [
 # https://github.com/dtolnay/serde-yaml
 serde_yaml = { version = "0.9.34", default-features = false }
 # https://github.com/toml-rs/toml
-toml = { version = "0.8.13", default-features = false, features = ["display"] }
+toml = { version = "0.8.14", default-features = false, features = ["display"] }
 # pin for pulldown-cmark-to-cmark
 # https://github.com/raphlinus/pulldown-cmark
 pulldown-cmark = { version = "=0.10", default-features = false }
