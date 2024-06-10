@@ -76,7 +76,7 @@ bytes = { version = "1.6.0", default-features = false, features = ["std"] }
 url = { version = "2.5.1", default-features = false }
 # https://github.com/rust-lang/regex
 # default-features for std, perf, unicode regex-syntax/default
-regex = { version = "1.10.4", default-features = true }
+regex = { version = "1.10.5", default-features = true }
 # https://github.com/image-rs/image
 image = { version = "0.25.1", default-features = false, features = [
   "png",
