@@ -99,7 +99,7 @@ clap = { version = "4.5.4", default-features = false, features = [
   "string",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.5.2", default-features = false }
+clap_complete = { version = "4.5.3", default-features = false }
 # https://github.com/console-rs/indicatif
 indicatif = { version = "0.17.8", default-features = false, features = [
   "improved_unicode",
@@ -130,7 +130,7 @@ trash = { version = "4.1.1", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Byron/open-rs
-open = { version = "5.1.3", default-features = false, features = [
+open = { version = "5.1.4", default-features = false, features = [
   "shellexecute-on-windows",
 ] }
 # https://github.com/dtolnay/serde-yaml
