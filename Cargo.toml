@@ -73,7 +73,7 @@ libc = { version = "0.2.155", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
 bytes = { version = "1.6.0", default-features = false, features = ["std"] }
 # https://github.com/servo/rust-url
-url = { version = "2.5.0", default-features = false }
+url = { version = "2.5.1", default-features = false }
 # https://github.com/rust-lang/regex
 # default-features for std, perf, unicode regex-syntax/default
 regex = { version = "1.10.4", default-features = true }
