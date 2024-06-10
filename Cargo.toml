@@ -130,7 +130,7 @@ trash = { version = "4.1.1", default-features = false, features = [
   "coinit_apartmentthreaded",
 ] }
 # https://github.com/Byron/open-rs
-open = { version = "5.1.3", default-features = false, features = [
+open = { version = "5.1.4", default-features = false, features = [
   "shellexecute-on-windows",
 ] }
 # https://github.com/dtolnay/serde-yaml
