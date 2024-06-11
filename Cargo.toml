@@ -85,7 +85,7 @@ image = { version = "0.25.1", default-features = false, features = [
   "rayon",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.5.4", default-features = false, features = [
+clap = { version = "4.5.7", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -99,7 +99,7 @@ clap = { version = "4.5.4", default-features = false, features = [
   "string",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.5.3", default-features = false }
+clap_complete = { version = "4.5.5", default-features = false }
 # https://github.com/console-rs/indicatif
 indicatif = { version = "0.17.8", default-features = false, features = [
   "improved_unicode",
@@ -141,7 +141,7 @@ toml = { version = "0.8.14", default-features = false, features = ["display"] }
 # https://github.com/raphlinus/pulldown-cmark
 pulldown-cmark = { version = "=0.10", default-features = false }
 # https://github.com/Byron/pulldown-cmark-to-cmark
-pulldown-cmark-to-cmark = { version = "13.0.0", default-features = false }
+pulldown-cmark-to-cmark = { version = "14.0.1", default-features = false }
 # https://github.com/zip-rs/zip-old
 # pin for self_update
 zip = { version = "=0.6", default-features = false, features = [
