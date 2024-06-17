@@ -2781,9 +2781,9 @@ dependencies = [
 
 [[package]]
 name = "novel-api"
-version = "0.11.1"
+version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "450ad656e312708b708408f22e366aa0fc568b57cdcbf0d6c2e512b80eac719a"
+checksum = "2ede0a350412edd0531cd778ebdda8b0f5b9a4646e8def638518f23aff92da2a"
 dependencies = [
  "aes",
  "askama",
@@ -2839,7 +2839,7 @@ dependencies = [
 
 [[package]]
 name = "novel-cli"
-version = "0.8.1"
+version = "0.9.0"
 dependencies = [
  "assert_cmd",
  "base64-simd",

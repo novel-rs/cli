@@ -1,6 +1,6 @@
 [package]
 name = "novel-cli"
-version = "0.8.1"
+version = "0.9.0"
 edition = "2021"
 rust-version = "1.75"
 license = "MIT OR Apache-2.0"
@@ -19,7 +19,7 @@ build = "build.rs"
 # https://github.com/novel-rs/opencc-rs
 opencc-rs = { version = "0.3.3", default-features = false }
 # https://github.com/novel-rs/api
-novel-api = { version = "0.11.1", default-features = false }
+novel-api = { version = "0.11.2", default-features = false }
 
 # https://github.com/yaahc/color-eyre
 color-eyre = { version = "0.6.3", default-features = false }
