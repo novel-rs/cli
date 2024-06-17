@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.0] - 2024-06-17
+
+### ⛰️ Features
+
+- Reimplementing the read subcommand
+
+### 🐛 Bug Fixes
+
+- _(read)_ Content does not scroll to the top
+
+### 🚜 Refactor
+
+- Optimize log settings
+- Improved handling of illegal file names
+- Improved alerts when changing file names
+
 ## [0.8.1] - 2024-05-25
 
 ### 🐛 Bug Fixes
