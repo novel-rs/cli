@@ -266,7 +266,14 @@ where
                     false
                 }
             }
-            MouseEventKind::Down(MouseButton::Left) => self.chapter_list.state.click_at(pos),
+            MouseEventKind::Down(MouseButton::Left) => {
+                if self.chapter_list.state.click_at(pos) {
+                    self.content_state.scroll_to_top();
+                    true
+                } else {
+                    false
+                }
+            }
             _ => false,
         }
     }
