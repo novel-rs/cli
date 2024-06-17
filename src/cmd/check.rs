@@ -86,7 +86,7 @@ pub fn execute(config: Check) -> Result<()> {
                 }
             }
             Tag::Paragraph => (),
-            Tag::BlockQuote
+            Tag::BlockQuote(_)
             | Tag::CodeBlock(_)
             | Tag::List(_)
             | Tag::Item
@@ -145,7 +145,9 @@ pub fn execute(config: Check) -> Result<()> {
         | Event::SoftBreak
         | Event::Rule
         | Event::TaskListMarker(_)
-        | Event::InlineHtml(_) => {
+        | Event::InlineHtml(_)
+        | Event::InlineMath(_)
+        | Event::DisplayMath(_) => {
             if !config.basic_check {
                 let content = console::truncate_str(markdown[range].trim(), max_width, "...");
 

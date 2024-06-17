@@ -50,6 +50,7 @@ skip_login = Skip login when downloading novels
 novel_name = The name of the novel
 cover_image = The cover image of novel
 basic_check = Only basic checks are performed
+output_log_to_file = Output log to file
 
 login_msg = {$emoji} Login successful, nickname: {$arg}
 start_msg = {$emoji} Start downloading novel: {$arg}

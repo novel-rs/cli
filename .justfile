@@ -1,5 +1,5 @@
 fmt:
-    cargo fmt
+    cargo +nightly fmt
     prettier --write .
     taplo fmt *toml
     just --fmt --unstable

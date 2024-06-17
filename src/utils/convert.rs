@@ -4,9 +4,8 @@ use once_cell::sync::OnceCell;
 use opencc_rs::{Config, OpenCC};
 use tracing::debug;
 
-use crate::cmd::Convert;
-
 use super::{Content, Novel};
+use crate::cmd::Convert;
 
 pub fn convert<T>(novel: &mut Novel, converts: T) -> Result<()>
 where

@@ -44,6 +44,10 @@ pub struct Config {
     #[arg(short, long, global = true, conflicts_with = "verbose", default_value_t = false,
         help = LOCALES.lookup(&LANG_ID, "quiet"))]
     pub quiet: bool,
+
+    #[arg(long, global = true, conflicts_with = "quiet", default_value_t = false,
+        help = LOCALES.lookup(&LANG_ID, "output_log_to_file"))]
+    pub output_log_to_file: bool,
 }
 
 #[must_use]

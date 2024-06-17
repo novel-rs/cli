@@ -8,11 +8,6 @@ use clap::Parser;
 use color_eyre::eyre::Result;
 use memory_stats::memory_stats;
 use mimalloc::MiMalloc;
-use supports_color::Stream;
-use tracing::{debug, error, info, subscriber};
-use tracing_log::LogTracer;
-use tracing_subscriber::EnvFilter;
-
 use novel_cli::{
     cmd::{
         self, bookshelf, build, check, completions, download, info, read, real_cugan, search, sign,
@@ -20,22 +15,24 @@ use novel_cli::{
     },
     config::{Backtrace, Commands, Config},
 };
+use supports_color::Stream;
+use tracing::{debug, error, info, subscriber};
+use tracing_appender::{non_blocking::WorkerGuard, rolling};
+use tracing_log::LogTracer;
+use tracing_subscriber::EnvFilter;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    if env::var("RUST_SPANTRACE").is_err() {
-        env::set_var("RUST_SPANTRACE", "0");
-    }
-    color_eyre::install()?;
-
     let config = Config::parse();
 
-    init_log(&config)?;
+    let _guard = init_log(&config)?;
 
     debug!("{:#?}", sys_locale::get_locale());
+
+    novel_cli::init_error_hooks(matches!(&config.command, Commands::Read(_)))?;
 
     if !matches!(&config.command, Commands::Completions(_)) && !io::stdout().is_terminal() {
         error!("stdout must be a terminal");
@@ -73,7 +70,7 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn init_log(config: &Config) -> Result<()> {
+fn init_log(config: &Config) -> Result<Option<WorkerGuard>> {
     if config.backtrace.is_some() {
         match config.backtrace.as_ref().unwrap() {
             Backtrace::ON => env::set_var("RUST_BACKTRACE", "1"),
@@ -101,13 +98,28 @@ fn init_log(config: &Config) -> Result<()> {
 
     env::set_var("RUST_LOG", rust_log);
 
+    let mut guard = None;
     let subscriber = tracing_subscriber::fmt()
         .without_time()
-        .with_ansi(supports_color::on(Stream::Stdout).is_some())
-        .with_env_filter(EnvFilter::from_default_env())
-        .finish();
+        .with_env_filter(EnvFilter::from_default_env());
 
-    subscriber::set_global_default(subscriber)?;
+    if config.output_log_to_file {
+        let file_appender = rolling::never(".", "novel-cli.log");
+        let (non_blocking, worker_guard) = tracing_appender::non_blocking(file_appender);
 
-    Ok(())
+        guard = Some(worker_guard);
+
+        let subscriber = subscriber
+            .with_ansi(false)
+            .with_writer(non_blocking)
+            .finish();
+        subscriber::set_global_default(subscriber)?;
+    } else {
+        let subscriber = subscriber
+            .with_ansi(supports_color::on(Stream::Stdout).is_some())
+            .finish();
+        subscriber::set_global_default(subscriber)?;
+    }
+
+    Ok(guard)
 }

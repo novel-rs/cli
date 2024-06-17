@@ -1,20 +1,17 @@
 mod mdbook;
 mod pandoc;
 
-use std::path::Path;
-use std::{fs, thread};
+use std::{fs, path::Path, thread};
 
-use color_eyre::eyre::Ok;
-use color_eyre::eyre::{bail, Result};
+use color_eyre::eyre::{bail, Ok, Result};
 use image::DynamicImage;
 use tracing::error;
 
-use crate::utils;
-use crate::utils::Content;
-use crate::utils::Novel;
-
-pub use self::mdbook::*;
-pub use self::pandoc::*;
+pub use self::{mdbook::*, pandoc::*};
+use crate::{
+    utils,
+    utils::{Content, Novel},
+};
 
 #[must_use]
 fn image_markdown_str<T>(path: T) -> String

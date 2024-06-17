@@ -5,13 +5,12 @@ use color_eyre::eyre::Result;
 use fluent_templates::Loader;
 use image::io::Reader;
 
+use super::Convert;
 use crate::{
     renderer,
     utils::{self, Chapter, Content, Novel, Volume},
     LANG_ID, LOCALES,
 };
-
-use super::Convert;
 
 #[must_use]
 #[derive(Args)]

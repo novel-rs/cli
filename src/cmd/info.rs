@@ -1,5 +1,4 @@
-use std::path::PathBuf;
-use std::sync::Arc;
+use std::{path::PathBuf, sync::Arc};
 
 use clap::Args;
 use color_eyre::eyre::Result;
@@ -8,8 +7,10 @@ use novel_api::{CiweimaoClient, CiyuanjiClient, Client, SfacgClient};
 use tracing::error;
 use url::Url;
 
-use crate::cmd::{Convert, Source};
-use crate::{utils, LANG_ID, LOCALES};
+use crate::{
+    cmd::{Convert, Source},
+    utils, LANG_ID, LOCALES,
+};
 
 #[must_use]
 #[derive(Args)]

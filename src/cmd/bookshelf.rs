@@ -1,5 +1,4 @@
-use std::path::PathBuf;
-use std::sync::Arc;
+use std::{path::PathBuf, sync::Arc};
 
 use clap::{value_parser, Args};
 use color_eyre::eyre::{Ok, Result};
@@ -9,8 +8,10 @@ use tokio::sync::Semaphore;
 use tracing::error;
 use url::Url;
 
-use crate::cmd::{Convert, Source};
-use crate::{utils, LANG_ID, LOCALES};
+use crate::{
+    cmd::{Convert, Source},
+    utils, LANG_ID, LOCALES,
+};
 
 #[must_use]
 #[derive(Args)]

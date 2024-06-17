@@ -50,6 +50,7 @@ skip_login = 跳过下载小说时的登录
 novel_name = 小说的名字
 cover_image = 小说的封面图片
 basic_check = 只进行基本检查
+output_log_to_file = 输出日志到文件
 
 login_msg = {$emoji} 登录成功，昵称：{$arg}
 start_msg = {$emoji} 开始下载小说：{$arg}

@@ -80,8 +80,7 @@ where
 
         #[cfg(unix)]
         {
-            use std::fs::Permissions;
-            use std::os::unix::fs::PermissionsExt;
+            use std::{fs::Permissions, os::unix::fs::PermissionsExt};
 
             if let Some(mode) = file.unix_mode() {
                 fs::set_permissions(&outpath, Permissions::from_mode(mode))?;

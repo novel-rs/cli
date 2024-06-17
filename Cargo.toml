@@ -68,6 +68,8 @@ tracing-log = { version = "0.2.0", default-features = false, features = [
   "std",
   "log-tracer",
 ] }
+# https://github.com/tokio-rs/tracing
+tracing-appender = { version = "0.2.3", default-features = false }
 # https://github.com/rust-lang/libc
 libc = { version = "0.2.155", default-features = false, features = ["std"] }
 # https://github.com/tokio-rs/bytes
@@ -137,11 +139,10 @@ open = { version = "5.1.4", default-features = false, features = [
 serde_yaml = { version = "0.9.34", default-features = false }
 # https://github.com/toml-rs/toml
 toml = { version = "0.8.14", default-features = false, features = ["display"] }
-# pin for pulldown-cmark-to-cmark
 # https://github.com/raphlinus/pulldown-cmark
-pulldown-cmark = { version = "=0.10", default-features = false }
+pulldown-cmark = { version = "0.11.0", default-features = false }
 # https://github.com/Byron/pulldown-cmark-to-cmark
-pulldown-cmark-to-cmark = { version = "14.0.1", default-features = false }
+pulldown-cmark-to-cmark = { version = "15.0.1", default-features = false }
 # https://github.com/zip-rs/zip-old
 # pin for self_update
 zip = { version = "=0.6", default-features = false, features = [
@@ -181,14 +182,20 @@ self_update = { version = "0.40.0", default-features = false, features = [
   "compression-zip-deflate",
   "rustls",
 ] }
-# https://github.com/gyscos/cursive
-cursive = { version = "0.20.0", default-features = false, features = [
-  "crossterm-backend",
+# https://github.com/ratatui-org/ratatui
+ratatui = { version = "0.26.3", default-features = false, features = [
+  "crossterm",
+  "unstable-rendered-line-info",
 ] }
 # https://github.com/crossterm-rs/crossterm
 crossterm = { version = "0.27.0", default-features = false, features = [
   "windows",
+  "events",
 ] }
+# https://github.com/EdJoPaTo/tui-rs-tree-widget
+tui-tree-widget = { version = "0.20.0", default-features = false }
+# https://github.com/joshka/tui-scrollview
+tui-scrollview = { version = "0.3.6", default-features = false }
 # https://github.com/Nugine/simd
 base64-simd = { version = "0.8.0", default-features = false, features = [
   "std",
