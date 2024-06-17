@@ -5,7 +5,7 @@ use std::{
 
 use bytesize::ByteSize;
 use clap::Parser;
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{bail, Result};
 use memory_stats::memory_stats;
 use mimalloc::MiMalloc;
 use novel_cli::{
@@ -70,7 +70,14 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn init_log(config: &Config) -> Result<Option<WorkerGuard>> {
+fn init_log(config: &Config) -> Result<WorkerGuard> {
+    if matches!(&config.command, Commands::Read(_))
+        && !config.output_log_to_file
+        && config.verbose != 0
+    {
+        bail!("`--output-log-to-file` must be enabled when using `read` command with verbose level greater than 0")
+    }
+
     if config.backtrace.is_some() {
         match config.backtrace.as_ref().unwrap() {
             Backtrace::ON => env::set_var("RUST_BACKTRACE", "1"),
@@ -98,28 +105,27 @@ fn init_log(config: &Config) -> Result<Option<WorkerGuard>> {
 
     env::set_var("RUST_LOG", rust_log);
 
-    let mut guard = None;
+    let (non_blocking, guard) = if config.output_log_to_file {
+        let file_appender = rolling::never(".", "novel-cli.log");
+        tracing_appender::non_blocking(file_appender)
+    } else {
+        tracing_appender::non_blocking(io::stdout())
+    };
+
+    let ansi = if config.output_log_to_file {
+        false
+    } else {
+        supports_color::on(Stream::Stdout).is_some()
+    };
+
     let subscriber = tracing_subscriber::fmt()
         .without_time()
-        .with_env_filter(EnvFilter::from_default_env());
+        .with_env_filter(EnvFilter::from_default_env())
+        .with_ansi(ansi)
+        .with_writer(non_blocking)
+        .finish();
 
-    if config.output_log_to_file {
-        let file_appender = rolling::never(".", "novel-cli.log");
-        let (non_blocking, worker_guard) = tracing_appender::non_blocking(file_appender);
-
-        guard = Some(worker_guard);
-
-        let subscriber = subscriber
-            .with_ansi(false)
-            .with_writer(non_blocking)
-            .finish();
-        subscriber::set_global_default(subscriber)?;
-    } else {
-        let subscriber = subscriber
-            .with_ansi(supports_color::on(Stream::Stdout).is_some())
-            .finish();
-        subscriber::set_global_default(subscriber)?;
-    }
+    subscriber::set_global_default(subscriber)?;
 
     Ok(guard)
 }
