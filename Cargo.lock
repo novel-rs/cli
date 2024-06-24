@@ -2750,7 +2750,7 @@ dependencies = [
  "pretty_assertions",
  "pulldown-cmark 0.11.0",
  "pulldown-cmark-to-cmark",
- "ratatui",
+ "ratatui 0.27.0",
  "regex",
  "rstest 0.21.0",
  "sanitize-filename",
@@ -3598,6 +3598,27 @@ dependencies = [
  "paste",
  "stability",
  "strum 0.26.3",
+ "unicode-segmentation",
+ "unicode-truncate",
+ "unicode-width",
+]
+
+[[package]]
+name = "ratatui"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d16546c5b5962abf8ce6e2881e722b4e0ae3b6f1a08a26ae3573c55853ca68d3"
+dependencies = [
+ "bitflags 2.5.0",
+ "cassowary",
+ "compact_str",
+ "crossterm",
+ "itertools 0.13.0",
+ "lru",
+ "paste",
+ "stability",
+ "strum 0.26.3",
+ "strum_macros",
  "unicode-segmentation",
  "unicode-truncate",
  "unicode-width",
@@ -5343,7 +5364,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8c9b001c2a080adfc5b5faddce1fd531ae0a73dbf3c0996be965d90dcbdf6046"
 dependencies = [
  "indoc",
- "ratatui",
+ "ratatui 0.26.3",
  "rstest 0.19.0",
 ]
 
@@ -5353,7 +5374,7 @@ version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a6201de8ad8d88cb6cac4cfe3436d9a1ea31c0732a7aec4c2cc3b23186ad7dcc"
 dependencies = [
- "ratatui",
+ "ratatui 0.26.3",
  "unicode-width",
 ]
 

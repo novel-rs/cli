@@ -183,7 +183,7 @@ self_update = { version = "0.40.0", default-features = false, features = [
   "rustls",
 ] }
 # https://github.com/ratatui-org/ratatui
-ratatui = { version = "0.26.3", default-features = false, features = [
+ratatui = { version = "0.27.0", default-features = false, features = [
   "crossterm",
   "unstable-rendered-line-info",
 ] }
