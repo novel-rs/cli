@@ -164,7 +164,7 @@ fluent-templates = { version = "0.9.4", default-features = false, features = [
 # https://github.com/bojand/infer
 infer = { version = "0.16.0", default-features = false, features = ["std"] }
 # https://github.com/Arc-blroth/memory-stats
-memory-stats = { version = "1.1.0", default-features = false }
+memory-stats = { version = "1.2.0", default-features = false }
 # https://github.com/hyunsik/bytesize
 bytesize = { version = "1.3.0", default-features = false }
 # https://github.com/rust-lang/mdBook
@@ -199,7 +199,9 @@ crossterm = { version = "0.27.0", default-features = false, features = [
 # https://github.com/EdJoPaTo/tui-rs-tree-widget
 tui-tree-widget = { version = "0.20.0", default-features = false }
 # https://github.com/joshka/tui-scrollview
-tui-scrollview = { version = "0.3.6", default-features = false }
+tui-scrollview = { version = "=0.3.6", default-features = false }
+# https://github.com/joshka/tui-popup
+tui-popup = { version = "=0.3.2", default-features = false }
 # https://github.com/Nugine/simd
 base64-simd = { version = "0.8.0", default-features = false, features = [
   "std",

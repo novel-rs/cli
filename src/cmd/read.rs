@@ -7,26 +7,29 @@ use crossterm::event::{
     MouseEventKind,
 };
 use fluent_templates::Loader;
-use hashbrown::HashMap;
-use novel_api::{ChapterInfo, CiweimaoClient, CiyuanjiClient, Client, ContentInfo, SfacgClient};
+use novel_api::{
+    ChapterInfo, CiweimaoClient, CiyuanjiClient, Client, ContentInfo, NovelInfo, SfacgClient,
+    VolumeInfos,
+};
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Direction, Layout, Position, Rect, Size},
     style::{Color, Modifier, Style},
+    text::Text,
     widgets::{
         Block, Clear, Paragraph, Scrollbar, ScrollbarOrientation, StatefulWidget, Widget, Wrap,
     },
     Frame,
 };
 use tokio::{runtime::Handle, task};
+use tui_popup::Popup;
 use tui_scrollview::{ScrollView, ScrollViewState};
 use tui_tree_widget::{Tree, TreeItem, TreeState};
 use url::Url;
 
 use crate::{
     cmd::{Convert, Source},
-    utils::{self, Chapter, Volume},
-    Tui, LANG_ID, LOCALES,
+    utils, Tui, LANG_ID, LOCALES,
 };
 
 #[must_use]
@@ -108,14 +111,17 @@ struct App<T> {
 
     chapter_list: ChapterList,
     content_state: ScrollViewState,
+    show_subscription: bool,
 
     chapter_list_area: Rect,
     content_area: Rect,
 
     config: Read,
     client: Arc<T>,
-    novel_name: String,
-    chapter_infos: HashMap<u32, ChapterInfo>,
+
+    money: u32,
+    novel_info: NovelInfo,
+    volume_infos: VolumeInfos,
 }
 
 impl<T> App<T>
@@ -123,40 +129,14 @@ where
     T: Client + Send + Sync + 'static,
 {
     pub async fn new(client: Arc<T>, config: Read) -> Result<Self> {
+        let money = client.money().await?;
         let novel_info = utils::novel_info(&client, config.novel_id).await?;
 
         let Some(volume_infos) = client.volume_infos(config.novel_id).await? else {
             bail!("Unable to get chapter information");
         };
 
-        let mut chapter_infos = HashMap::with_capacity(128);
-        let mut volumes = Vec::with_capacity(volume_infos.len());
-
-        for volume_info in volume_infos {
-            volumes.push(Volume {
-                title: volume_info.title,
-                chapters: Vec::with_capacity(32),
-            });
-
-            let volume = volumes.last_mut().unwrap();
-
-            for chapter_info in volume_info.chapter_infos {
-                if chapter_info.can_download() {
-                    volume.chapters.push(Chapter {
-                        id: chapter_info.id,
-                        title: chapter_info.title.clone(),
-                        contents: None,
-                    });
-                    chapter_infos.insert(chapter_info.id, chapter_info);
-                }
-            }
-
-            if volume.chapters.is_empty() {
-                volumes.pop();
-            }
-        }
-
-        let chapter_list = ChapterList::new(volumes, &config.converts)?;
+        let chapter_list = ChapterList::new(&volume_infos, &config.converts)?;
 
         Ok(App {
             exit: false,
@@ -164,11 +144,13 @@ where
             chapter_list,
             content_state: ScrollViewState::default(),
             chapter_list_area: Rect::default(),
+            show_subscription: false,
             content_area: Rect::default(),
             config,
             client,
-            novel_name: novel_info.name,
-            chapter_infos,
+            money,
+            novel_info,
+            volume_infos,
         })
     }
 
@@ -191,7 +173,7 @@ where
         if event::poll(Duration::from_millis(16))? {
             return match event::read()? {
                 Event::Key(key_event) if key_event.kind == KeyEventKind::Press => {
-                    Ok(self.handle_key_event(key_event))
+                    self.handle_key_event(key_event)
                 }
                 Event::Mouse(mouse_event) => Ok(self.handle_mouse_event(mouse_event)),
                 _ => Ok(false),
@@ -200,8 +182,8 @@ where
         Ok(false)
     }
 
-    fn handle_key_event(&mut self, key_event: KeyEvent) -> bool {
-        match key_event.code {
+    fn handle_key_event(&mut self, key_event: KeyEvent) -> Result<bool> {
+        let result = match key_event.code {
             KeyCode::Char('q') | KeyCode::Esc => self.exit(),
             KeyCode::Char('c') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
                 self.exit()
@@ -238,8 +220,15 @@ where
                     self.chapter_list.state.key_left()
                 }
             }
+            KeyCode::Char('y') if self.show_subscription => {
+                self.buy_chapter()?;
+                self.show_subscription = false;
+                true
+            }
             _ => false,
-        }
+        };
+
+        Ok(result)
     }
 
     fn handle_mouse_event(&mut self, mouse_event: MouseEvent) -> bool {
@@ -303,7 +292,7 @@ where
         let widget = Tree::new(&self.chapter_list.items)
             .unwrap()
             .block(Block::bordered().title(utils::convert_str(
-                &self.novel_name,
+                &self.novel_info.name,
                 &self.config.converts,
                 false,
             )?))
@@ -328,27 +317,67 @@ where
     fn render_content(&mut self, area: Rect, buf: &mut Buffer) -> Result<()> {
         if self.chapter_list.state.selected().len() == 2 {
             let chapter_id = self.chapter_list.state.selected()[1];
-            let (content, title) = self.content(chapter_id)?;
+            let chapter_info = self.find_chapter_info(chapter_id).unwrap();
 
-            let block = Block::bordered().title(title);
-            let paragraph = Paragraph::new(content).wrap(Wrap { trim: false });
+            if chapter_info.payment_required() {
+                let block = Block::bordered().title(utils::convert_str(
+                    &chapter_info.title,
+                    &self.config.converts,
+                    false,
+                )?);
+                Widget::render(block, area, buf);
 
-            let mut scroll_view = ScrollView::new(Size::new(area.width - 1, 100));
-            let mut block_area = block.inner(scroll_view.buf().area);
+                self.show_subscription = true;
+            } else {
+                let (content, title) = self.content(chapter_id)?;
 
-            scroll_view = ScrollView::new(Size::new(
-                area.width - 1,
-                paragraph.line_count(block_area.width) as u16 + 1,
-            ));
+                let block = Block::bordered().title(title);
+                let paragraph = Paragraph::new(content).wrap(Wrap { trim: false });
 
-            let scroll_view_buf = scroll_view.buf_mut();
-            block_area = block.inner(scroll_view_buf.area);
+                let mut scroll_view = ScrollView::new(Size::new(area.width - 1, 100));
+                let mut block_area = block.inner(scroll_view.buf().area);
 
-            Widget::render(block, scroll_view_buf.area, scroll_view_buf);
-            Widget::render(paragraph, block_area, scroll_view_buf);
-            StatefulWidget::render(scroll_view, area, buf, &mut self.content_state);
+                scroll_view = ScrollView::new(Size::new(
+                    area.width - 1,
+                    paragraph.line_count(block_area.width) as u16 + 1,
+                ));
+
+                let scroll_view_buf = scroll_view.buf_mut();
+                block_area = block.inner(scroll_view_buf.area);
+
+                Widget::render(block, scroll_view_buf.area, scroll_view_buf);
+                Widget::render(paragraph, block_area, scroll_view_buf);
+                StatefulWidget::render(scroll_view, area, buf, &mut self.content_state);
+
+                self.show_subscription = false;
+            }
         } else {
             Widget::render(Clear, area, buf);
+            self.show_subscription = false;
+        }
+
+        Ok(())
+    }
+
+    fn render_popup(&mut self, area: Rect, buf: &mut Buffer) -> Result<()> {
+        if self.chapter_list.state.selected().len() == 2 {
+            let chapter_id = self.chapter_list.state.selected()[1];
+            let chapter_info = self.find_chapter_info(chapter_id).unwrap();
+
+            let text = format!(
+                "订阅本章：{}，账户余额：{}\n输入 y 订阅",
+                chapter_info.price.unwrap(),
+                self.money
+            );
+            let text = Text::styled(
+                utils::convert_str(text, &self.config.converts, false)?,
+                Style::default().fg(Color::Yellow),
+            );
+            let popup = Popup::new(
+                utils::convert_str("订阅章节", &self.config.converts, false)?,
+                text,
+            );
+            Widget::render(&popup, area, buf);
         }
 
         Ok(())
@@ -356,7 +385,7 @@ where
 
     fn content(&mut self, chapter_id: u32) -> Result<(String, String)> {
         let mut result = String::with_capacity(8192);
-        let chapter_info = self.chapter_infos.get(&chapter_id).unwrap();
+        let chapter_info = self.find_chapter_info(chapter_id).unwrap();
 
         let client = Arc::clone(&self.client);
         let content_info = task::block_in_place(move || {
@@ -375,7 +404,54 @@ where
             }
         }
 
-        Ok((result, chapter_info.title.clone()))
+        Ok((
+            result,
+            utils::convert_str(&chapter_info.title, &self.config.converts, false)?,
+        ))
+    }
+
+    fn buy_chapter(&mut self) -> Result<()> {
+        if self.chapter_list.state.selected().len() == 2 {
+            let chapter_id = self.chapter_list.state.selected()[1];
+            let chapter_info = self.find_chapter_info(chapter_id).unwrap();
+
+            let client = Arc::clone(&self.client);
+            task::block_in_place(move || {
+                Handle::current().block_on(async move { client.buy_chapter(chapter_info).await })
+            })?;
+
+            let chapter_info = self.find_chapter_info_mut(chapter_id).unwrap();
+            chapter_info.payment_required = Some(false);
+
+            self.money -= chapter_info.price.unwrap() as u32;
+
+            self.chapter_list.items =
+                ChapterList::new(&self.volume_infos, &self.config.converts)?.items;
+        }
+
+        Ok(())
+    }
+
+    fn find_chapter_info(&self, chapter_id: u32) -> Option<&ChapterInfo> {
+        for volume in &self.volume_infos {
+            for chapter in &volume.chapter_infos {
+                if chapter.id == chapter_id {
+                    return Some(chapter);
+                }
+            }
+        }
+        None
+    }
+
+    fn find_chapter_info_mut(&mut self, chapter_id: u32) -> Option<&mut ChapterInfo> {
+        for volume in &mut self.volume_infos {
+            for chapter in &mut volume.chapter_infos {
+                if chapter.id == chapter_id {
+                    return Some(chapter);
+                }
+            }
+        }
+        None
     }
 }
 
@@ -397,6 +473,10 @@ where
 
         self.render_chapterlist(layout[0], buf).unwrap();
         self.render_content(layout[1], buf).unwrap();
+
+        if self.show_subscription {
+            self.render_popup(area, buf).unwrap();
+        }
     }
 }
 
@@ -406,31 +486,44 @@ struct ChapterList {
 }
 
 impl ChapterList {
-    fn new(volumes: Vec<Volume>, converts: &[Convert]) -> Result<Self> {
+    fn new(volume_infos: &VolumeInfos, converts: &[Convert]) -> Result<Self> {
         let mut result = Self {
             state: TreeState::default(),
             items: Vec::with_capacity(4),
         };
 
-        for (index, volume) in volumes.into_iter().enumerate() {
+        for (index, volume_info) in volume_infos.iter().enumerate() {
             let index = index as u32;
 
             let mut chapters = Vec::with_capacity(32);
-            for chapter in volume.chapters {
-                chapters.push(TreeItem::new_leaf(
-                    chapter.id,
-                    utils::convert_str(chapter.title, converts, true)?,
-                ));
+            for chapter in &volume_info.chapter_infos {
+                if chapter.is_valid() {
+                    let mut title_prefix = "";
+                    if chapter.payment_required() {
+                        title_prefix = "【未订阅】";
+                    }
+
+                    chapters.push(TreeItem::new_leaf(
+                        chapter.id,
+                        utils::convert_str(
+                            format!("{title_prefix}{}", chapter.title),
+                            converts,
+                            true,
+                        )?,
+                    ));
+                }
             }
 
-            result.items.push(
-                TreeItem::new(
-                    index,
-                    utils::convert_str(volume.title, converts, true)?,
-                    chapters,
-                )
-                .unwrap(),
-            );
+            if !chapters.is_empty() {
+                result.items.push(
+                    TreeItem::new(
+                        index,
+                        utils::convert_str(&volume_info.title, converts, true)?,
+                        chapters,
+                    )
+                    .unwrap(),
+                );
+            }
         }
 
         Ok(result)

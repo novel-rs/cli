@@ -533,9 +533,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.0.100"
+version = "1.0.101"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c891175c3fb232128f48de6590095e59198bbeb8620c310be349bfc3afd12c7b"
+checksum = "ac367972e516d45567c7eafc73d24e1c193dcf200a8d94e9db7b3d38b349572d"
 dependencies = [
  "jobserver",
  "libc",
@@ -1064,11 +1064,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "derive-getters"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0a6433aac097572ea8ccc60b3f2e756c661c9aeed9225cdd4d0cb119cb7ff6ba"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
+]
+
+[[package]]
 name = "derive_more"
 version = "0.99.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5f33878137e4dafd7fa914ad4e259e18a4e8e532b9617a2d0150262bf53abfce"
 dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.68",
+]
+
+[[package]]
+name = "derive_setters"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e8ef033054e131169b8f0f9a7af8f5533a9436fadf3c500ed547f730f07090d"
+dependencies = [
+ "darling",
  "proc-macro2",
  "quote",
  "syn 2.0.68",
@@ -1226,9 +1249,9 @@ checksum = "3a68a4904193147e0a8dec3314640e6db742afd5f6e634f428a6af230d9b3591"
 
 [[package]]
 name = "either"
-version = "1.12.0"
+version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3dca9240753cf90908d7e4aac30f630662b02aebaa1b58a3cadabdb23385b58b"
+checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 dependencies = [
  "serde",
 ]
@@ -2449,9 +2472,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.21"
+version = "0.4.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90ed8c1e510134f979dbc4f070f87d4313098b704861a105fe34231c70a3901c"
+checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
 
 [[package]]
 name = "lru"
@@ -2567,12 +2590,12 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "memory-stats"
-version = "1.1.0"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34f79cf9964c5c9545493acda1263f1912f8d2c56c8a2ffee2606cb960acaacc"
+checksum = "c73f5c649995a115e1a0220b35e4df0a1294500477f97a91d0660fb5abeb574a"
 dependencies = [
  "libc",
- "winapi",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -2774,6 +2797,7 @@ dependencies = [
  "tracing-log",
  "tracing-subscriber",
  "trash",
+ "tui-popup",
  "tui-scrollview",
  "tui-tree-widget",
  "unic-langid",
@@ -4310,9 +4334,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.117"
+version = "1.0.118"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "455182ea6142b14f93f4bc5320a2b31c1f266b66a4a5c858b013302a5d8cbfc3"
+checksum = "d947f6b3163d8857ea16c4fa0dd4840d52f3041039a85decd46867eb1abef2e4"
 dependencies = [
  "itoa",
  "ryu",
@@ -5076,9 +5100,9 @@ dependencies = [
 
 [[package]]
 name = "tinyvec"
-version = "1.6.0"
+version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50"
+checksum = "c55115c6fbe2d2bef26eb09ad74bde02d8255476fc0c7b515ef09fbb35742d82"
 dependencies = [
  "tinyvec_macros",
 ]
@@ -5335,6 +5359,17 @@ name = "try-lock"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
+
+[[package]]
+name = "tui-popup"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c6a4e5f11ae9d1561ca853c1da787948d03054cc03ca72dca0462496d2b5f7c"
+dependencies = [
+ "derive-getters",
+ "derive_setters",
+ "ratatui",
+]
 
 [[package]]
 name = "tui-scrollview"
