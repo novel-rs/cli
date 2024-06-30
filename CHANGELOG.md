@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.2] - 2024-06-30
+
+### ⛰️ Features
+
+- _(read)_ Support buy chapter
+
 ## [0.9.0] - 2024-06-17
 
 ### ⛰️ Features
