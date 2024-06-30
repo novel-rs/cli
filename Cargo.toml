@@ -90,7 +90,7 @@ image = { version = "0.25.1", default-features = false, features = [
   "rayon",
 ] }
 # https://github.com/clap-rs/clap
-clap = { version = "4.5.7", default-features = false, features = [
+clap = { version = "4.5.8", default-features = false, features = [
   "std",
   "color",
   "help",
@@ -104,7 +104,7 @@ clap = { version = "4.5.7", default-features = false, features = [
   "string",
 ] }
 # https://github.com/clap-rs/clap
-clap_complete = { version = "4.5.6", default-features = false }
+clap_complete = { version = "4.5.7", default-features = false }
 # https://github.com/console-rs/indicatif
 indicatif = { version = "0.17.8", default-features = false, features = [
   "improved_unicode",
@@ -185,9 +185,8 @@ self_update = { version = "0.40.0", default-features = false, features = [
   "compression-zip-deflate",
   "rustls",
 ] }
-# pin for tui-tree-widget and tui-scrollview
 # https://github.com/ratatui-org/ratatui
-ratatui = { version = "=0.26", default-features = false, features = [
+ratatui = { version = "0.27.0", default-features = false, features = [
   "crossterm",
   "unstable-rendered-line-info",
 ] }
@@ -197,11 +196,11 @@ crossterm = { version = "0.27.0", default-features = false, features = [
   "events",
 ] }
 # https://github.com/EdJoPaTo/tui-rs-tree-widget
-tui-tree-widget = { version = "0.20.0", default-features = false }
+tui-tree-widget = { version = "0.21.0", default-features = false }
 # https://github.com/joshka/tui-scrollview
-tui-scrollview = { version = "=0.3.6", default-features = false }
+tui-scrollview = { version = "0.3.7", default-features = false }
 # https://github.com/joshka/tui-popup
-tui-popup = { version = "=0.3.2", default-features = false }
+tui-popup = { version = "0.3.3", default-features = false }
 # https://github.com/Nugine/simd
 base64-simd = { version = "0.8.0", default-features = false, features = [
   "std",
