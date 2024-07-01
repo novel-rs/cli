@@ -217,7 +217,7 @@ os_info = { version = "3.8.2", default-features = false }
 # https://github.com/baoyachi/shadow-rs
 shadow-rs = { version = "0.29.0", default-features = false }
 # https://github.com/jonasbb/serde_with
-serde_with = { version = "3.8.1", default-features = false, features = [
+serde_with = { version = "3.8.2", default-features = false, features = [
   "std",
   "macros",
 ] }
